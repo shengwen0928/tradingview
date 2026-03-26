@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { init, dispose, registerLocale } from 'klinecharts';
+import { init, dispose, registerLocale, type Period } from 'klinecharts';
 
 // 註冊繁體中文
 registerLocale('zh-TW', {
@@ -8,7 +8,12 @@ registerLocale('zh-TW', {
   day: '日', week: '周', month: '月', year: '年'
 });
 
-const periods = [
+interface PeriodOption {
+  label: string;
+  value: Period;
+}
+
+const periods: PeriodOption[] = [
   { label: '1分', value: { type: 'minute', span: 1 } },
   { label: '15分', value: { type: 'minute', span: 15 } },
   { label: '1小時', value: { type: 'hour', span: 1 } },
@@ -23,7 +28,6 @@ const KLineChart: React.FC = () => {
   const loadingRef = useRef(false);
   const earliestTsRef = useRef<number | null>(null); // 手動記錄最老的時間戳
 
-  const [error, setError] = useState<string | null>(null);
   const [symbols, setSymbols] = useState<any[]>([]);
   const [currentSymbol, setCurrentSymbol] = useState('BTCUSDT');
   const [currentPeriod, setCurrentPeriod] = useState(periods[2]);
@@ -49,6 +53,7 @@ const KLineChart: React.FC = () => {
       locale: 'zh-TW',
       styles: { grid: { show: false }, candle: { tooltip: { showRule: 'follow_cross' } } }
     });
+    if (!chartInstance) return;
     chartRef.current = chartInstance;
     earliestTsRef.current = null; // 重置最老時間戳
 
@@ -105,7 +110,9 @@ const KLineChart: React.FC = () => {
             earliestTsRef.current = kLineData[0].timestamp;
           }
 
-          console.log(`[getBars] ${type} 成功: ${kLineData.length} 根, 最早時間推移至: ${new Date(earliestTsRef.current).toLocaleString()}`);
+          if (earliestTsRef.current) {
+            console.log(`[getBars] ${type} 成功: ${kLineData.length} 根, 最早時間推移至: ${new Date(earliestTsRef.current).toLocaleString()}`);
+          }
           
           // 使用最簡單的 true，強制開啟無限歷史模式
           callback(kLineData, true);
