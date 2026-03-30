@@ -26,12 +26,22 @@ export class DataManager {
   }
 
   public async setTimeframe(bar: string): Promise<void> {
-    if (this.bar === bar) return;
+    // 🚨 格式化為 OKX 規格：h->H, d->D, w->W, M->M, y->Y, 只有 s 和 m 維持小寫
+    const formattedBar = bar
+      .replace('h', 'H')
+      .replace('d', 'D')
+      .replace('w', 'W')
+      .replace('y', 'Y')
+      .replace('M', 'M'); // 月份本來就是大寫，確保一致性
     
-    this.bar = bar;
-    this.intervalMs = this.parseBarToMs(bar);
+    if (this.bar === formattedBar) return;
+    
+    this.bar = formattedBar;
+    this.intervalMs = this.parseBarToMs(formattedBar);
     this.candles = [];
     
+    console.log(`[DataManager] Timeframe changed to: ${this.bar} (${this.intervalMs}ms)`);
+
     if (this.ws) {
       this.ws.onclose = null;
       this.ws.close();
@@ -41,22 +51,17 @@ export class DataManager {
     await this.loadInitialData();
   }
 
-  // 🚨 新增：確保 WebSocket 頻道名稱的大小寫正確
-  private formatBarForWS(bar: string): string {
-    return bar.replace('h', 'H').replace('d', 'D').replace('w', 'W').replace('m', 'm'); // 分鐘維持小寫 m
-  }
-
   private parseBarToMs(bar: string): number {
-    const unit = bar.slice(-1).toLowerCase();
+    const unit = bar.slice(-1); // 這裡不再轉小寫，直接判斷大寫
     const value = parseInt(bar.slice(0, -1)) || 1;
     switch (unit) {
       case 's': return value * 1000;
       case 'm': return value * 60000;
-      case 'h': return value * 3600000;
-      case 'd': return value * 86400000;
-      case 'w': return value * 604800000;
+      case 'H': return value * 3600000; // 🚨 改為大寫 H
+      case 'D': return value * 86400000; // 🚨 改為大寫 D
+      case 'W': return value * 604800000; // 🚨 改為大寫 W
       case 'M': return value * 2592000000; 
-      case 'y': return value * 31536000000;
+      case 'Y': return value * 31536000000; // 🚨 改為大寫 Y
       default: return 60000;
     }
   }
@@ -70,7 +75,7 @@ export class DataManager {
     
     // 關閉現有連線
     if (this.ws) {
-      this.ws.onclose = null; // 暫時移除自動重連邏輯，避免競爭
+      this.ws.onclose = null;
       this.ws.close();
     }
     if (this.pingInterval) clearInterval(this.pingInterval);
@@ -85,17 +90,22 @@ export class DataManager {
 
   public async loadInitialData(): Promise<void> {
     try {
+      // 🚨 此處 bar 現在已經是正確的大寫格式
       const url = `https://www.okx.com/api/v5/market/candles?instId=${this.instId}&bar=${this.bar}&limit=300`;
+      console.log(`[DataManager] Fetching initial data: ${url}`);
       const response = await fetch(url);
       const result = await response.json();
 
       if (result.code === '0') {
+        console.log(`[DataManager] Received ${result.data.length} initial candles`);
         this.candles = this.parseOKXData(result.data).reverse();
         this.onDataUpdated(this.candles, false);
         this.setupWebSocket();
+      } else {
+        console.error(`[DataManager] OKX API Error:`, result);
       }
     } catch (error) {
-      console.error('Failed to load OKX initial data:', error);
+      console.error('[DataManager] Failed to load OKX initial data:', error);
     }
   }
 
@@ -103,21 +113,24 @@ export class DataManager {
     if (this.ws) this.ws.close();
     if (this.pingInterval) clearInterval(this.pingInterval);
 
+    const wsUrl = 'wss://ws.okx.com:443/ws/v5/business';
+    console.log(`[DataManager] Connecting to WebSocket: ${wsUrl}`);
     this.onStatusChange?.('connecting');
-    // 修正：K 線數據屬於 Business 頻道，而非 Public 頻道
-    this.ws = new WebSocket('wss://ws.okx.com:443/ws/v5/business');
+    
+    this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {
-      console.log('OKX WebSocket Connected ✅');
+      console.log('[DataManager] WebSocket Connected ✅');
       this.onStatusChange?.('connected');
-      const wsBar = this.formatBarForWS(this.bar); // 🚨 格式化為大寫
+      
       const subMsg = {
         op: 'subscribe',
         args: [{
-          channel: `candle${wsBar}`,
+          channel: `candle${this.bar}`, // 🚨 直接使用正確格式的 bar
           instId: this.instId
         }]
       };
+      console.log(`[DataManager] Subscribing:`, JSON.stringify(subMsg));
       this.ws?.send(JSON.stringify(subMsg));
 
       this.pingInterval = window.setInterval(() => {
@@ -131,9 +144,14 @@ export class DataManager {
       if (event.data === 'pong') return;
       
       const res = JSON.parse(event.data);
-      const wsBar = this.formatBarForWS(this.bar); // 🚨 格式化為大寫
       
-      if (res.arg?.channel === `candle${wsBar}` && res.data) {
+      // 記錄訂閱回應
+      if (res.event === 'subscribe') {
+        console.log(`[DataManager] Subscription Success:`, res.arg);
+        return;
+      }
+
+      if (res.arg?.channel === `candle${this.bar}` && res.data) { // 🚨 直接比較
         const raw = res.data[0];
         const candle: Candle = {
           time: parseInt(raw[0]),
@@ -143,11 +161,9 @@ export class DataManager {
           close: parseFloat(raw[4]),
           volume: parseFloat(raw[5]),
         };
-        // 僅在偵錯時開啟以下日誌
-        // console.log(`[Update] ${this.instId}: ${candle.close}`);
         this.appendRealtimeData(candle);
-      } else {
-        // console.log('[WS Msg]', res);
+      } else if (res.event === 'error') {
+        console.error(`[DataManager] WebSocket Error Message:`, res);
       }
     };
 
