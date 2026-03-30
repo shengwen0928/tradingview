@@ -41,24 +41,38 @@ export class DataManager {
     }
 
     /**
-     * 獲取指定標的的 K 線數據 (具備智能快取與持久化支援)
+     * 獲取指定標的的 K 線數據 (支援 Gap Filling 自動補齊)
      */
     public async getKlines(id: string, interval: string, limit: number = 500, endTime?: number, source?: string): Promise<Candle[]> {
         const cacheKey = `${id}_${interval}`;
+        const intervalMs = this.parseIntervalToMs(interval);
         
-        // 1. 優先嘗試從 Memory Cache 獲取 (Hot Storage)
+        // 1. 優先嘗試從 Memory 或 Disk 獲取
         let cached = this.caches.get(cacheKey) || [];
-        
-        // 如果 Memory 為空，嘗試從檔案載入
         if (cached.length === 0 && !endTime) {
             cached = await this.storage.loadKlines(id, interval);
-            if (cached.length > 0) {
-                this.caches.set(cacheKey, cached);
+            if (cached.length > 0) this.caches.set(cacheKey, cached);
+        }
+
+        // 2. 判斷是否需要「補齊」 (Gap Filling)
+        // 如果不是在查歷史資料，且本地有資料，檢查最後一筆時間
+        let finalLimit = limit;
+        if (!endTime && cached.length > 0) {
+            const lastTs = cached[cached.length - 1].timestamp;
+            const now = Date.now();
+            const gapMs = now - lastTs;
+            
+            if (gapMs > intervalMs * 1.5) {
+                // 算出中間差了幾根，並要求交易所多給一些
+                const missingCount = Math.ceil(gapMs / intervalMs);
+                finalLimit = Math.max(limit, missingCount + 10); // 多抓 10 根緩衝
+                if (finalLimit > 1000) finalLimit = 1000; // Binance 單次上限通常是 1000
+                console.log(`[DataManager] 🧩 Gap detected for ${id}. Missing ~${missingCount} candles. Fetching ${finalLimit}...`);
             }
         }
 
-        // 如果本地資料量足夠且不涉及歷史查詢，直接回傳
-        if (!endTime && cached.length >= limit) {
+        // 如果資料量夠且沒斷層，直接回傳
+        if (!endTime && cached.length >= limit && (Date.now() - cached[cached.length-1].timestamp < intervalMs * 1.5)) {
             return cached.slice(-limit);
         }
 
@@ -78,15 +92,15 @@ export class DataManager {
             
             if (connector && sourceSymbol) {
                 try {
-                    const klines = await connector.fetchKlines(sourceSymbol, interval, limit, endTime);
+                    // 使用計算後的 finalLimit
+                    const klines = await connector.fetchKlines(sourceSymbol, interval, finalLimit, endTime);
                     
-                    // 3. 成功抓取後，合併入快取而非直接覆蓋
                     if (!endTime) {
                         this.updateCache(id, interval, klines);
                         this.storage.saveKlines(id, interval, klines); 
                     }
                     
-                    return klines;
+                    return klines.slice(-limit);
                 } catch (err) {
                     console.warn(`[DataManager] Source ${source} failed for ${id}, trying next...`);
                     lastError = err;
