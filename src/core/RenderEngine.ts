@@ -188,7 +188,13 @@ export class RenderEngine {
       // 超出畫布範圍的略過不畫
       if (x + bodyWidth < 0 || x > this.width) continue;
 
-      const centerX = Math.floor(x + halfBody) + 0.5;
+      // 🚨 修正對齊邏輯：先計算實體的整數座標與寬度
+      const rectX = Math.floor(x);
+      const rectW = Math.max(1, Math.floor(bodyWidth));
+      
+      // 影線中心點 (centerX) 必須與實體 (rectX) 絕對對齊
+      // 使用 rectX + Math.floor(rectW / 2) + 0.5 確保在 1px 寬度時完美居中
+      const centerX = rectX + Math.floor(rectW / 2) + 0.5;
 
       const yOpen = scaleEngine.priceToY(candle.open);
       const yClose = scaleEngine.priceToY(candle.close);
@@ -207,9 +213,7 @@ export class RenderEngine {
       ctx.stroke();
 
       // 繪製實體
-      const rectX = Math.floor(x);
       const rectY = Math.floor(Math.min(yOpen, yClose));
-      const rectW = Math.max(1, Math.floor(bodyWidth));
       const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
       ctx.fillRect(rectX, rectY, rectW, rectH);
     }
