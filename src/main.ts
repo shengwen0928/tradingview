@@ -24,6 +24,7 @@ class ChartEngine {
     const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
     const overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
     const symbolSelect = document.getElementById('symbol-select') as HTMLSelectElement;
+    const timeframeSelect = document.getElementById('timeframe-select') as HTMLSelectElement;
 
     this.renderEngine = new RenderEngine(gridCanvas, candleCanvas, overlayCanvas);
     this.scaleEngine = new ScaleEngine();
@@ -45,6 +46,12 @@ class ChartEngine {
       this.currentSymbol = symbolSelect.options[symbolSelect.selectedIndex].text;
       this.dataManager.setSymbol(symbolSelect.value);
       this.scaleEngine.resetAutoScale(); // 切換幣種時恢復自動縮放
+    });
+
+    // 🚨 監聽週期切換
+    timeframeSelect.addEventListener('change', () => {
+      this.dataManager.setTimeframe(timeframeSelect.value);
+      this.scaleEngine.resetAutoScale(); // 切換週期時恢復自動縮放
     });
 
     this.loader = new LoaderController(this.dataManager, this.viewport);
@@ -135,6 +142,7 @@ class ChartEngine {
       startIndex, 
       candleWidth, 
       2, 
+      this.dataManager.getIntervalMs(), 
       this.scaleEngine
     );
     

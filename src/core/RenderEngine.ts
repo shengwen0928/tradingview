@@ -95,6 +95,7 @@ export class RenderEngine {
     exactStartIndex: number,
     candleWidth: number,
     spacing: number,
+    interval: number, // 🚨 新增：時間間隔 (ms)
     scaleEngine: ScaleEngine
   ): void {
     const ctx = this.gridCtx; // 使用網格層繪製刻度
@@ -106,8 +107,7 @@ export class RenderEngine {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
-    // 1. 繪製價格刻度 (右側)
-    // 🚨 修正：使用整數價格刻度
+    // 1. 價格刻度保持不變...
     const ticks = scaleEngine.getNiceTickSteps();
     for (const price of ticks) {
       const y = scaleEngine.priceToY(price);
@@ -119,44 +119,57 @@ export class RenderEngine {
     
     if (candles.length === 0) return;
 
-    // 🚨 修正：計算時間軸應涵蓋整個畫布寬度，而不僅是現有的 K 棒
     const visibleCount = drawWidth / (candleWidth + spacing);
     const endIndex = Math.ceil(exactStartIndex + visibleCount);
     
-    // 取得參考時間點 (最後一根 K 棒)
     const refCandle = candles[candles.length - 1];
     const refIndex = sliceStartIndex + candles.length - 1;
     const refTime = refCandle.time;
-    const interval = 60000; // 1 分鐘 (ms)
 
     let lastLabelX = -100;
 
     for (let idx = Math.floor(exactStartIndex); idx <= endIndex; idx++) {
-      // 根據與參考點的索引差計算時間
       const time = refTime + (idx - refIndex) * interval;
       const date = new Date(time);
       
-      const isFiveMin = date.getMinutes() % 5 === 0 && date.getSeconds() === 0;
-      const isNewDay = date.getHours() === 0 && date.getMinutes() === 0;
+      // 根據週期決定刻度頻率
+      let shouldShow = false;
+      let label = "";
+      let isBold = false;
+
+      const mins = date.getMinutes();
+      const secs = date.getSeconds();
+      const hours = date.getHours();
+
+      if (interval < 60000) { // 秒級
+        shouldShow = secs % 15 === 0;
+        label = `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      } else if (interval < 3600000) { // 分鐘級
+        shouldShow = mins % 5 === 0;
+        label = `${hours}:${mins.toString().padStart(2, '0')}`;
+      } else if (interval < 86400000) { // 小時級
+        shouldShow = hours % 4 === 0 && mins === 0;
+        label = `${hours}:00`;
+      } else { // 天級以上
+        shouldShow = mins === 0 && hours === 0;
+        label = `${date.getMonth() + 1}/${date.getDate()}`;
+      }
+
+      // 新的一天邏輯
+      const isNewDay = hours === 0 && mins === 0 && secs === 0;
+      if (isNewDay) {
+        shouldShow = true;
+        isBold = true;
+        label = `${date.getMonth() + 1}/${date.getDate()}`;
+      }
 
       const x = scaleEngine.indexToX(idx, exactStartIndex, candleWidth, spacing);
       const centerX = x + candleWidth / 2;
 
-      // 避免標籤越界或重疊
       if (centerX < 0 || centerX > drawWidth) continue;
 
-      if (isNewDay || (isFiveMin && centerX > lastLabelX + 60)) {
-        let label: string;
-        if (isNewDay) {
-          label = date.getDate().toString();
-          ctx.fillStyle = '#fff';
-        } else {
-          const hours = date.getHours().toString().padStart(2, '0');
-          const minutes = date.getMinutes().toString().padStart(2, '0');
-          label = `${hours}:${minutes}`;
-          ctx.fillStyle = '#929498';
-        }
-
+      if (shouldShow && centerX > lastLabelX + 70) {
+        ctx.fillStyle = isBold ? '#fff' : '#929498';
         ctx.fillText(label, centerX, drawHeight + 15);
         lastLabelX = centerX;
       }

@@ -9,6 +9,7 @@ export class DataManager {
   private onStatusChange?: (status: 'connected' | 'disconnected' | 'connecting') => void;
   private instId = 'BTC-USDT-SWAP'; // 使用合約數據，確保 WS 頻道穩定
   private bar = '1m'; 
+  private intervalMs = 60000; // 🚨 新增：當前週期的毫秒數
   private ws: WebSocket | null = null;
   private pingInterval: number | null = null;
 
@@ -18,6 +19,41 @@ export class DataManager {
   ) {
     this.onDataUpdated = onDataUpdated;
     this.onStatusChange = onStatusChange;
+  }
+
+  public getIntervalMs(): number {
+    return this.intervalMs;
+  }
+
+  public async setTimeframe(bar: string): Promise<void> {
+    if (this.bar === bar) return;
+    
+    this.bar = bar;
+    this.intervalMs = this.parseBarToMs(bar);
+    this.candles = [];
+    
+    if (this.ws) {
+      this.ws.onclose = null;
+      this.ws.close();
+    }
+    if (this.pingInterval) clearInterval(this.pingInterval);
+
+    await this.loadInitialData();
+  }
+
+  private parseBarToMs(bar: string): number {
+    const unit = bar.slice(-1);
+    const value = parseInt(bar.slice(0, -1)) || 1;
+    switch (unit) {
+      case 's': return value * 1000;
+      case 'm': return value * 60000;
+      case 'h': return value * 3600000;
+      case 'D': return value * 86400000;
+      case 'W': return value * 604800000;
+      case 'M': return value * 2592000000; // 概算 30 天
+      case 'Y': return value * 31536000000; // 概算 365 天
+      default: return 60000;
+    }
   }
 
   public async setSymbol(instId: string): Promise<void> {
