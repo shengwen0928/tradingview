@@ -70,7 +70,7 @@ export class DataManager {
       if (event.data === 'pong') return;
       
       const res = JSON.parse(event.data);
-      // console.log('[WS Raw]', res); // 🚨 這裡會列印所有 OKX 回傳，包含錯誤訊息
+      console.log('[WS Raw Message]', res); // 🚨 關鍵：看這裡回傳了什麼
       
       if (res.arg?.channel === `candle${this.bar}` && res.data) {
         const raw = res.data[0];
