@@ -40,12 +40,16 @@ export class DataManager {
      * @param limit 筆數
      * @param endTime 結束時間戳 (用於 Lazy Load)
      */
-    public async getKlines(id: string, interval: string, limit: number = 500, endTime?: number): Promise<Candle[]> {
+    public async getKlines(id: string, interval: string, limit: number = 500, endTime?: number, source?: string): Promise<Candle[]> {
         const symbolInfo = SymbolManager.getSymbolById(id);
         if (!symbolInfo) throw new Error(`Unsupported symbol ID: ${id}`);
 
-        // 尋找可用的來源 (優先序: Binance > OKX)
-        const sources = Object.keys(symbolInfo.sourceMap);
+        // 尋找可用的來源 (如果有指定 source，優先嘗試指定來源)
+        let sources = Object.keys(symbolInfo.sourceMap);
+        if (source && symbolInfo.sourceMap[source]) {
+            sources = [source, ...sources.filter(s => s !== source)];
+        }
+
         let lastError = null;
 
         for (const source of sources) {
@@ -76,7 +80,7 @@ export class DataManager {
     /**
      * 訂閱即時 K 線更新
      */
-    public subscribe(id: string, interval: string, onUpdate: (candle: Candle) => void) {
+    public subscribe(id: string, interval: string, onUpdate: (candle: Candle) => void, source?: string) {
         const cacheKey = `${id}_${interval}`;
         
         if (!this.subscribers.has(cacheKey)) {
@@ -88,13 +92,13 @@ export class DataManager {
         if (!this.activeSubscriptions.has(cacheKey)) {
             const symbolInfo = SymbolManager.getSymbolById(id);
             if (symbolInfo) {
-                // 訂閱第一個可用的來源
-                const source = Object.keys(symbolInfo.sourceMap)[0];
-                const connector = this.connectors.get(source);
-                const sourceSymbol = symbolInfo.sourceMap[source];
+                // 訂閱來源：優先使用指定來源，否則用第一個
+                const selectedSource = (source && symbolInfo.sourceMap[source]) ? source : Object.keys(symbolInfo.sourceMap)[0];
+                const connector = this.connectors.get(selectedSource);
+                const sourceSymbol = symbolInfo.sourceMap[selectedSource];
 
                 if (connector && sourceSymbol) {
-                    console.log(`[DataManager] Starting ${source} WS subscription for ${id} ${interval}`);
+                    console.log(`[DataManager] Starting ${selectedSource} WS subscription for ${id} ${interval}`);
                     connector.subscribeKlines(sourceSymbol, interval, (candle) => {
                         this.onNewCandle(id, interval, candle);
                     });

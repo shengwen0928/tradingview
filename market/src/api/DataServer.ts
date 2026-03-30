@@ -40,7 +40,7 @@ app.get('/symbols', (req, res) => {
  * GET /klines?id=BTC/USDT&interval=1m&endTime=1774859640000
  */
 app.get('/klines', async (req, res) => {
-    const { id, interval, endTime } = req.query;
+    const { id, interval, endTime, source } = req.query;
 
     if (!id || !interval) {
         return res.status(400).json({ success: false, message: 'Missing parameters' });
@@ -48,7 +48,7 @@ app.get('/klines', async (req, res) => {
 
     try {
         const endTs = endTime ? parseInt(endTime as string) : undefined;
-        const klines = await dataManager.getKlines(id as string, interval as string, 500, endTs);
+        const klines = await dataManager.getKlines(id as string, interval as string, 500, endTs, source as string);
         res.json({ success: true, data: klines });
     } catch (error: any) {
         console.error(`[DataServer] Kline query error:`, error.message);

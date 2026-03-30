@@ -7,7 +7,8 @@ export class DataManager {
   private candles: Candle[] = [];
   private onDataUpdated: (candles: Candle[], isHistory: boolean) => void;
   private onStatusChange?: (status: 'connected' | 'disconnected' | 'connecting') => void;
-  private instId = 'BTC/USDT'; // 使用統一的 ID
+  private instId = 'BTC/USDT'; 
+  private currentSource = ''; // 🚨 新增：當前交易所來源
   private bar = '1m'; 
   private intervalMs = 60000; 
   private ws: WebSocket | null = null;
@@ -123,7 +124,19 @@ export class DataManager {
     console.log(`[DataManager] Switching symbol to: ${instId}`);
     this.instId = instId;
     this.candles = [];
+    this.reload();
+  }
+
+  public async setExchange(source: string): Promise<void> {
+    if (this.currentSource === source) return;
     
+    console.log(`[DataManager] Switching exchange to: ${source || 'Auto'}`);
+    this.currentSource = source;
+    this.candles = [];
+    this.reload();
+  }
+
+  private async reload(): Promise<void> {
     // 關閉現有連線
     if (this.ws) {
       this.ws.onclose = null;
@@ -141,7 +154,9 @@ export class DataManager {
 
   public async loadInitialData(): Promise<void> {
     try {
-      const url = `${this.apiUrl}/klines?id=${this.instId}&interval=${this.bar}`;
+      let url = `${this.apiUrl}/klines?id=${this.instId}&interval=${this.bar}`;
+      if (this.currentSource) url += `&source=${this.currentSource}`;
+
       console.log(`[DataManager] Fetching initial data from backend: ${url}`);
       const response = await fetch(url);
       const result = await response.json();
@@ -179,11 +194,13 @@ export class DataManager {
       console.log('[DataManager] Backend WebSocket Connected ✅');
       this.onStatusChange?.('connected');
       
-      const subMsg = {
+      const subMsg: any = {
         type: 'subscribe',
         id: this.instId,
         interval: this.bar
       };
+      if (this.currentSource) subMsg.source = this.currentSource;
+
       console.log(`[DataManager] Subscribing via Backend:`, JSON.stringify(subMsg));
       this.ws?.send(JSON.stringify(subMsg));
     };

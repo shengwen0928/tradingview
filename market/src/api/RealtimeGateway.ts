@@ -37,14 +37,14 @@ export class RealtimeGateway {
     }
 
     private handleRequest(ws: WebSocket, payload: any) {
-        const { type, id, interval } = payload;
+        const { type, id, interval, source } = payload;
 
         if (type === 'subscribe') {
             if (!id || !interval) {
                 return ws.send(JSON.stringify({ type: 'error', message: 'Missing id or interval' }));
             }
 
-            console.log(`[RealtimeGateway] Client subscribing to ${id} ${interval}`);
+            console.log(`[RealtimeGateway] Client subscribing to ${id} ${interval} from ${source || 'default'}`);
             
             // 呼叫 DataManager 訂閱
             this.dataManager.subscribe(id, interval, (candle) => {
@@ -56,9 +56,9 @@ export class RealtimeGateway {
                         data: candle
                     }));
                 }
-            });
+            }, source);
             
-            ws.send(JSON.stringify({ type: 'subscribed', id, interval }));
+            ws.send(JSON.stringify({ type: 'subscribed', id, interval, source }));
         }
     }
 }

@@ -57,6 +57,7 @@ class ChartEngine {
     const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
     const overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
     const symbolSelect = document.getElementById('symbol-select') as HTMLSelectElement;
+    const exchangeSelect = document.getElementById('exchange-select') as HTMLSelectElement;
     
     // 取得新 UI 元素
     const tfMainBtn = document.getElementById('tf-main-btn') as HTMLButtonElement;
@@ -91,6 +92,12 @@ class ChartEngine {
       this.currentSymbol = symbolSelect.options[symbolSelect.selectedIndex].text;
       this.dataManager.setSymbol(symbolSelect.value);
       this.scaleEngine.resetAutoScale(); 
+    });
+
+    // 🚨 監聽交易所切換
+    exchangeSelect.addEventListener('change', () => {
+      this.dataManager.setExchange(exchangeSelect.value);
+      this.scaleEngine.resetAutoScale();
     });
 
     // 🚨 監聽週期主按鈕 (切換彈窗)
