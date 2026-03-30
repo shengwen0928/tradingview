@@ -45,8 +45,8 @@ export class DataManager {
     if (this.pingInterval) clearInterval(this.pingInterval);
 
     this.onStatusChange?.('connecting');
-    // 使用全球通用 AWS 節點，穩定性更高
-    this.ws = new WebSocket('wss://wsaws.okx.com:443/ws/v5/public');
+    // 恢復使用經測試可成功連線的節點
+    this.ws = new WebSocket('wss://ws.okx.com:443/ws/v5/public');
 
     this.ws.onopen = () => {
       console.log('OKX WebSocket Connected ✅');
