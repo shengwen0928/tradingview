@@ -1,0 +1,355 @@
+:5173/favicon.ico:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+DataManager.ts:50 Connecting to OKX WebSocket...
+DataManager.ts:54 OKX WebSocket Connected ✅
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at HTMLCanvasElement.<anonymous> (InteractionEngine.ts:40:14)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)
+LoaderController.ts:22 Uncaught (in promise) TypeError: this.viewport.getRange is not a function
+    at LoaderController.checkLoadMore (LoaderController.ts:22:42)
+    at InteractionEngine.onScroll (main.ts:40:21)
+    at step (InteractionEngine.ts:101:12)

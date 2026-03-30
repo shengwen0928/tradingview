@@ -1,0 +1,276 @@
+# 🧠打造高效能 K 線圖表引擎（完整版）
+
+---
+
+# 🎯 任務定義（一定要放最前面）
+
+你是一位資深前端架構師與高效能圖形工程師，請從零開始實作一個「高效能 K 線圖表引擎（Candlestick Chart Engine）」。
+
+此系統需達到以下標準：
+
+* 支援大量資料（10萬筆以上）
+* 支援 Lazy Loading（向左滑載入歷史資料）
+* 支援流暢 zoom / scroll（60 FPS）
+* 高精度座標計算（不可出現對齊誤差）
+* 完整模組化架構（可擴展）
+* 不使用任何現成 chart library
+
+---
+
+# ⚙️ 技術限制（強制）
+
+* 使用 Canvas 2D API（不可使用 SVG）
+* 可使用 TypeScript
+* 不可使用圖表套件（如 chart.js、tradingview、echarts）
+* 可使用基礎工具（如 Zustand / RxJS，但非必要）
+
+---
+
+# 🧩 必須實作的模組（缺一不可）
+
+請完整實作以下模組，每個模組需獨立檔案：
+
+---
+
+## 1️⃣ DataManager.ts
+
+負責：
+
+* 分段載入資料（lazy load）
+* API 請求管理
+* cache 機制
+* 去重與排序
+
+需包含：
+
+* loadInitialData()
+* loadMoreHistory(beforeTime)
+* appendRealtimeData()
+
+---
+
+## 2️⃣ ViewportEngine.ts
+
+負責：
+
+* 控制顯示範圍（startIndex / endIndex）
+* scroll / zoom 邏輯
+
+需包含：
+
+* handleScroll(deltaX)
+* handleZoom(mouseX, scale)
+* 維持 zoom anchor（滑鼠位置不漂移）
+
+---
+
+## 3️⃣ ScaleEngine.ts
+
+負責：
+
+* price → y
+* index → x
+
+需包含：
+
+* 自動 min/max（只計算 visible）
+* padding
+* 可擴展 log scale
+
+---
+
+## 4️⃣ RenderEngine.ts
+
+負責：
+
+* Canvas 渲染
+* K 線繪製
+
+必須：
+
+* 使用 requestAnimationFrame
+* 批次繪製（batch draw）
+* 分層 canvas（grid / candle / overlay）
+
+---
+
+## 5️⃣ InteractionEngine.ts
+
+負責：
+
+* 滑鼠事件
+* 拖曳 scroll
+* 滾輪 zoom
+* crosshair
+
+需包含：
+
+* inertia（滑動慣性）
+* hover 精準對齊 candle
+
+---
+
+## 6️⃣ IndicatorEngine.ts
+
+負責：
+
+* 技術指標計算
+
+至少實作：
+
+* MA
+* EMA
+
+需支援：
+
+* incremental update（不可每次全算）
+
+---
+
+## 7️⃣ LoaderController.ts
+
+負責：
+
+* Lazy load 控制
+
+邏輯：
+
+* 當 startIndex < threshold → 載入更多
+* 預載（preload）
+
+---
+
+# 📐 資料結構要求
+
+```ts
+type Candle = {
+  time: number
+  open: number
+  high: number
+  low: number
+  close: number
+  volume: number
+}
+```
+
+---
+
+# 🚀 效能要求（強制達成）
+
+* 10萬筆資料滑動不卡頓
+* render 僅限 visible 範圍
+* 不可全量 redraw
+* mousemove 不可觸發重 render（只更新 overlay）
+
+---
+
+# 🔄 Lazy Load 行為
+
+需實作：
+
+1. 初始載入 1000 筆
+2. 向左滑動 → 自動載入歷史
+3. 載入後畫面不可跳動（需補 offset）
+4. 預載機制（避免卡頓）
+
+---
+
+# 🔍 Zoom 行為（嚴格要求）
+
+* 以滑鼠位置為 anchor
+* zoom in/out 不可漂移
+* candleWidth 動態調整
+
+---
+
+# 🧠 LOD（Level of Detail）
+
+需實作：
+
+* zoom out 時自動合併 K 線
+* 避免畫面過密
+
+---
+
+# 🧱 Canvas 分層（必須）
+
+至少拆成：
+
+* grid canvas
+* candle canvas
+* overlay canvas（crosshair / drawing）
+
+---
+
+# ⚠️ 錯誤處理（不可省略）
+
+* API 失敗重試
+* loading 狀態
+* 無資料處理
+
+---
+
+# 🧪 測試要求
+
+請提供：
+
+* 模擬 10萬筆資料
+* 測試 scroll / zoom FPS
+* 邊界測試（最左 / 最右）
+
+---
+
+# 📁 專案結構（必須輸出）
+
+```bash
+/src
+  /core
+    DataManager.ts
+    ViewportEngine.ts
+    ScaleEngine.ts
+    RenderEngine.ts
+    InteractionEngine.ts
+    IndicatorEngine.ts
+    LoaderController.ts
+  /types
+    Candle.ts
+  /utils
+    math.ts
+  main.ts
+```
+
+---
+
+# 📌 輸出要求（非常重要）
+
+請依序輸出：
+
+1. 完整專案結構
+2. 每個檔案完整程式碼（不可省略）
+3. 每個模組的說明
+4. 初始化流程（main.ts）
+5. 如何啟動與測試
+
+---
+
+# 🚫 禁止事項
+
+* 不可省略任何模組
+* 不可只給概念
+* 不可用假代碼（pseudo code）
+* 不可省略效能優化
+
+---
+
+# 🏁 最終目標
+
+產出一個：
+
+👉 可直接執行
+👉 可顯示 K 線
+👉 可滑動 / 縮放
+👉 可 Lazy Load
+
+的完整圖表引擎專案
+
+---
