@@ -176,8 +176,10 @@ export class RenderEngine {
     const ctx = this.candleCtx;
     ctx.clearRect(0, 0, this.width, this.height);
 
-    const bodyWidth = Math.max(1, candleWidth);
-    const halfBody = bodyWidth / 2;
+    const bodyWidth = Math.max(0.1, candleWidth);
+    
+    // 🚨 效能與對齊優化：如果 K 棒太細 (例如小於 1.5px)，直接畫一條線即可
+    const isVeryThin = bodyWidth < 1.5;
 
     for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
@@ -186,17 +188,8 @@ export class RenderEngine {
       
       if (x + bodyWidth < 0 || x > this.width) continue;
 
-      // 🚨 核心修正：以「中心線」為基準對齊
-      // 1. 先找出 K 棒在數學上的精確中心
       const trueCenter = x + bodyWidth / 2;
-      // 2. 將影線中心固定在像素中點 (.5)，確保 1px 的線條絕對清晰不模糊
       const centerX = Math.floor(trueCenter) + 0.5;
-      
-      // 3. 計算實體寬度 (至少 1px)
-      const rectW = Math.max(1, Math.floor(bodyWidth));
-      // 4. 根據影線中心，反推實體的起始左側座標，確保對稱
-      // 這裡使用 Math.floor(centerX - rectW / 2) 確保 rectX 是整數，避免實體邊緣模糊
-      const rectX = Math.floor(centerX - rectW / 2);
 
       const yOpen = scaleEngine.priceToY(candle.open);
       const yClose = scaleEngine.priceToY(candle.close);
@@ -205,19 +198,31 @@ export class RenderEngine {
 
       const isUp = candle.close >= candle.open;
       const color = isUp ? '#26a69a' : '#ef5350';
-      ctx.fillStyle = color;
       ctx.strokeStyle = color;
+      ctx.fillStyle = color;
 
-      // 繪製影線 (這會精準地落在實體的正中央)
-      ctx.beginPath();
-      ctx.moveTo(centerX, Math.floor(yHigh));
-      ctx.lineTo(centerX, Math.floor(yLow));
-      ctx.stroke();
+      if (isVeryThin) {
+        // 🚨 極小縮放模式：只畫一條線，解決「雙線」問題
+        ctx.beginPath();
+        ctx.moveTo(centerX, Math.floor(yHigh));
+        ctx.lineTo(centerX, Math.floor(yLow));
+        ctx.stroke();
+      } else {
+        // 標準模式：實體 + 影線
+        const rectW = Math.max(1, Math.floor(bodyWidth));
+        const rectX = Math.floor(centerX - rectW / 2);
 
-      // 繪製實體
-      const rectY = Math.floor(Math.min(yOpen, yClose));
-      const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
-      ctx.fillRect(rectX, rectY, rectW, rectH);
+        // 1. 影線
+        ctx.beginPath();
+        ctx.moveTo(centerX, Math.floor(yHigh));
+        ctx.lineTo(centerX, Math.floor(yLow));
+        ctx.stroke();
+
+        // 2. 實體
+        const rectY = Math.floor(Math.min(yOpen, yClose));
+        const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
+        ctx.fillRect(rectX, rectY, rectW, rectH);
+      }
     }
   }
 
