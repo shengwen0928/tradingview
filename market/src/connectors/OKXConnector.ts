@@ -1,11 +1,12 @@
 import axios from 'axios';
 import WebSocket from 'ws';
-import { Candle } from '../types/Candle';
+import { Candle, MarketType } from '../types/Candle';
 import { IConnector } from './ConnectorInterface';
+import { SymbolManager } from '../core/SymbolManager';
 
 /**
- * OKX 資料接入器
- * 使用 OKX API V5 規範
+ * OKX 資料接入器 (V5 規範)
+ * 支援 Spot (現貨) 與 SWAP (永續合約)
  */
 export class OKXConnector implements IConnector {
     public readonly name = 'OKX';
@@ -14,40 +15,39 @@ export class OKXConnector implements IConnector {
     private ws: WebSocket | null = null;
 
     /**
-     * 將系統 Interval 轉換為 OKX 格式
+     * 將週期轉換為 OKX 格式
      */
     private translateInterval(interval: string): string {
-        const map: any = {
-            '1m': '1m',
-            '5m': '5m',
-            '15m': '15m',
-            '1h': '1H',
-            '4h': '4H',
-            '1d': '1DUTC'
-        };
-        return map[interval] || interval;
+        const unit = interval.slice(-1).toLowerCase();
+        const val = interval.slice(0, -1);
+        if (unit === 'm') return interval;
+        if (unit === 'h') return `${val}H`;
+        if (unit === 'd') return `${val}DUTC`;
+        return interval;
     }
 
+    /**
+     * 抓取歷史 K 線資料 (REST API)
+     */
     public async fetchKlines(symbol: string, interval: string, limit: number = 500, endTime?: number): Promise<Candle[]> {
         try {
             const okxInterval = this.translateInterval(interval);
+            // 注意：OKX 合約與現貨共用此 Endpoint
             const url = `${this.baseUrl}/market/history-candles`;
             const params: any = {
-                instId: symbol,
+                instId: symbol.toUpperCase(),
                 bar: okxInterval,
                 limit
             };
 
             if (endTime) {
-                params.after = endTime; // OKX 使用 after 表示獲取該時間之前的數據
+                params.after = endTime; 
             }
 
             const response = await axios.get(url, { params });
-            
-            // OKX 格式: [ [Time, Open, High, Low, Close, Volume, ...] ]
-            // 注意: OKX 的順序是 [ts, o, h, l, c, vol, volCcy, confirm]
-            // 且 OKX 的資料是倒序排列 (最新的在前面)，我們需要 reverse()
-            return response.data.data.map((item: any[]) => ({
+            const data = response.data.data || [];
+
+            return data.map((item: any[]) => ({
                 timestamp: parseInt(item[0]),
                 open: parseFloat(item[1]),
                 high: parseFloat(item[2]),
@@ -61,6 +61,10 @@ export class OKXConnector implements IConnector {
         }
     }
 
+    /**
+     * 訂閱即時 K 線更新 (WebSocket)
+     * 同時訂閱 candles 與 trades 頻道實現高頻跳動
+     */
     public subscribeKlines(symbol: string, interval: string, onUpdate: (candle: Candle) => void): void {
         const okxInterval = this.translateInterval(interval);
         
@@ -69,32 +73,43 @@ export class OKXConnector implements IConnector {
         this.ws = new WebSocket(this.wsUrl);
 
         this.ws.on('open', () => {
-            console.log(`[OKXConnector] Connected, subscribing to ${symbol}`);
+            console.log(`[OKXConnector] Subscribing to ${symbol} (K-line & Trades)`);
             const subMsg = {
                 op: 'subscribe',
-                args: [{
-                    channel: `candles${okxInterval}`,
-                    instId: symbol
-                }]
+                args: [
+                    { channel: `candles${okxInterval}`, instId: symbol },
+                    { channel: 'trades', instId: symbol }
+                ]
             };
             this.ws?.send(JSON.stringify(subMsg));
         });
 
         this.ws.on('message', (data: string) => {
             const msg = JSON.parse(data);
-            if (msg.data && msg.data[0]) {
+            if (!msg.data || !msg.data[0]) return;
+
+            if (msg.arg.channel.startsWith('candles')) {
                 const k = msg.data[0];
-                const candle: Candle = {
+                onUpdate({
                     timestamp: parseInt(k[0]),
                     open: parseFloat(k[1]),
                     high: parseFloat(k[2]),
                     low: parseFloat(k[3]),
                     close: parseFloat(k[4]),
                     volume: parseFloat(k[5])
-                };
-                onUpdate(candle);
+                });
+            } else if (msg.arg.channel === 'trades') {
+                const t = msg.data[0];
+                onUpdate({
+                    timestamp: parseInt(t.ts),
+                    close: parseFloat(t.px),
+                    isTrade: true
+                } as any);
             }
         });
+
+        this.ws.on('error', (err) => console.error(`[OKXConnector] WS error:`, err));
+        this.ws.on('close', () => console.log(`[OKXConnector] WS closed for ${symbol}`));
     }
 
     public close(): void {

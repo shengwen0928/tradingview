@@ -11,21 +11,33 @@ export interface Candle {
 }
 
 /**
- * 統一的市場定義
+ * 統一的市場定義 (細分為現貨、永續合約、期貨)
  */
 export enum MarketType {
+    SPOT = "spot",      // 現貨
+    PERP = "perp",      // 永續合約
+    FUTURES = "futures",// 定期期貨
+    STOCK = "stock",    // 股票
+    FOREX = "forex"     // 外匯
+}
+
+/**
+ * 統一的市場分類 (大類)
+ */
+export enum AssetClass {
     CRYPTO = "crypto",
     STOCK = "stock",
-    FOREX = "forex"
+    FOREX = "forex",
+    COMMODITY = "commodity"
 }
 
 /**
  * 統一的 Symbol 資訊
  */
 export interface MarketSymbol {
-    id: string;        // 系統內部統一 ID (例如: BTC/USDT)
-    sourceSymbol: string; // 原始來源 Symbol (例如: BTCUSDT)
+    id: string;        // 系統內部統一 ID (例如: BTC/USDT:SPOT)
+    sourceSymbol: string; 
     market: MarketType;
-    source: string;    // 來源名稱 (例如: Binance)
-    precision: number; // 價格精度
+    assetClass: AssetClass;
+    precision: number; 
 }

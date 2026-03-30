@@ -1,8 +1,11 @@
 import { BinanceConnector } from '../connectors/BinanceConnector';
 import { OKXConnector } from '../connectors/OKXConnector';
+import { YahooConnector } from '../connectors/YahooConnector';
 import { IConnector } from '../connectors/ConnectorInterface';
 import { SymbolManager } from './SymbolManager';
 import { Candle } from '../types/Candle';
+
+import { StorageManager } from './StorageManager';
 
 /**
  * 數據總管 (Data Manager)
@@ -12,6 +15,7 @@ export class DataManager {
     private static instance: DataManager;
     private connectors: Map<string, IConnector> = new Map();
     private caches: Map<string, Candle[]> = new Map();
+    private storage: StorageManager;
     
     // 訂閱清單：Key 為 "Symbol_Interval"，Value 為回調函式陣列
     private subscribers: Map<string, Array<(candle: Candle) => void>> = new Map();
@@ -19,11 +23,14 @@ export class DataManager {
     private activeSubscriptions: Set<string> = new Set();
 
     private constructor() {
+        this.storage = StorageManager.getInstance();
         // 註冊所有可用的接入器
         const binance = new BinanceConnector();
         const okx = new OKXConnector();
+        const yahoo = new YahooConnector();
         this.connectors.set(binance.name, binance);
         this.connectors.set(okx.name, okx);
+        this.connectors.set(yahoo.name, yahoo);
     }
 
     public static getInstance(): DataManager {
@@ -34,17 +41,30 @@ export class DataManager {
     }
 
     /**
-     * 獲取指定標的的 K 線數據
-     * @param id 內部 ID
-     * @param interval 週期
-     * @param limit 筆數
-     * @param endTime 結束時間戳 (用於 Lazy Load)
+     * 獲取指定標的的 K 線數據 (具備智能快取與持久化支援)
      */
     public async getKlines(id: string, interval: string, limit: number = 500, endTime?: number, source?: string): Promise<Candle[]> {
+        const cacheKey = `${id}_${interval}`;
+        
+        // 1. 優先嘗試從 Memory Cache 獲取 (Hot Storage)
+        let cached = this.caches.get(cacheKey) || [];
+        
+        // 如果 Memory 為空，嘗試從檔案載入
+        if (cached.length === 0 && !endTime) {
+            cached = await this.storage.loadKlines(id, interval);
+            if (cached.length > 0) {
+                this.caches.set(cacheKey, cached);
+            }
+        }
+
+        // 如果本地資料量足夠且不涉及歷史查詢，直接回傳
+        if (!endTime && cached.length >= limit) {
+            return cached.slice(-limit);
+        }
+
         const symbolInfo = SymbolManager.getSymbolById(id);
         if (!symbolInfo) throw new Error(`Unsupported symbol ID: ${id}`);
 
-        // 尋找可用的來源 (如果有指定 source，優先嘗試指定來源)
         let sources = Object.keys(symbolInfo.sourceMap);
         if (source && symbolInfo.sourceMap[source]) {
             sources = [source, ...sources.filter(s => s !== source)];
@@ -60,10 +80,10 @@ export class DataManager {
                 try {
                     const klines = await connector.fetchKlines(sourceSymbol, interval, limit, endTime);
                     
-                    // 只有在抓取「最新」數據時才更新緩存
+                    // 3. 成功抓取後，合併入快取而非直接覆蓋
                     if (!endTime) {
-                        const cacheKey = `${id}_${interval}`;
-                        this.caches.set(cacheKey, klines);
+                        this.updateCache(id, interval, klines);
+                        this.storage.saveKlines(id, interval, klines); 
                     }
                     
                     return klines;
@@ -75,6 +95,21 @@ export class DataManager {
         }
 
         throw lastError || new Error(`No available source for ${id}`);
+    }
+
+    /**
+     * 安全地更新/合併快取資料
+     */
+    private updateCache(id: string, interval: string, newKlines: Candle[]) {
+        const cacheKey = `${id}_${interval}`;
+        let current = this.caches.get(cacheKey) || [];
+        
+        const mergedMap = new Map<number, Candle>();
+        current.forEach(c => mergedMap.set(c.timestamp, c));
+        newKlines.forEach(c => mergedMap.set(c.timestamp, c));
+        
+        const sorted = Array.from(mergedMap.values()).sort((a, b) => a.timestamp - b.timestamp);
+        this.caches.set(cacheKey, sorted.slice(-5000));
     }
 
     /**
@@ -92,7 +127,6 @@ export class DataManager {
         if (!this.activeSubscriptions.has(cacheKey)) {
             const symbolInfo = SymbolManager.getSymbolById(id);
             if (symbolInfo) {
-                // 訂閱來源：優先使用指定來源，否則用第一個
                 const selectedSource = (source && symbolInfo.sourceMap[source]) ? source : Object.keys(symbolInfo.sourceMap)[0];
                 const connector = this.connectors.get(selectedSource);
                 const sourceSymbol = symbolInfo.sourceMap[selectedSource];
@@ -109,29 +143,82 @@ export class DataManager {
     }
 
     /**
-     * 當收到來自 Ingestion 的新 K 線時，分發給所有訂閱者
+     * 將週期字串轉換為毫秒數
      */
-    private onNewCandle(id: string, interval: string, candle: Candle) {
+    private parseIntervalToMs(interval: string): number {
+        const unit = interval.slice(-1);
+        const value = parseInt(interval.slice(0, -1));
+        switch (unit) {
+            case 'm': return value * 60000;
+            case 'h': case 'H': return value * 3600000;
+            case 'd': case 'D': return value * 86400000;
+            default: return 60000;
+        }
+    }
+
+    /**
+     * 當收到來自 Ingestion 的新數據時 (K 線或成交流)
+     */
+    private onNewCandle(id: string, interval: string, data: any) {
         const cacheKey = `${id}_${interval}`;
+        const intervalMs = this.parseIntervalToMs(interval);
         
-        // 更新緩存的最後一筆 (Hot Storage 概念)
-        const currentCache = this.caches.get(cacheKey);
-        if (currentCache && currentCache.length > 0) {
-            const lastCandle = currentCache[currentCache.length - 1];
-            if (lastCandle.timestamp === candle.timestamp) {
-                // 更新當前 K 線 (進行中)
-                currentCache[currentCache.length - 1] = candle;
-            } else if (candle.timestamp > lastCandle.timestamp) {
-                // 新產生的 K 線
-                currentCache.push(candle);
-                if (currentCache.length > 1000) currentCache.shift(); // 限制緩存大小
-            }
+        let currentCache = this.caches.get(cacheKey);
+        if (!currentCache) {
+            currentCache = [];
+            this.caches.set(cacheKey, currentCache);
         }
 
-        // 廣播給所有訂閱者
-        const subs = this.subscribers.get(cacheKey);
-        if (subs) {
-            subs.forEach(callback => callback(candle));
+        let candleToPush: Candle | null = null;
+
+        if (data.isTrade) {
+            // --- 成交流更新 ---
+            if (currentCache.length === 0) return;
+
+            const lastCandle = currentCache[currentCache.length - 1];
+            const candleStartTs = data.timestamp - (data.timestamp % intervalMs);
+
+            if (candleStartTs === lastCandle.timestamp) {
+                lastCandle.close = data.close;
+                if (data.close > lastCandle.high) lastCandle.high = data.close;
+                if (data.close < lastCandle.low) lastCandle.low = data.close;
+                candleToPush = lastCandle;
+            } else if (data.timestamp > lastCandle.timestamp + intervalMs) {
+                // 如果是新的一根 K 棒的成交，先創建一個臨時 K 棒，直到官方 kline 更新
+                const newCandle: Candle = {
+                    timestamp: candleStartTs,
+                    open: data.close,
+                    high: data.close,
+                    low: data.close,
+                    close: data.close,
+                    volume: 0
+                };
+                currentCache.push(newCandle);
+                if (currentCache.length > 5000) currentCache.shift();
+                candleToPush = newCandle;
+            }
+        } else {
+            // --- 官方 K 線更新 ---
+            const candle = data as Candle;
+            if (currentCache.length > 0) {
+                const lastCandle = currentCache[currentCache.length - 1];
+                if (lastCandle.timestamp === candle.timestamp) {
+                    Object.assign(lastCandle, candle);
+                } else if (candle.timestamp > lastCandle.timestamp) {
+                    currentCache.push(candle);
+                    if (currentCache.length > 5000) currentCache.shift();
+                }
+            } else {
+                currentCache.push(candle);
+            }
+            candleToPush = currentCache[currentCache.length - 1];
+        }
+
+        if (candleToPush) {
+            const subs = this.subscribers.get(cacheKey);
+            if (subs) {
+                subs.forEach(callback => callback(candleToPush!));
+            }
         }
     }
 

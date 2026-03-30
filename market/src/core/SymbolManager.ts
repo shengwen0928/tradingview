@@ -1,44 +1,70 @@
-import { MarketSymbol, MarketType } from '../types/Candle';
+import { MarketSymbol, MarketType, AssetClass } from '../types/Candle';
 
 /**
  * 統一的 Symbol 資訊
  */
-export interface EnhancedMarketSymbol extends Omit<MarketSymbol, 'sourceSymbol' | 'source'> {
-    sourceMap: Record<string, string>; // 例如 { Binance: "BTCUSDT", OKX: "BTC-USDT" }
+export interface EnhancedMarketSymbol extends Omit<MarketSymbol, 'sourceSymbol'> {
+    sourceMap: Record<string, string>; // 例如 { Binance: "BTCUSDT", OKX: "BTC-USDT-SWAP" }
 }
 
 /**
  * Symbol 管理系統
- * 負責將內部統一 ID 與外部來源 Symbol 進行映射
  */
 export class SymbolManager {
-    private static symbols: Map<string, EnhancedMarketSymbol> = new Map([
-        ['BTC/USDT', {
-            id: 'BTC/USDT',
-            sourceMap: {
-                'Binance': 'BTCUSDT',
-                'OKX': 'BTC-USDT'
-            },
-            market: MarketType.CRYPTO,
+    private static symbols: Map<string, EnhancedMarketSymbol> = new Map<string, EnhancedMarketSymbol>([
+        // --- 現貨 (SPOT) ---
+        ['BTC/USDT:SPOT', {
+            id: 'BTC/USDT:SPOT',
+            sourceMap: { 'Binance': 'BTCUSDT', 'OKX': 'BTC-USDT' },
+            market: MarketType.SPOT,
+            assetClass: AssetClass.CRYPTO,
             precision: 2
         }],
-        ['ETH/USDT', {
-            id: 'ETH/USDT',
-            sourceMap: {
-                'Binance': 'ETHUSDT',
-                'OKX': 'ETH-USDT'
-            },
-            market: MarketType.CRYPTO,
+        ['ETH/USDT:SPOT', {
+            id: 'ETH/USDT:SPOT',
+            sourceMap: { 'Binance': 'ETHUSDT', 'OKX': 'ETH-USDT' },
+            market: MarketType.SPOT,
+            assetClass: AssetClass.CRYPTO,
             precision: 2
         }],
-        ['SOL/USDT', {
-            id: 'SOL/USDT',
-            sourceMap: {
-                'Binance': 'SOLUSDT',
-                'OKX': 'SOL-USDT'
-            },
-            market: MarketType.CRYPTO,
-            precision: 3
+        
+        // --- 永續合約 (PERP) ---
+        ['BTC/USDT:PERP', {
+            id: 'BTC/USDT:PERP',
+            sourceMap: { 'Binance': 'BTCUSDT', 'OKX': 'BTC-USDT-SWAP' },
+            market: MarketType.PERP,
+            assetClass: AssetClass.CRYPTO,
+            precision: 2
+        }],
+        ['ETH/USDT:PERP', {
+            id: 'ETH/USDT:PERP',
+            sourceMap: { 'Binance': 'ETHUSDT', 'OKX': 'ETH-USDT-SWAP' },
+            market: MarketType.PERP,
+            assetClass: AssetClass.CRYPTO,
+            precision: 2
+        }],
+        
+        // --- 股票 (STOCK) ---
+        ['AAPL:STOCK', {
+            id: 'AAPL:STOCK',
+            sourceMap: { 'Yahoo': 'AAPL' },
+            market: MarketType.STOCK,
+            assetClass: AssetClass.STOCK,
+            precision: 2
+        }],
+        ['TSLA:STOCK', {
+            id: 'TSLA:STOCK',
+            sourceMap: { 'Yahoo': 'TSLA' },
+            market: MarketType.STOCK,
+            assetClass: AssetClass.STOCK,
+            precision: 2
+        }],
+        ['2330.TW:STOCK', {
+            id: '2330.TW:STOCK',
+            sourceMap: { 'Yahoo': '2330.TW' },
+            market: MarketType.STOCK,
+            assetClass: AssetClass.STOCK,
+            precision: 2
         }]
     ]);
 
@@ -50,10 +76,17 @@ export class SymbolManager {
     }
 
     /**
-     * 根據內部 ID 獲取 Symbol 資訊
+     * 根據內部 ID 獲取 Symbol 資訊 (支援相容性查尋)
      */
     public static getSymbolById(id: string): EnhancedMarketSymbol | undefined {
-        return this.symbols.get(id);
+        let symbol = this.symbols.get(id);
+        
+        // 相容性：如果沒帶市場標籤，預設查找現貨
+        if (!symbol && !id.includes(':')) {
+            symbol = this.symbols.get(`${id}:SPOT`);
+        }
+        
+        return symbol;
     }
 
     /**
