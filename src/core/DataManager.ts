@@ -99,20 +99,23 @@ export class DataManager {
 
   public async loadMoreHistory(beforeTime: number): Promise<Candle[]> {
     try {
-      // 🚨 改用 history-candles，這是獲取深層歷史資料的正確端點
-      const url = `https://www.okx.com/api/v5/market/history-candles?instId=${this.instId}&bar=${this.bar}&after=${beforeTime}&limit=100`;
-      console.log(`[API] Fetching DEEP history: ${url}`);
+      // 🚨 提升 limit 到 300，減少請求次數
+      const url = `https://www.okx.com/api/v5/market/history-candles?instId=${this.instId}&bar=${this.bar}&after=${beforeTime}&limit=300`;
+      console.log(`[API] Fetching history (300): ${url}`);
       const response = await fetch(url);
-      const result = await response.json();
+      
+      if (response.status === 429) {
+        console.warn('[API] ⚠️ 觸發頻率限制 (429)，請稍後再試');
+        return [];
+      }
 
+      const result = await response.json();
       if (result.code === '0') {
         const moreData = this.parseOKXData(result.data).reverse();
-        console.log(`[API] Received ${moreData.length} candles from OKX`);
+        console.log(`[API] Received ${moreData.length} candles`);
         this.candles = [...moreData, ...this.candles];
-        this.onDataUpdated(this.candles, true); // 標記為歷史
+        this.onDataUpdated(this.candles, true); 
         return moreData;
-      } else {
-        console.error('[API] Error loading history:', result.msg);
       }
     } catch (error) {
       console.error('Failed to load more OKX history:', error);

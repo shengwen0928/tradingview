@@ -6,7 +6,8 @@ import { ViewportEngine } from './ViewportEngine';
  */
 export class LoaderController {
   private isLoading: boolean = false;
-  private hasMoreHistory: boolean = true; // 🚨 新增：紀錄是否還有歷史資料
+  private hasMoreHistory: boolean = true;
+  private cooldownUntil: number = 0; // 🚨 新增：冷卻截止時間戳
   private threshold: number = 200; 
 
   constructor(
@@ -15,7 +16,8 @@ export class LoaderController {
   ) {}
 
   public async checkLoadMore(): Promise<void> {
-    if (this.isLoading || !this.hasMoreHistory) return; // 🚨 如果已無歷史，直接返回
+    // 🚨 檢查是否在冷卻中
+    if (this.isLoading || !this.hasMoreHistory || Date.now() < this.cooldownUntil) return;
 
     const { startIndex } = this.viewport.getRawRange();
 
@@ -23,13 +25,17 @@ export class LoaderController {
       console.log('[Loader] 🚀 觸發歷史載入...');
       this.isLoading = true;
       const candles = this.dataManager.getCandles();
+      
       if (candles.length > 0) {
         const firstTime = candles[0].time;
         const moreData = await this.dataManager.loadMoreHistory(firstTime);
         
-        // 🚨 如果回傳數據太少，代表 OKX 那邊沒資料了
-        if (moreData.length < 10) {
-          console.log('[Loader] 🏁 已達歷史資料終點，停止後續載入');
+        if (moreData.length === 0) {
+          // 🚨 如果回傳 0，進入 3 秒冷卻，避免狂發 429
+          console.log('[Loader] ❄️ 未取得新資料，進入 3 秒冷卻');
+          this.cooldownUntil = Date.now() + 3000;
+        } else if (moreData.length < 10) {
+          console.log('[Loader] 🏁 已達歷史資料終點');
           this.hasMoreHistory = false;
         } else {
           console.log(`[Loader] ✅ 載入成功，新增 ${moreData.length} 根 K 線`);
