@@ -60,14 +60,19 @@
             <select id="timeframe-select" style="background: transparent; color: #d1d4dc; border: none; outline: none; font-size: 14px; cursor: pointer;">
                 <option value="1s">1s</option>
                 <option value="1m" selected>1m</option>
+                <option value="3m">3m</option>
                 <option value="5m">5m</option>
                 <option value="15m">15m</option>
+                <option value="30m">30m</option>
                 <option value="1h">1h</option>
+                <option value="2h">2h</option>
                 <option value="4h">4h</option>
                 <option value="1D">1D</option>
                 <option value="1W">1W</option>
                 <option value="1M">1M</option>
             </select>
+            <div style="width: 1px; background: #333;"></div>
+            <input id="timeframe-custom" type="text" placeholder="Custom (e.g. 2h)" style="background: transparent; color: #d1d4dc; border: none; outline: none; font-size: 12px; width: 80px; border-bottom: 1px solid #444;">
         </div>
 
         <div id="loading" class="loading-overlay">Loading History...</div>
