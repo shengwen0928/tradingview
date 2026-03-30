@@ -152,7 +152,7 @@ class ChartEngine {
       startIndex, 
       candleWidth, 
       2, 
-      this.dataManager.getIntervalMs(), 
+      (idx) => this.dataManager.getTimeAtIndex(idx), // 🚨 使用精確回調
       this.scaleEngine
     );
     
@@ -209,12 +209,8 @@ class ChartEngine {
     
     let timeStr = '';
     if (candles.length > 0) {
-      // 🚨 修正：即使 dataIndex 超出範圍 (負數或太大)，也要推算時間
-      const refCandle = candles[candles.length - 1];
-      const refIndex = candles.length - 1;
-      const interval = this.dataManager.getIntervalMs();
-      
-      const projectedTime = refCandle.time + (dataIndex - refIndex) * interval;
+      // 🚨 使用精確的 DataManager 邏輯推算時間
+      const projectedTime = this.dataManager.getTimeAtIndex(dataIndex);
       timeStr = formatFullTime(projectedTime);
     }
     

@@ -25,6 +25,39 @@ export class DataManager {
     return this.intervalMs;
   }
 
+  // 🚨 新增：按照 OKX 邏輯精確推算任何 Index 的時間戳
+  public getTimeAtIndex(targetIndex: number): number {
+    if (this.candles.length === 0) return Date.now();
+
+    const refCandle = this.candles[this.candles.length - 1];
+    const refIndex = this.candles.length - 1;
+    const diff = targetIndex - refIndex;
+
+    if (diff === 0) return refCandle.time;
+
+    const unit = this.bar.slice(-1);
+    const value = parseInt(this.bar.slice(0, -1)) || 1;
+
+    // 對於秒、分、時、日，使用線性毫秒計算
+    if (unit === 's' || unit === 'm' || unit === 'H' || unit === 'D') {
+      return refCandle.time + diff * this.intervalMs;
+    }
+
+    // 對於週、月、年，使用日曆邏輯計算，防止日期漂移
+    const d = new Date(refCandle.time);
+    if (unit === 'W') {
+      return refCandle.time + diff * 7 * 86400000;
+    } else if (unit === 'M') {
+      d.setUTCMonth(d.getUTCMonth() + diff * value);
+      return d.getTime();
+    } else if (unit === 'Y') {
+      d.setUTCFullYear(d.getUTCFullYear() + diff * value);
+      return d.getTime();
+    }
+
+    return refCandle.time + diff * this.intervalMs;
+  }
+
   public async setTimeframe(bar: string): Promise<void> {
     // 🚨 格式化為 OKX 規格：h->H, d->D, w->W, M->M, y->Y, 只有 s 和 m 維持小寫
     const formattedBar = bar

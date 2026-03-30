@@ -95,10 +95,10 @@ export class RenderEngine {
     exactStartIndex: number,
     candleWidth: number,
     spacing: number,
-    interval: number, // 🚨 新增：時間間隔 (ms)
+    getTimeAtIndex: (index: number) => number, // 🚨 改為回調函數
     scaleEngine: ScaleEngine
   ): void {
-    const ctx = this.gridCtx; // 使用網格層繪製刻度
+    const ctx = this.gridCtx; 
     const drawWidth = scaleEngine.getDrawWidth();
     const drawHeight = scaleEngine.getDrawHeight();
     
@@ -107,14 +107,12 @@ export class RenderEngine {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
-    // 1. 價格刻度保持不變...
     const ticks = scaleEngine.getNiceTickSteps();
     for (const price of ticks) {
       const y = scaleEngine.priceToY(price);
       ctx.fillText(price.toFixed(2), drawWidth + 5, y);
     }
 
-    // 2. 繪製時間刻度 (下方)
     ctx.textAlign = 'center';
     
     if (candles.length === 0) return;
@@ -122,45 +120,34 @@ export class RenderEngine {
     const visibleCount = drawWidth / (candleWidth + spacing);
     const endIndex = Math.ceil(exactStartIndex + visibleCount);
     
-    const refCandle = candles[candles.length - 1];
-    const refIndex = sliceStartIndex + candles.length - 1;
-    const refTime = refCandle.time;
-
     let lastLabelX = -100;
 
     for (let idx = Math.floor(exactStartIndex); idx <= endIndex; idx++) {
-      const time = refTime + (idx - refIndex) * interval;
+      // 🚨 使用精確的回調獲取時間
+      const time = getTimeAtIndex(idx);
       const date = new Date(time);
       
-      // 根據週期決定刻度頻率
       let shouldShow = false;
       let label = "";
       let isBold = false;
 
-      const mins = date.getMinutes();
-      const secs = date.getSeconds();
-      const hours = date.getHours();
+      const mins = date.getUTCMinutes();
+      const secs = date.getUTCSeconds();
+      const hours = date.getUTCHours();
 
-      if (interval < 60000) { // 秒級
-        shouldShow = secs % 15 === 0;
-        label = `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      } else if (interval < 3600000) { // 分鐘級
-        shouldShow = mins % 5 === 0;
-        label = `${hours}:${mins.toString().padStart(2, '0')}`;
-      } else if (interval < 86400000) { // 小時級
-        shouldShow = hours % 4 === 0 && mins === 0;
-        label = `${hours}:00`;
-      } else { // 天級以上
-        shouldShow = mins === 0 && hours === 0;
-        label = `${date.getMonth() + 1}/${date.getDate()}`;
-      }
-
-      // 新的一天邏輯
+      // 🚨 統一使用 UTC 邏輯判斷邊界 (符合 OKX 規範)
       const isNewDay = hours === 0 && mins === 0 && secs === 0;
+
+      // 根據座標計算當前的「密度」來決定顯示頻率 (這裡簡化處理)
       if (isNewDay) {
         shouldShow = true;
         isBold = true;
-        label = `${date.getMonth() + 1}/${date.getDate()}`;
+        label = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+      } else {
+        if (mins % 5 === 0 && secs === 0) {
+          shouldShow = true;
+          label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        }
       }
 
       const x = scaleEngine.indexToX(idx, exactStartIndex, candleWidth, spacing);
