@@ -25,43 +25,44 @@ export class DataManager {
     return this.intervalMs;
   }
 
-  // 🚨 新增：按照 OKX 邏輯精確推算任何 Index 的時間戳
+  // 🚨 修正：優先使用實際數據時間，徹底解決對齊偏移問題
   public getTimeAtIndex(targetIndex: number): number {
     if (this.candles.length === 0) return Date.now();
 
-    // 取得陣列中第一根 K 棒作為穩定的歷史基準點
-    const refCandle = this.candles[0];
-    const refIndex = 0;
-    const diff = targetIndex - refIndex;
+    const dataIdx = Math.floor(targetIndex);
 
-    if (diff === 0) return refCandle.time;
+    // 1. 🚨 關鍵優先：如果在現有數據範圍內，直接回傳該 K 棒的精確時間
+    // 這能自動處理任何數據空隙 (Gaps)，確保標籤與 K 棒絕對對齊
+    if (dataIdx >= 0 && dataIdx < this.candles.length) {
+      return this.candles[dataIdx].time;
+    }
+
+    // 2. 否則：才根據邊界進行推算 (未來或更遠的過去)
+    const isFuture = dataIdx >= this.candles.length;
+    const refCandle = isFuture ? this.candles[this.candles.length - 1] : this.candles[0];
+    const refIndex = isFuture ? this.candles.length - 1 : 0;
+    const diff = dataIdx - refIndex;
 
     const unit = this.bar.slice(-1);
     const value = parseInt(this.bar.slice(0, -1)) || 1;
 
-    // 線性週期 (秒、分、時、日)
     if (unit === 's' || unit === 'm' || unit === 'H' || unit === 'D') {
       return refCandle.time + diff * this.intervalMs;
     }
 
-    // 非線性週期 (週、月、年) - 使用日曆運算確保絕對對齊
     const d = new Date(refCandle.time);
-    
     if (unit === 'W') {
-      // 週線：對齊到基準 K 棒所在的週一，再推移
       const day = d.getUTCDay();
       const diffToMonday = (day === 0 ? 6 : day - 1);
       d.setUTCDate(d.getUTCDate() - diffToMonday);
       d.setUTCHours(0, 0, 0, 0);
       return d.getTime() + diff * 7 * 86400000;
     } else if (unit === 'M') {
-      // 月線：對齊到基準 K 棒所在的 1 號
       d.setUTCDate(1);
       d.setUTCHours(0, 0, 0, 0);
       d.setUTCMonth(d.getUTCMonth() + diff * value);
       return d.getTime();
     } else if (unit === 'Y') {
-      // 年線：對齊到基準 K 棒所在的 1 月 1 號
       d.setUTCMonth(0, 1);
       d.setUTCHours(0, 0, 0, 0);
       d.setUTCFullYear(d.getUTCFullYear() + diff * value);
