@@ -48,6 +48,16 @@
 </head>
 <body>
     <div id="chart-container">
+        <!-- 🚨 新增：幣種切換 UI -->
+        <div id="symbol-selector" style="position: absolute; top: 10px; left: 10px; z-index: 15; background: rgba(0,0,0,0.6); padding: 5px; border-radius: 4px; border: 1px solid #333;">
+            <select id="symbol-select" style="background: transparent; color: #d1d4dc; border: none; outline: none; font-size: 14px; cursor: pointer;">
+                <option value="BTC-USDT-SWAP">BTC-USDT</option>
+                <option value="ETH-USDT-SWAP">ETH-USDT</option>
+                <option value="SOL-USDT-SWAP">SOL-USDT</option>
+                <option value="DOGE-USDT-SWAP">DOGE-USDT</option>
+            </select>
+        </div>
+
         <div id="loading" class="loading-overlay">Loading History...</div>
         <div id="status" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 5px 12px; border-radius: 20px; font-size: 12px; display: flex; align-items: center; gap: 6px; border: 1px solid #333;">
             <div id="status-dot" style="width: 8px; height: 8px; background: #ef5350; border-radius: 50%; box-shadow: 0 0 5px #ef5350;"></div>

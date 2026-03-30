@@ -17,11 +17,13 @@ class ChartEngine {
   private interaction: InteractionEngine;
   private loader: LoaderController;
   private connectionStatus: string = 'connecting';
+  private currentSymbol: string = 'BTC-USDT'; // 🚨 新增：記錄當前幣種
 
   constructor() {
     const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
     const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
     const overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
+    const symbolSelect = document.getElementById('symbol-select') as HTMLSelectElement;
 
     this.renderEngine = new RenderEngine(gridCanvas, candleCanvas, overlayCanvas);
     this.scaleEngine = new ScaleEngine();
@@ -37,6 +39,13 @@ class ChartEngine {
         this.updateStatusUI();
       }
     );
+
+    // 🚨 監聽幣種切換
+    symbolSelect.addEventListener('change', () => {
+      this.currentSymbol = symbolSelect.options[symbolSelect.selectedIndex].text;
+      this.dataManager.setSymbol(symbolSelect.value);
+      this.scaleEngine.resetAutoScale(); // 切換幣種時恢復自動縮放
+    });
 
     this.loader = new LoaderController(this.dataManager, this.viewport);
 
@@ -159,7 +168,7 @@ class ChartEngine {
     if (this.connectionStatus === 'connected') {
       dot.style.background = '#26a69a';
       dot.style.boxShadow = '0 0 5px #26a69a';
-      text.innerText = `BTC-USDT Live | Visible: ${Math.round(this.viewport.getVisibleCount())}`;
+      text.innerText = `${this.currentSymbol} Live | Visible: ${Math.round(this.viewport.getVisibleCount())}`;
     } else if (this.connectionStatus === 'connecting') {
       dot.style.background = '#ffa726';
       dot.style.boxShadow = '0 0 5px #ffa726';

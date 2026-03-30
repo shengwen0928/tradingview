@@ -20,6 +20,24 @@ export class DataManager {
     this.onStatusChange = onStatusChange;
   }
 
+  public async setSymbol(instId: string): Promise<void> {
+    if (this.instId === instId) return;
+    
+    console.log(`[DataManager] Switching symbol to: ${instId}`);
+    this.instId = instId;
+    this.candles = [];
+    
+    // 關閉現有連線
+    if (this.ws) {
+      this.ws.onclose = null; // 暫時移除自動重連邏輯，避免競爭
+      this.ws.close();
+    }
+    if (this.pingInterval) clearInterval(this.pingInterval);
+
+    // 重新載入數據
+    await this.loadInitialData();
+  }
+
   public getCandles(): Candle[] {
     return this.candles;
   }
