@@ -16,7 +16,15 @@ export class LoaderController {
   ) {}
 
   public async checkLoadMore(): Promise<void> {
-    // 🚨 檢查是否在冷卻中
+    const candles = this.dataManager.getCandles();
+    
+    // 如果資料是空的 (例如剛切換幣種)，重置狀態
+    if (candles.length === 0) {
+      this.hasMoreHistory = true;
+      this.viewport.setMinStartIndex(0);
+      return;
+    }
+
     if (this.isLoading || !this.hasMoreHistory || Date.now() < this.cooldownUntil) return;
 
     const { startIndex } = this.viewport.getRawRange();
@@ -24,22 +32,19 @@ export class LoaderController {
     if (startIndex < this.threshold) {
       console.log('[Loader] 🚀 觸發歷史載入...');
       this.isLoading = true;
-      const candles = this.dataManager.getCandles();
       
-      if (candles.length > 0) {
-        const firstTime = candles[0].time;
-        const moreData = await this.dataManager.loadMoreHistory(firstTime);
+      const firstTime = candles[0].time;
+      const moreData = await this.dataManager.loadMoreHistory(firstTime);
+      
+      if (moreData.length === 0) {
+        console.log('[Loader] 🏁 已達歷史資料終點，啟用左側留白模式');
+        this.hasMoreHistory = false;
         
-        if (moreData.length === 0) {
-          // 🚨 如果回傳 0，進入 3 秒冷卻，避免狂發 429
-          console.log('[Loader] ❄️ 未取得新資料，進入 3 秒冷卻');
-          this.cooldownUntil = Date.now() + 3000;
-        } else if (moreData.length < 10) {
-          console.log('[Loader] 🏁 已達歷史資料終點');
-          this.hasMoreHistory = false;
-        } else {
-          console.log(`[Loader] ✅ 載入成功，新增 ${moreData.length} 根 K 線`);
-        }
+        // 🚨 關鍵：允許向左滑動直到第一根 K 棒到中間
+        const visibleCount = this.viewport.getVisibleCount();
+        this.viewport.setMinStartIndex(-visibleCount / 2);
+      } else {
+        console.log(`[Loader] ✅ 載入成功，新增 ${moreData.length} 根 K 線`);
       }
       this.isLoading = false;
     }

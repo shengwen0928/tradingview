@@ -5,12 +5,18 @@ export class ViewportEngine {
   private totalDataCount: number = 0;
   private startIndex: number = 0;
   private endIndex: number = 0;
+  private minStartIndex: number = 0; // 🚨 新增：動態最小索引 (預設 0)
   private candleWidth: number = 10;
   private spacing: number = 2;
   private onRangeChanged: () => void;
 
   constructor(onRangeChanged: () => void) {
     this.onRangeChanged = onRangeChanged;
+  }
+
+  // 🚨 新增：讓外部可以設定最小索引
+  public setMinStartIndex(min: number): void {
+    this.minStartIndex = min;
   }
 
   public setDataCount(count: number, isHistory: boolean = false): void {
@@ -31,6 +37,12 @@ export class ViewportEngine {
         // 這樣畫面才會鎖定在目前的 K 棒位置，而不會跳走
         this.startIndex += added;
         this.endIndex += added;
+        
+        // 🚨 如果之前已經處於負數區間 (留白)，則 minStartIndex 不變
+        // 否則，minStartIndex 也應該跟著向右推移，維持在 0 的位置
+        if (this.minStartIndex >= 0) {
+          // 這裡不需處理，因為 loadMoreHistory 邏輯中會處理 hasMoreHistory
+        }
       } else if (isAtEnd) {
         // 實時數據：如果在最右端則自動跟隨
         this.startIndex += added;
@@ -77,10 +89,9 @@ export class ViewportEngine {
     const candlesMoved = deltaX / (this.candleWidth + this.spacing);
     const visibleCount = this.endIndex - this.startIndex;
     
-    // 🚨 修正：允許滑動到最右側時，最新 K 棒顯示在中間
-    // 最大 startIndex 限制從 (total - visible) 改為 (total - visible/2)
+    // 🚨 修正：下限改用 minStartIndex
     const maxStartIndex = this.totalDataCount - visibleCount / 2;
-    this.startIndex = Math.max(0, Math.min(maxStartIndex, this.startIndex + candlesMoved));
+    this.startIndex = Math.max(this.minStartIndex, Math.min(maxStartIndex, this.startIndex + candlesMoved));
     this.endIndex = this.startIndex + visibleCount;
     
     this.onRangeChanged();
@@ -96,12 +107,14 @@ export class ViewportEngine {
     const ratio = mouseX / canvasWidth;
     const mouseIndex = this.startIndex + visibleCount * ratio;
 
-    this.startIndex = Math.max(0, mouseIndex - newVisibleCount * ratio);
-    
-    // 🚨 修正：縮放時也遵循「最新 K 棒可置中」的邊界邏輯
+    // 🚨 修正：縮放時也遵循 minStartIndex
+    let nextStart = mouseIndex - newVisibleCount * ratio;
     const maxStartIndex = this.totalDataCount - newVisibleCount / 2;
-    if (this.startIndex > maxStartIndex) this.startIndex = maxStartIndex;
     
+    if (nextStart < this.minStartIndex) nextStart = this.minStartIndex;
+    if (nextStart > maxStartIndex) nextStart = maxStartIndex;
+
+    this.startIndex = nextStart;
     this.endIndex = this.startIndex + newVisibleCount;
     
     this.updateCandleWidth(canvasWidth);
