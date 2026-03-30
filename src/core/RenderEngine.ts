@@ -95,7 +95,7 @@ export class RenderEngine {
     exactStartIndex: number,
     candleWidth: number,
     spacing: number,
-    getTimeAtIndex: (index: number) => number, // 🚨 改為回調函數
+    getTimeAtIndex: (index: number) => number,
     scaleEngine: ScaleEngine
   ): void {
     const ctx = this.gridCtx; 
@@ -104,18 +104,25 @@ export class RenderEngine {
     
     ctx.fillStyle = '#929498';
     ctx.font = '11px sans-serif';
-    ctx.textAlign = 'left';
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
     const ticks = scaleEngine.getNiceTickSteps();
     for (const price of ticks) {
       const y = scaleEngine.priceToY(price);
+      // 價格標籤靠左對齊 (對齊右側軸線外)
+      ctx.textAlign = 'left';
       ctx.fillText(price.toFixed(2), drawWidth + 5, y);
     }
 
     ctx.textAlign = 'center';
     
     if (candles.length === 0) return;
+
+    // 🚨 關鍵：動態決定時間軸刻度頻率
+    const firstTime = getTimeAtIndex(0);
+    const secondTime = getTimeAtIndex(1);
+    const interval = Math.abs(secondTime - firstTime);
 
     const visibleCount = drawWidth / (candleWidth + spacing);
     const endIndex = Math.ceil(exactStartIndex + visibleCount);
@@ -131,31 +138,42 @@ export class RenderEngine {
       let isBold = false;
 
       const mins = date.getUTCMinutes();
+      const secs = date.getUTCSeconds();
       const hours = date.getUTCHours();
-      const month = date.getUTCMonth();
       const day = date.getUTCDate();
+      const month = date.getUTCMonth();
       const year = date.getUTCFullYear();
 
-      // 🚨 根據週期調整標籤顯示邏輯
-      const isNewYear = month === 0 && day === 1 && hours === 0 && mins === 0;
-      const isNewMonth = day === 1 && hours === 0 && mins === 0;
-      const isNewDay = hours === 0 && mins === 0;
+      // 🚨 智能標籤邏輯
+      if (interval < 60000) { // 秒級 (1s)
+        shouldShow = secs % 15 === 0;
+        label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      } else if (interval < 3600000) { // 分鐘級 (1m - 30m)
+        shouldShow = mins % 5 === 0 && secs === 0;
+        label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+      } else if (interval < 86400000) { // 小時級 (1H - 12H)
+        shouldShow = hours % 4 === 0 && mins === 0 && secs === 0;
+        label = `${hours.toString().padStart(2, '0')}:00`;
+      } else if (interval < 604800000) { // 日級 (1D - 5D)
+        shouldShow = hours === 0 && mins === 0 && secs === 0;
+        label = `${month + 1}/${day}`;
+      } else { // 週級/月級 以上
+        shouldShow = day === 1 && hours === 0 && mins === 0 && secs === 0;
+        label = `${month + 1}月`;
+      }
+
+      // 特別標註：新年或新的一天 (高優先級)
+      const isNewYear = month === 0 && day === 1 && hours === 0 && mins === 0 && secs === 0;
+      const isNewDay = hours === 0 && mins === 0 && secs === 0;
 
       if (isNewYear) {
         shouldShow = true;
         isBold = true;
-        label = year.toString(); // 年份更替顯示年份
-      } else if (isNewMonth) {
+        label = year.toString();
+      } else if (isNewDay && interval < 86400000) {
         shouldShow = true;
-        label = (month + 1).toString() + "月";
-      } else if (isNewDay) {
-        // 在日線或更小週期，顯示月/日
-        shouldShow = true;
+        isBold = true;
         label = `${month + 1}/${day}`;
-      } else if (mins % 5 === 0 && date.getUTCSeconds() === 0) {
-        // 在分鐘線，顯示時:分
-        shouldShow = true;
-        label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
       }
 
       const x = scaleEngine.indexToX(idx, exactStartIndex, candleWidth, spacing);
@@ -163,9 +181,8 @@ export class RenderEngine {
 
       if (centerX < 0 || centerX > drawWidth) continue;
 
-      // 避免標籤過於擁擠 (月線模式下間距可稍微放寬)
-      const minGap = isBold ? 80 : 60;
-      if (shouldShow && centerX > lastLabelX + minGap) {
+      // 密度檢查：標籤之間至少間隔 80 像素
+      if (shouldShow && (centerX > lastLabelX + 80 || isBold)) {
         ctx.fillStyle = isBold ? '#fff' : '#929498';
         ctx.fillText(label, centerX, drawHeight + 15);
         lastLabelX = centerX;
