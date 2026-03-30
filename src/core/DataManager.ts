@@ -68,6 +68,7 @@ export class DataManager {
 
     this.ws.onmessage = (event) => {
       if (event.data === 'pong') return;
+      console.log('WS Raw Message:', event.data); // 🚨 打印所有原始訊息
       const res = JSON.parse(event.data);
       if (res.arg?.channel === `candle${this.bar}` && res.data) {
         const raw = res.data[0];
