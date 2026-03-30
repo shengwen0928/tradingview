@@ -7,7 +7,7 @@ export class DataManager {
   private candles: Candle[] = [];
   private onDataUpdated: (candles: Candle[]) => void;
   private onStatusChange?: (status: 'connected' | 'disconnected' | 'connecting') => void;
-  private instId = 'BTC-USDT';
+  private instId = 'BTC-USDT-SWAP'; // 使用合約數據，確保 WS 頻道穩定
   private bar = '1m'; 
   private ws: WebSocket | null = null;
   private pingInterval: number | null = null;
@@ -45,20 +45,17 @@ export class DataManager {
     if (this.pingInterval) clearInterval(this.pingInterval);
 
     this.onStatusChange?.('connecting');
-    // 恢復使用經測試可成功連線的節點
     this.ws = new WebSocket('wss://ws.okx.com:443/ws/v5/public');
 
     this.ws.onopen = () => {
       console.log('OKX WebSocket Connected ✅');
       this.onStatusChange?.('connected');
-      
-      // 交叉測試：訂閱 tickers (通常最穩定) 與 candle1m
       const subMsg = {
         op: 'subscribe',
-        args: [
-          { channel: 'tickers', instId: this.instId },
-          { channel: `candle${this.bar}`, instId: this.instId }
-        ]
+        args: [{
+          channel: `candle${this.bar}`,
+          instId: this.instId
+        }]
       };
       this.ws?.send(JSON.stringify(subMsg));
 
@@ -71,15 +68,7 @@ export class DataManager {
 
     this.ws.onmessage = (event) => {
       if (event.data === 'pong') return;
-      console.log('WS Message:', event.data); 
       const res = JSON.parse(event.data);
-      
-      // 處理 tickers 數據 (僅作偵錯)
-      if (res.arg?.channel === 'tickers') {
-        // console.log('[Tickers Update]', res.data[0].last);
-      }
-
-      // 處理 K 線數據
       if (res.arg?.channel === `candle${this.bar}` && res.data) {
         const raw = res.data[0];
         const candle: Candle = {
@@ -137,14 +126,14 @@ export class DataManager {
     if (last && last.time === candle.time) {
       this.candles[this.candles.length - 1] = candle;
       isChanged = true;
-      // 🚨 這裡會持續打印，如果數據有在跳動，你會看到 Close 價格在變化
-      console.log(`[Update] Price: ${candle.close}`);
+      // 🚨 如果有成功收到數據，這裡一定會跳動
+      console.log(`[OKX Update] Price: ${candle.close}`);
     } 
     else if (last && candle.time > last.time) {
       this.candles.push(candle);
       if (this.candles.length > 5000) this.candles.shift();
       isChanged = true;
-      console.log(`[New K-Line] Time: ${new Date(candle.time).toLocaleTimeString()}`);
+      console.log(`[OKX New Candle] Time: ${new Date(candle.time).toLocaleTimeString()}`);
     }
     
     if (isChanged) {
