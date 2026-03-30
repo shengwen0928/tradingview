@@ -44,7 +44,8 @@ export class ViewportEngine {
 
   private updateCandleWidth(canvasWidth: number): void {
     const visibleCount = this.endIndex - this.startIndex;
-    this.candleWidth = (canvasWidth / visibleCount) - this.spacing;
+    const drawWidth = canvasWidth - 60; // 🚨 扣除右側價格軸寬度 (需與 ScaleEngine 一致)
+    this.candleWidth = (drawWidth / visibleCount) - this.spacing;
   }
 
   /**

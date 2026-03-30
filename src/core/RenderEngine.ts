@@ -174,7 +174,16 @@ export class RenderEngine {
     scaleEngine: ScaleEngine
   ): void {
     const ctx = this.candleCtx;
+    const drawWidth = scaleEngine.getDrawWidth();
+    const drawHeight = scaleEngine.getDrawHeight();
+    
     ctx.clearRect(0, 0, this.width, this.height);
+
+    // 🚨 裁剪區域：確保 K 棒繪製被限制在左側繪圖區內
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, drawWidth, drawHeight);
+    ctx.clip();
 
     const bodyWidth = Math.max(0.1, candleWidth);
     
@@ -186,7 +195,8 @@ export class RenderEngine {
       const actualIndex = sliceStartIndex + i;
       const x = scaleEngine.indexToX(actualIndex, exactStartIndex, candleWidth, spacing);
       
-      if (x + bodyWidth < 0 || x > this.width) continue;
+      // 🚨 這裡改用 drawWidth 判斷，避免越過右側價格軸
+      if (x + bodyWidth < 0 || x > drawWidth) continue;
 
       const trueCenter = x + bodyWidth / 2;
       const centerX = Math.floor(trueCenter) + 0.5;
@@ -224,6 +234,8 @@ export class RenderEngine {
         ctx.fillRect(rectX, rectY, rectW, rectH);
       }
     }
+
+    ctx.restore(); // 🚨 解除裁剪
   }
 
   /**
