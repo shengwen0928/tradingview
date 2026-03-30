@@ -41,6 +41,16 @@ class ChartEngine {
     });
   }
 
+  // 🚨 新增：轉換週期顯示文字為中文
+  private formatTfLabel(tf: string): string {
+    const value = parseInt(tf.slice(0, -1)) || 1;
+    const unit = tf.slice(-1);
+    const unitMap: { [key: string]: string } = {
+      's': '秒', 'm': '分鐘', 'H': '小時', 'D': '日', 'W': '週', 'M': '月', 'Y': '年'
+    };
+    return `${value}${unitMap[unit] || unit}`;
+  }
+
   constructor() {
     const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
     const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
@@ -167,7 +177,7 @@ class ChartEngine {
     sortedFavs.forEach(tf => {
       const btn = document.createElement('button');
       btn.className = `fav-btn ${this.currentTimeframe === tf ? 'active' : ''}`;
-      btn.innerText = tf;
+      btn.innerText = this.formatTfLabel(tf); // 🚨 中文化顯示
       btn.onclick = () => this.switchTimeframe(tf);
       container.appendChild(btn);
     });
@@ -182,7 +192,7 @@ class ChartEngine {
       item.className = 'tf-item';
       
       const label = document.createElement('span');
-      label.innerText = tf;
+      label.innerText = this.formatTfLabel(tf); // 🚨 中文化顯示
       label.style.flex = '1';
       label.onclick = () => {
         this.switchTimeframe(tf);
@@ -211,7 +221,7 @@ class ChartEngine {
     
     // 更新主按鈕文字
     const tfMainBtn = document.getElementById('tf-main-btn')!;
-    tfMainBtn.innerText = `${tf} ▾`;
+    tfMainBtn.innerText = `${this.formatTfLabel(tf)} ▾`; // 🚨 中文化顯示
     
     this.renderTfFavorites(); // 重新渲染快捷區以更新 active 狀態
   }
