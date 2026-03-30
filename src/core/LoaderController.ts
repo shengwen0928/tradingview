@@ -6,21 +6,18 @@ import { ViewportEngine } from './ViewportEngine';
  */
 export class LoaderController {
   private isLoading: boolean = false;
-  private threshold: number = 200; // 當剩下 200 根時載入歷史
+  private hasMoreHistory: boolean = true; // 🚨 新增：紀錄是否還有歷史資料
+  private threshold: number = 200; 
 
   constructor(
     private dataManager: DataManager,
     private viewport: ViewportEngine
   ) {}
 
-  /**
-   * 檢查是否需要載入更多資料
-   */
   public async checkLoadMore(): Promise<void> {
-    if (this.isLoading) return;
+    if (this.isLoading || !this.hasMoreHistory) return; // 🚨 如果已無歷史，直接返回
 
     const { startIndex } = this.viewport.getRawRange();
-    // console.log(`[Loader] startIndex: ${Math.floor(startIndex)}, threshold: ${this.threshold}`);
 
     if (startIndex < this.threshold) {
       console.log('[Loader] 🚀 觸發歷史載入...');
@@ -28,9 +25,15 @@ export class LoaderController {
       const candles = this.dataManager.getCandles();
       if (candles.length > 0) {
         const firstTime = candles[0].time;
-        console.log(`[Loader] 請求 ${new Date(firstTime).toLocaleString()} 之前的資料`);
         const moreData = await this.dataManager.loadMoreHistory(firstTime);
-        console.log(`[Loader] ✅ 載入成功，新增 ${moreData.length} 根 K 線`);
+        
+        // 🚨 如果回傳數據太少，代表 OKX 那邊沒資料了
+        if (moreData.length < 10) {
+          console.log('[Loader] 🏁 已達歷史資料終點，停止後續載入');
+          this.hasMoreHistory = false;
+        } else {
+          console.log(`[Loader] ✅ 載入成功，新增 ${moreData.length} 根 K 線`);
+        }
       }
       this.isLoading = false;
     }
