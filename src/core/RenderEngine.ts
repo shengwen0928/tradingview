@@ -113,26 +113,36 @@ export class RenderEngine {
 
     // 2. 繪製時間刻度 (下方)
     ctx.textAlign = 'center';
-    const interval = Math.max(1, Math.floor(100 / (drawWidth / (candles.length || 1))));
-    let lastDateStr = "";
+    const drawWidth = scaleEngine.getDrawWidth();
+    const drawHeight = scaleEngine.getDrawHeight();
+    
+    // 計算標籤間距 (至少間隔 100 像素)
+    const labelGap = Math.max(1, Math.floor(100 / (drawWidth / (candles.length || 1))));
+    let lastLabelX = -100; // 避免標籤重疊
 
-    for (let i = 0; i < candles.length; i += interval) {
+    for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
-      const actualIndex = startIndex + i;
-      const x = (actualIndex - startIndex) * (drawWidth / (candles.length || 1)); 
-      
       const date = new Date(candle.time);
-      const dateStr = `${date.getMonth() + 1}/${date.getDate()}`;
-      const timeStr = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+      const isNewDay = i > 0 && new Date(candles[i-1].time).getDate() !== date.getDate();
+      const isFirst = i === 0;
       
-      let label = timeStr;
-      // 🚨 如果日期與上一個標籤不同，則顯示日期
-      if (dateStr !== lastDateStr) {
-        label = `${dateStr} ${timeStr}`;
-        lastDateStr = dateStr;
+      const x = (i) * (drawWidth / (candles.length || 1)); 
+
+      // 🚨 邏輯：如果是新的一天 (00:00 附近) 或是滿足固定間隔，且不重疊
+      if (isNewDay || (i % labelGap === 0 && x > lastLabelX + 80)) {
+        let label = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+        
+        if (isNewDay || isFirst) {
+          // 每天第一根或視窗第一根，加上日期
+          label = `${date.getMonth() + 1}/${date.getDate()} ${label}`;
+          ctx.fillStyle = '#fff'; // 日期標籤加亮
+        } else {
+          ctx.fillStyle = '#929498';
+        }
+
+        ctx.fillText(label, x, drawHeight + 15);
+        lastLabelX = x;
       }
-      
-      ctx.fillText(label, x, drawHeight + 15);
     }
   }
 
