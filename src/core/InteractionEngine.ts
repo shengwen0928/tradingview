@@ -10,7 +10,7 @@ export class InteractionEngine {
   constructor(
     private canvas: HTMLCanvasElement,
     private onScroll: (deltaX: number) => void,
-    private onZoom: (mouseX: number, scale: number) => void,
+    private onZoom: (mouseX: number, mouseY: number, scale: number, zone: 'chart' | 'price' | 'time') => void,
     private onMouseMove: (mouseX: number, mouseY: number) => void
   ) {
     this.initEvents();
@@ -72,10 +72,21 @@ export class InteractionEngine {
     // 縮放邏輯
     this.canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const { mouseX } = this.getMousePos(e);
-      // 根據滾輪方向決定縮放比例
+      const { mouseX, mouseY } = this.getMousePos(e);
       const scale = e.deltaY > 0 ? 1.05 : 0.95;
-      this.onZoom(mouseX, scale);
+
+      // 🚨 判斷縮放區域
+      const drawWidth = this.canvas.clientWidth - 60; // 🚨 假設右側軸寬 60
+      const drawHeight = this.canvas.clientHeight - 30; // 🚨 假設下方軸高 30
+
+      let zone: 'chart' | 'price' | 'time' = 'chart';
+      if (mouseX > drawWidth) {
+        zone = 'price';
+      } else if (mouseY > drawHeight) {
+        zone = 'time';
+      }
+
+      this.onZoom(mouseX, mouseY, scale, zone);
     }, { passive: false });
   }
 

@@ -9,6 +9,7 @@ export class ScaleEngine {
   private minPrice: number = 0;
   private maxPrice: number = 0;
   private padding: number = 0.1; 
+  private verticalScale: number = 1; // 🚨 新增：垂直縮放倍率
 
   // 🚨 新增預留空間
   private rightPadding: number = 60; // 價格軸寬度
@@ -39,8 +40,18 @@ export class ScaleEngine {
     }
 
     const diff = max - min;
-    this.minPrice = min - diff * this.padding;
-    this.maxPrice = max + diff * this.padding;
+    // 🚨 應用垂直縮放倍率
+    const scaledDiff = (diff * this.verticalScale);
+    const center = (max + min) / 2;
+
+    this.minPrice = center - scaledDiff * (0.5 + this.padding);
+    this.maxPrice = center + scaledDiff * (0.5 + this.padding);
+  }
+
+  public handleVerticalZoom(scaleFactor: number): void {
+    this.verticalScale *= scaleFactor;
+    // 限制縮放範圍，避免過大或過小
+    this.verticalScale = Math.max(0.1, Math.min(10, this.verticalScale));
   }
 
   public priceToY(price: number): number {

@@ -46,9 +46,20 @@ class ChartEngine {
         this.viewport.handleScroll(deltaX);
         this.loader.checkLoadMore();
       },
-      (mouseX, scale) => {
-        this.viewport.handleZoom(mouseX, scale, this.renderEngine.getLogicalWidth());
-        this.loader.checkLoadMore(); // 🚨 補回：縮放時也檢查載入
+      (mouseX, mouseY, scale, zone) => {
+        if (zone === 'price') {
+          // 🚨 右側價格軸：垂直縮放
+          this.scaleEngine.handleVerticalZoom(scale);
+        } else if (zone === 'time') {
+          // 🚨 下方時間軸：水平縮放 (以畫面中心為準)
+          this.viewport.handleZoom(this.renderEngine.getLogicalWidth() / 2, scale, this.renderEngine.getLogicalWidth());
+        } else {
+          // 🚨 圖表區域：以滑鼠為中心縮放
+          this.viewport.handleZoom(mouseX, scale, this.renderEngine.getLogicalWidth());
+        }
+        
+        this.loader.checkLoadMore();
+        this.requestRedraw();
       },
       (mouseX, mouseY) => {
         this.updateCrosshair(mouseX, mouseY);
