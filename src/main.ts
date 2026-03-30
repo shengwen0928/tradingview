@@ -27,9 +27,9 @@ class ChartEngine {
     this.viewport = new ViewportEngine(() => this.requestRedraw());
     
     this.dataManager = new DataManager(
-      (candles) => {
+      (candles, isHistory) => {
         // setDataCount 內部會呼叫 onRangeChanged，進而觸發 requestRedraw
-        this.viewport.setDataCount(candles.length);
+        this.viewport.setDataCount(candles.length, isHistory);
       },
       (status) => {
         const dot = document.getElementById('status-dot');

@@ -5,7 +5,7 @@ import { Candle } from '../types/Candle';
  */
 export class DataManager {
   private candles: Candle[] = [];
-  private onDataUpdated: (candles: Candle[]) => void;
+  private onDataUpdated: (candles: Candle[], isHistory: boolean) => void;
   private onStatusChange?: (status: 'connected' | 'disconnected' | 'connecting') => void;
   private instId = 'BTC-USDT-SWAP'; // 使用合約數據，確保 WS 頻道穩定
   private bar = '1m'; 
@@ -13,7 +13,7 @@ export class DataManager {
   private pingInterval: number | null = null;
 
   constructor(
-    onDataUpdated: (candles: Candle[]) => void,
+    onDataUpdated: (candles: Candle[], isHistory: boolean) => void,
     onStatusChange?: (status: 'connected' | 'disconnected' | 'connecting') => void
   ) {
     this.onDataUpdated = onDataUpdated;
@@ -32,7 +32,7 @@ export class DataManager {
 
       if (result.code === '0') {
         this.candles = this.parseOKXData(result.data).reverse();
-        this.onDataUpdated(this.candles);
+        this.onDataUpdated(this.candles, false);
         this.setupWebSocket();
       }
     } catch (error) {
@@ -106,7 +106,7 @@ export class DataManager {
       if (result.code === '0') {
         const moreData = this.parseOKXData(result.data).reverse();
         this.candles = [...moreData, ...this.candles];
-        this.onDataUpdated(this.candles);
+        this.onDataUpdated(this.candles, true); // 🚨 標記為歷史
         return moreData;
       }
     } catch (error) {
@@ -144,7 +144,7 @@ export class DataManager {
     }
     
     if (isChanged) {
-      this.onDataUpdated(this.candles);
+      this.onDataUpdated(this.candles, false);
     }
   }
 }

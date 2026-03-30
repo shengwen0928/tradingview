@@ -13,9 +13,9 @@ export class ViewportEngine {
     this.onRangeChanged = onRangeChanged;
   }
 
-  public setDataCount(count: number): void {
+  public setDataCount(count: number, isHistory: boolean = false): void {
     const isFirstLoad = this.totalDataCount === 0;
-    const isAtEnd = this.endIndex >= this.totalDataCount - 1; // 檢測是否在最右端
+    const isAtEnd = this.endIndex >= this.totalDataCount - 1;
     
     const oldCount = this.totalDataCount;
     this.totalDataCount = count;
@@ -26,12 +26,16 @@ export class ViewportEngine {
     } else {
       const added = count - oldCount;
       
-      // 如果原本就在最右端，則自動跟隨新數據向右推移
-      if (isAtEnd) {
+      if (isHistory) {
+        // 🚨 關鍵補償：如果載入的是歷史資料，視窗索引必須向後推移
+        // 這樣畫面才會鎖定在目前的 K 棒位置，而不會跳走
+        this.startIndex += added;
+        this.endIndex += added;
+      } else if (isAtEnd) {
+        // 實時數據：如果在最右端則自動跟隨
         this.startIndex += added;
         this.endIndex += added;
       }
-      // 如果在看歷史資料，則不推移範圍，但總數已更新，防止跳動
     }
     
     this.updateCandleWidth(window.innerWidth);
