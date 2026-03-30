@@ -17,15 +17,21 @@ class ChartEngine {
   private interaction: InteractionEngine;
   private loader: LoaderController;
   private connectionStatus: string = 'connecting';
-  private currentSymbol: string = 'BTC-USDT'; // 🚨 新增：記錄當前幣種
+  private currentSymbol: string = 'BTC-USDT'; 
+  private currentTimeframe: string = '1m'; // 🚨 新增：記錄當前週期
+  private allTimeframes = ['1s', '1m', '3m', '5m', '15m', '30m', '1H', '2H', '4H', '1D', '1W', '1M'];
+  private favorites: string[] = []; // 我的最愛
 
   constructor() {
     const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
     const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
     const overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
     const symbolSelect = document.getElementById('symbol-select') as HTMLSelectElement;
-    const timeframeSelect = document.getElementById('timeframe-select') as HTMLSelectElement;
-    const timeframeCustom = document.getElementById('timeframe-custom') as HTMLInputElement;
+    
+    // 取得新 UI 元素
+    const tfMainBtn = document.getElementById('tf-main-btn') as HTMLButtonElement;
+    const tfPopup = document.getElementById('tf-popup') as HTMLDivElement;
+    const tfCustomInput = document.getElementById('tf-custom-input') as HTMLInputElement;
 
     this.renderEngine = new RenderEngine(gridCanvas, candleCanvas, overlayCanvas);
     this.scaleEngine = new ScaleEngine();
@@ -33,7 +39,6 @@ class ChartEngine {
     
     this.dataManager = new DataManager(
       (candles, isHistory) => {
-        // setDataCount 內部會呼叫 onRangeChanged，進而觸發 requestRedraw
         this.viewport.setDataCount(candles.length, isHistory);
       },
       (status) => {
@@ -42,25 +47,38 @@ class ChartEngine {
       }
     );
 
-    // 🚨 監聽幣種切換
+    // 載入我的最愛 (從 LocalStorage)
+    const savedFavs = localStorage.getItem('tf-favorites');
+    this.favorites = savedFavs ? JSON.parse(savedFavs) : ['1m', '1H', '1D'];
+
+    // 🚨 初始化 UI 渲染
+    this.renderTfFavorites();
+    this.renderTfPopup();
+
+    // 監聽幣種切換
     symbolSelect.addEventListener('change', () => {
       this.currentSymbol = symbolSelect.options[symbolSelect.selectedIndex].text;
       this.dataManager.setSymbol(symbolSelect.value);
-      this.scaleEngine.resetAutoScale(); // 切換幣種時恢復自動縮放
+      this.scaleEngine.resetAutoScale(); 
     });
 
-    // 🚨 監聽預設週期切換
-    timeframeSelect.addEventListener('change', () => {
-      this.dataManager.setTimeframe(timeframeSelect.value);
-      this.scaleEngine.resetAutoScale(); // 切換週期時恢復自動縮放
-      timeframeCustom.value = ""; // 清空自訂輸入
+    // 🚨 監聽週期主按鈕 (切換彈窗)
+    tfMainBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      tfPopup.classList.toggle('show');
     });
 
-    // 🚨 監聽自訂週期切換 (按下 Enter)
-    timeframeCustom.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && timeframeCustom.value.trim() !== "") {
-        this.dataManager.setTimeframe(timeframeCustom.value.trim());
-        this.scaleEngine.resetAutoScale();
+    // 點擊外部關閉彈窗
+    window.addEventListener('click', () => tfPopup.classList.remove('show'));
+    tfPopup.addEventListener('click', (e) => e.stopPropagation());
+
+    // 🚨 監聽自訂週期輸入
+    tfCustomInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && tfCustomInput.value.trim() !== "") {
+        const val = tfCustomInput.value.trim();
+        this.switchTimeframe(val);
+        tfPopup.classList.remove('show');
+        tfCustomInput.value = "";
       }
     });
 
@@ -117,6 +135,74 @@ class ChartEngine {
 
   private async init() {
     await this.dataManager.loadInitialData();
+  }
+
+  // 🚨 新增：渲染我的最愛快捷按鈕
+  private renderTfFavorites() {
+    const container = document.getElementById('tf-favorites')!;
+    container.innerHTML = '';
+    this.favorites.forEach(tf => {
+      const btn = document.createElement('button');
+      btn.className = `fav-btn ${this.currentTimeframe === tf ? 'active' : ''}`;
+      btn.innerText = tf;
+      btn.onclick = () => this.switchTimeframe(tf);
+      container.appendChild(btn);
+    });
+  }
+
+  // 🚨 新增：渲染彈窗內的週期列表
+  private renderTfPopup() {
+    const list = document.getElementById('tf-list')!;
+    list.innerHTML = '';
+    this.allTimeframes.forEach(tf => {
+      const item = document.createElement('div');
+      item.className = 'tf-item';
+      
+      const label = document.createElement('span');
+      label.innerText = tf;
+      label.style.flex = '1';
+      label.onclick = () => {
+        this.switchTimeframe(tf);
+        document.getElementById('tf-popup')?.classList.remove('show');
+      };
+
+      const star = document.createElement('span');
+      star.className = `star ${this.favorites.includes(tf) ? 'active' : ''}`;
+      star.innerHTML = this.favorites.includes(tf) ? '★' : '☆';
+      star.onclick = (e) => {
+        e.stopPropagation();
+        this.toggleFavorite(tf);
+      };
+
+      item.appendChild(label);
+      item.appendChild(star);
+      list.appendChild(item);
+    });
+  }
+
+  // 🚨 新增：切換週期邏輯
+  private switchTimeframe(tf: string) {
+    this.currentTimeframe = tf;
+    this.dataManager.setTimeframe(tf);
+    this.scaleEngine.resetAutoScale();
+    
+    // 更新主按鈕文字
+    const tfMainBtn = document.getElementById('tf-main-btn')!;
+    tfMainBtn.innerText = `${tf} ▾`;
+    
+    this.renderTfFavorites(); // 重新渲染快捷區以更新 active 狀態
+  }
+
+  // 🚨 新增：切換我的最愛
+  private toggleFavorite(tf: string) {
+    if (this.favorites.includes(tf)) {
+      this.favorites = this.favorites.filter(f => f !== tf);
+    } else {
+      this.favorites.push(tf);
+    }
+    localStorage.setItem('tf-favorites', JSON.stringify(this.favorites));
+    this.renderTfFavorites();
+    this.renderTfPopup();
   }
 
   private isRedrawRequested = false;
