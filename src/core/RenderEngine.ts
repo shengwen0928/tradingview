@@ -121,33 +121,40 @@ export class RenderEngine {
     // 2. 繪製時間刻度 (下方)
     ctx.textAlign = 'center';
     
-    // 計算標籤間距 (至少間隔 100 像素)
-    const labelGap = Math.max(1, Math.floor(100 / (candleWidth + spacing)));
-    let lastLabelX = -100; // 避免標籤重疊
+    if (candles.length === 0) return;
 
-    for (let i = 0; i < candles.length; i++) {
-      const candle = candles[i];
-      const date = new Date(candle.time);
-      const isNewDay = i > 0 && new Date(candles[i-1].time).getDate() !== date.getDate();
-      const isFirst = i === 0;
+    // 🚨 修正：計算時間軸應涵蓋整個畫布寬度，而不僅是現有的 K 棒
+    const visibleCount = drawWidth / (candleWidth + spacing);
+    const endIndex = Math.ceil(exactStartIndex + visibleCount);
+    
+    // 取得參考時間點 (最後一根 K 棒)
+    const refCandle = candles[candles.length - 1];
+    const refIndex = sliceStartIndex + candles.length - 1;
+    const refTime = refCandle.time;
+    const interval = 60000; // 1 分鐘 (ms)
+
+    let lastLabelX = -100;
+
+    for (let idx = Math.floor(exactStartIndex); idx <= endIndex; idx++) {
+      // 根據與參考點的索引差計算時間
+      const time = refTime + (idx - refIndex) * interval;
+      const date = new Date(time);
       
-      // 🚨 邏輯：如果是新的一天、視窗第一根、或者是 5 分鐘的倍數 (如 :00, :05, :10...)
       const isFiveMin = date.getMinutes() % 5 === 0 && date.getSeconds() === 0;
+      const isNewDay = date.getHours() === 0 && date.getMinutes() === 0;
 
-      const actualIndex = sliceStartIndex + i;
-      const x = scaleEngine.indexToX(actualIndex, exactStartIndex, candleWidth, spacing);
+      const x = scaleEngine.indexToX(idx, exactStartIndex, candleWidth, spacing);
       const centerX = x + candleWidth / 2;
 
-      // 避免標籤過於擁擠 (至少間隔 50 像素才繪製，除非是新的一天)
-      if (isNewDay || isFirst || (isFiveMin && centerX > lastLabelX + 50)) {
+      // 避免標籤越界或重疊
+      if (centerX < 0 || centerX > drawWidth) continue;
+
+      if (isNewDay || (isFiveMin && centerX > lastLabelX + 60)) {
         let label: string;
-        
-        if (isNewDay || isFirst) {
-          // 每天第一根或視窗第一根，僅顯示日期 (例如 "30")
+        if (isNewDay) {
           label = date.getDate().toString();
-          ctx.fillStyle = '#fff'; // 加亮
+          ctx.fillStyle = '#fff';
         } else {
-          // 其他 5 分鐘間隔，顯示時間 (例如 "10:05")
           const hours = date.getHours().toString().padStart(2, '0');
           const minutes = date.getMinutes().toString().padStart(2, '0');
           label = `${hours}:${minutes}`;
