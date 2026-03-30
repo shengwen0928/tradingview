@@ -201,15 +201,19 @@ class ChartEngine {
   private updateCrosshair(mouseX: number, mouseY: number) {
     const price = this.scaleEngine.yToPrice(mouseY);
     const candles = this.dataManager.getCandles();
-    const { startIndex, endIndex } = this.viewport.getRawRange();
     
-    const visibleCount = endIndex - startIndex;
-    const ratio = mouseX / this.renderEngine.getLogicalWidth();
-    const dataIndex = Math.floor(startIndex + visibleCount * ratio);
+    // 🚨 修正：反推 Index 的邏輯必須考慮 drawWidth 與精確位移
+    const { startIndex } = this.viewport.getRawRange();
+    const candleWidth = this.viewport.getCandleWidth();
+    const spacing = 2; // 固定間距
+    
+    // 逆運算：x = (index - startIndex) * (w + s)  =>  index = x / (w + s) + startIndex
+    // 這裡我們需要的是滑鼠相對於繪圖區左側的位移
+    const dataIndex = Math.floor(mouseX / (candleWidth + spacing) + startIndex);
     
     let timeStr = '';
     if (candles.length > 0) {
-      // 🚨 使用精確的 DataManager 邏輯推算時間
+      // 使用精確的 DataManager 邏輯推算時間
       const projectedTime = this.dataManager.getTimeAtIndex(dataIndex);
       timeStr = formatFullTime(projectedTime);
     }
