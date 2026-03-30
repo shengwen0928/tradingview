@@ -29,8 +29,9 @@ export class DataManager {
   public getTimeAtIndex(targetIndex: number): number {
     if (this.candles.length === 0) return Date.now();
 
-    const refCandle = this.candles[this.candles.length - 1];
-    const refIndex = this.candles.length - 1;
+    // 取得陣列中第一根 K 棒作為穩定的歷史基準點
+    const refCandle = this.candles[0];
+    const refIndex = 0;
     const diff = targetIndex - refIndex;
 
     if (diff === 0) return refCandle.time;
@@ -43,25 +44,24 @@ export class DataManager {
       return refCandle.time + diff * this.intervalMs;
     }
 
-    // 非線性週期 (週、月、年)
+    // 非線性週期 (週、月、年) - 使用日曆運算確保絕對對齊
     const d = new Date(refCandle.time);
     
-    // 🚨 關鍵：先對齊到該週期的「開盤起始點」
     if (unit === 'W') {
-      // 週線：對齊到週一 (OKX 規範)
+      // 週線：對齊到基準 K 棒所在的週一，再推移
       const day = d.getUTCDay();
       const diffToMonday = (day === 0 ? 6 : day - 1);
       d.setUTCDate(d.getUTCDate() - diffToMonday);
       d.setUTCHours(0, 0, 0, 0);
       return d.getTime() + diff * 7 * 86400000;
     } else if (unit === 'M') {
-      // 月線：對齊到該月 1 號 00:00
+      // 月線：對齊到基準 K 棒所在的 1 號
       d.setUTCDate(1);
       d.setUTCHours(0, 0, 0, 0);
       d.setUTCMonth(d.getUTCMonth() + diff * value);
       return d.getTime();
     } else if (unit === 'Y') {
-      // 年線：對齊到該年 1 月 1 號 00:00
+      // 年線：對齊到基準 K 棒所在的 1 月 1 號
       d.setUTCMonth(0, 1);
       d.setUTCHours(0, 0, 0, 0);
       d.setUTCFullYear(d.getUTCFullYear() + diff * value);
