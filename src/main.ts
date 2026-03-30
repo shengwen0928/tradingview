@@ -28,8 +28,8 @@ class ChartEngine {
     
     this.dataManager = new DataManager(
       (candles) => {
+        // setDataCount 內部會呼叫 onRangeChanged，進而觸發 requestRedraw
         this.viewport.setDataCount(candles.length);
-        this.requestRedraw();
       },
       (status) => {
         const dot = document.getElementById('status-dot');
