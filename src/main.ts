@@ -39,7 +39,7 @@ class ChartEngine {
         if (status === 'connected') {
           dot.style.background = '#26a69a';
           dot.style.boxShadow = '0 0 5px #26a69a';
-          text.innerText = 'BTC-USDT Live';
+          text.innerText = `BTC-USDT Live | Visible: ${Math.round(this.viewport.getVisibleCount())}`;
         } else if (status === 'connecting') {
           dot.style.background = '#ffa726';
           dot.style.boxShadow = '0 0 5px #ffa726';

@@ -64,6 +64,10 @@ export class ViewportEngine {
     };
   }
 
+  public getVisibleCount(): number {
+    return this.endIndex - this.startIndex;
+  }
+
   public getCandleWidth(): number {
     return this.candleWidth;
   }
