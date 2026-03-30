@@ -38,19 +38,32 @@ export class DataManager {
     const unit = this.bar.slice(-1);
     const value = parseInt(this.bar.slice(0, -1)) || 1;
 
-    // 對於秒、分、時、日，使用線性毫秒計算
+    // 線性週期 (秒、分、時、日)
     if (unit === 's' || unit === 'm' || unit === 'H' || unit === 'D') {
       return refCandle.time + diff * this.intervalMs;
     }
 
-    // 對於週、月、年，使用日曆邏輯計算，防止日期漂移
+    // 非線性週期 (週、月、年)
     const d = new Date(refCandle.time);
+    
+    // 🚨 關鍵：先對齊到該週期的「開盤起始點」
     if (unit === 'W') {
-      return refCandle.time + diff * 7 * 86400000;
+      // 週線：對齊到週一 (OKX 規範)
+      const day = d.getUTCDay();
+      const diffToMonday = (day === 0 ? 6 : day - 1);
+      d.setUTCDate(d.getUTCDate() - diffToMonday);
+      d.setUTCHours(0, 0, 0, 0);
+      return d.getTime() + diff * 7 * 86400000;
     } else if (unit === 'M') {
+      // 月線：對齊到該月 1 號 00:00
+      d.setUTCDate(1);
+      d.setUTCHours(0, 0, 0, 0);
       d.setUTCMonth(d.getUTCMonth() + diff * value);
       return d.getTime();
     } else if (unit === 'Y') {
+      // 年線：對齊到該年 1 月 1 號 00:00
+      d.setUTCMonth(0, 1);
+      d.setUTCHours(0, 0, 0, 0);
       d.setUTCFullYear(d.getUTCFullYear() + diff * value);
       return d.getTime();
     }
