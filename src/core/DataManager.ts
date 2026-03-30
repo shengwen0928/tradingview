@@ -143,8 +143,21 @@ export class DataManager {
       const result = await response.json();
 
       if (result.code === '0') {
-        console.log(`[DataManager] Received ${result.data.length} initial candles`);
-        this.candles = this.parseOKXData(result.data).reverse();
+        const rawData = result.data;
+        console.log(`[DataManager] Received ${rawData.length} initial candles`);
+        
+        // 紀錄 API 回傳的第一筆與最後一筆時間 (偵錯用)
+        if (rawData.length > 0) {
+          console.log(`[DataManager] API Raw First: ${new Date(parseInt(rawData[0][0])).toLocaleString()}`);
+          console.log(`[DataManager] API Raw Last: ${new Date(parseInt(rawData[rawData.length - 1][0])).toLocaleString()}`);
+        }
+
+        this.candles = this.parseOKXData(rawData).reverse();
+        
+        if (this.candles.length > 0) {
+          console.log(`[DataManager] Parsed Latest Candle: ${new Date(this.candles[this.candles.length - 1].time).toLocaleString()}`);
+        }
+
         this.onDataUpdated(this.candles, false);
         this.setupWebSocket();
       } else {
