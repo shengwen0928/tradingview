@@ -45,7 +45,8 @@ export class DataManager {
     if (this.pingInterval) clearInterval(this.pingInterval);
 
     this.onStatusChange?.('connecting');
-    this.ws = new WebSocket('wss://ws.okx.com:443/ws/v5/public');
+    // 修正：K 線數據屬於 Business 頻道，而非 Public 頻道
+    this.ws = new WebSocket('wss://ws.okx.com:443/ws/v5/business');
 
     this.ws.onopen = () => {
       console.log('OKX WebSocket Connected ✅');
