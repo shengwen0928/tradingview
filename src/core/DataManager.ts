@@ -68,7 +68,10 @@ export class DataManager {
 
     this.ws.onmessage = (event) => {
       if (event.data === 'pong') return;
+      
       const res = JSON.parse(event.data);
+      // console.log('[WS Raw]', res); // 🚨 這裡會列印所有 OKX 回傳，包含錯誤訊息
+      
       if (res.arg?.channel === `candle${this.bar}` && res.data) {
         const raw = res.data[0];
         const candle: Candle = {

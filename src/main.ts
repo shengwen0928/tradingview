@@ -92,12 +92,16 @@ class ChartEngine {
     if (this.isRedrawRequested) return;
     this.isRedrawRequested = true;
     requestAnimationFrame(() => {
-      this.draw();
-      this.isRedrawRequested = false;
+      try {
+        this.draw();
+      } finally {
+        this.isRedrawRequested = false;
+      }
     });
   }
 
   private draw() {
+    // console.log('[Render] Drawing Frame...'); // 偵錯用
     const candles = this.dataManager.getCandles();
     const { start, end } = this.viewport.getVisibleRange();
     const { startIndex } = this.viewport.getRawRange(); // 取得精確的浮點數起始點
