@@ -86,8 +86,9 @@ export class ViewportEngine {
     const visibleCount = this.endIndex - this.startIndex;
     const newVisibleCount = visibleCount * scaleFactor;
 
-    // 限制顯示數量在 5 ~ 2000 根之間
-    if (newVisibleCount < 5 || newVisibleCount > 2000) return;
+    // 🚨 限制顯示數量在 5 ~ 372 根之間
+    // 這樣可以防止縮得太小導致 K 棒顯示異常
+    if (newVisibleCount < 5 || newVisibleCount > 372) return;
 
     // 以滑鼠位置作為 anchor 的核心邏輯
     const ratio = mouseX / canvasWidth;
