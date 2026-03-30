@@ -16,6 +16,7 @@ class ChartEngine {
   private renderEngine: RenderEngine;
   private interaction: InteractionEngine;
   private loader: LoaderController;
+  private connectionStatus: string = 'connecting';
 
   constructor() {
     const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
@@ -32,23 +33,8 @@ class ChartEngine {
         this.viewport.setDataCount(candles.length, isHistory);
       },
       (status) => {
-        const dot = document.getElementById('status-dot');
-        const text = document.getElementById('status-text');
-        if (!dot || !text) return;
-
-        if (status === 'connected') {
-          dot.style.background = '#26a69a';
-          dot.style.boxShadow = '0 0 5px #26a69a';
-          text.innerText = `BTC-USDT Live | Visible: ${Math.round(this.viewport.getVisibleCount())}`;
-        } else if (status === 'connecting') {
-          dot.style.background = '#ffa726';
-          dot.style.boxShadow = '0 0 5px #ffa726';
-          text.innerText = 'Connecting...';
-        } else {
-          dot.style.background = '#ef5350';
-          dot.style.boxShadow = '0 0 5px #ef5350';
-          text.innerText = 'Disconnected';
-        }
+        this.connectionStatus = status;
+        this.updateStatusUI();
       }
     );
 
@@ -137,6 +123,29 @@ class ChartEngine {
     const lastCandle = candles[candles.length - 1];
     if (lastCandle) {
       this.renderEngine.drawLastPriceLine(lastCandle.close, this.scaleEngine);
+    }
+
+    // 🚨 每一幀重繪時更新 UI 狀態文字
+    this.updateStatusUI();
+  }
+
+  private updateStatusUI() {
+    const dot = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    if (!dot || !text) return;
+
+    if (this.connectionStatus === 'connected') {
+      dot.style.background = '#26a69a';
+      dot.style.boxShadow = '0 0 5px #26a69a';
+      text.innerText = `BTC-USDT Live | Visible: ${Math.round(this.viewport.getVisibleCount())}`;
+    } else if (this.connectionStatus === 'connecting') {
+      dot.style.background = '#ffa726';
+      dot.style.boxShadow = '0 0 5px #ffa726';
+      text.innerText = 'Connecting...';
+    } else {
+      dot.style.background = '#ef5350';
+      dot.style.boxShadow = '0 0 5px #ef5350';
+      text.innerText = 'Disconnected';
     }
   }
 
