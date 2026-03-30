@@ -41,17 +41,22 @@ export class DataManager {
     await this.loadInitialData();
   }
 
+  // 🚨 新增：確保 WebSocket 頻道名稱的大小寫正確
+  private formatBarForWS(bar: string): string {
+    return bar.replace('h', 'H').replace('d', 'D').replace('w', 'W').replace('m', 'm'); // 分鐘維持小寫 m
+  }
+
   private parseBarToMs(bar: string): number {
-    const unit = bar.slice(-1);
+    const unit = bar.slice(-1).toLowerCase();
     const value = parseInt(bar.slice(0, -1)) || 1;
     switch (unit) {
       case 's': return value * 1000;
       case 'm': return value * 60000;
       case 'h': return value * 3600000;
-      case 'D': return value * 86400000;
-      case 'W': return value * 604800000;
-      case 'M': return value * 2592000000; // 概算 30 天
-      case 'Y': return value * 31536000000; // 概算 365 天
+      case 'd': return value * 86400000;
+      case 'w': return value * 604800000;
+      case 'M': return value * 2592000000; 
+      case 'y': return value * 31536000000;
       default: return 60000;
     }
   }
@@ -105,10 +110,11 @@ export class DataManager {
     this.ws.onopen = () => {
       console.log('OKX WebSocket Connected ✅');
       this.onStatusChange?.('connected');
+      const wsBar = this.formatBarForWS(this.bar); // 🚨 格式化為大寫
       const subMsg = {
         op: 'subscribe',
         args: [{
-          channel: `candle${this.bar}`,
+          channel: `candle${wsBar}`,
           instId: this.instId
         }]
       };
@@ -125,8 +131,9 @@ export class DataManager {
       if (event.data === 'pong') return;
       
       const res = JSON.parse(event.data);
+      const wsBar = this.formatBarForWS(this.bar); // 🚨 格式化為大寫
       
-      if (res.arg?.channel === `candle${this.bar}` && res.data) {
+      if (res.arg?.channel === `candle${wsBar}` && res.data) {
         const raw = res.data[0];
         const candle: Candle = {
           time: parseInt(raw[0]),
