@@ -33,19 +33,13 @@ export class RenderEngine {
     const contexts = [this.gridCtx, this.candleCtx, this.overlayCtx];
 
     canvases.forEach((canvas, i) => {
-      // 設定物理像素大小
       canvas.width = width * this.dpr;
       canvas.height = height * this.dpr;
-      
-      // 設定 CSS 顯示大小
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
-      // 縮放座標系統
       const ctx = contexts[i];
       ctx.scale(this.dpr, this.dpr);
-      
-      // 改善線條清晰度 (抗鋸齒優化)
       ctx.imageSmoothingEnabled = false;
     });
   }
@@ -66,8 +60,6 @@ export class RenderEngine {
     const drawHeight = scaleEngine.getDrawHeight();
 
     ctx.beginPath();
-    
-    // 🚨 修正：使用整數價格刻度繪製網格線
     const ticks = scaleEngine.getNiceTickSteps();
     for (const price of ticks) {
       const y = scaleEngine.priceToY(price);
@@ -76,7 +68,6 @@ export class RenderEngine {
     }
     ctx.stroke();
 
-    // 繪製右側與下方的軸線
     ctx.strokeStyle = '#363c4e';
     ctx.beginPath();
     ctx.moveTo(drawWidth, 0);
@@ -104,32 +95,31 @@ export class RenderEngine {
     
     ctx.fillStyle = '#929498';
     ctx.font = '11px sans-serif';
-    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
+    // 價格標籤
     const ticks = scaleEngine.getNiceTickSteps();
     for (const price of ticks) {
       const y = scaleEngine.priceToY(price);
-      // 價格標籤靠左對齊 (對齊右側軸線外)
       ctx.textAlign = 'left';
       ctx.fillText(price.toFixed(2), drawWidth + 5, y);
     }
 
     ctx.textAlign = 'center';
-    
     if (candles.length === 0) return;
 
-    // 🚨 關鍵：動態決定時間軸刻度頻率
-    const firstTime = getTimeAtIndex(0);
-    const secondTime = getTimeAtIndex(1);
-    const interval = Math.abs(secondTime - firstTime);
+    // 取得當前週期跨度
+    const t0 = getTimeAtIndex(0);
+    const t1 = getTimeAtIndex(1);
+    const interval = Math.abs(t1 - t0);
 
     const visibleCount = drawWidth / (candleWidth + spacing);
+    const startIndex = Math.floor(exactStartIndex);
     const endIndex = Math.ceil(exactStartIndex + visibleCount);
     
     let lastLabelX = -100;
 
-    for (let idx = Math.floor(exactStartIndex); idx <= endIndex; idx++) {
+    for (let idx = startIndex; idx <= endIndex; idx++) {
       const time = getTimeAtIndex(idx);
       const date = new Date(time);
       
@@ -137,34 +127,37 @@ export class RenderEngine {
       let label = "";
       let isBold = false;
 
-      const mins = date.getUTCMinutes();
-      const secs = date.getUTCSeconds();
-      const hours = date.getUTCHours();
-      const day = date.getUTCDate();
-      const month = date.getUTCMonth();
-      const year = date.getUTCFullYear();
+      // 使用當地時間判斷，增加易讀性 (或可改回 UTC，視需求而定)
+      // 這裡改回跟 eab11dc 一致的當地時間判斷，但保留對齊邏輯
+      const mins = date.getMinutes();
+      const hours = date.getHours();
+      const day = date.getDate();
+      const month = date.getMonth();
+      const year = date.getFullYear();
 
-      // 🚨 智能標籤邏輯
-      if (interval < 60000) { // 秒級 (1s)
-        shouldShow = secs % 15 === 0;
-        label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      } else if (interval < 3600000) { // 分鐘級 (1m - 30m)
-        shouldShow = mins % 5 === 0 && secs === 0;
-        label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-      } else if (interval < 86400000) { // 小時級 (1H - 12H)
-        shouldShow = hours % 4 === 0 && mins === 0 && secs === 0;
+      if (interval < 60000) { // 秒
+        shouldShow = date.getSeconds() % 15 === 0;
+        label = `${hours}:${mins.toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+      } else if (interval < 3600000) { // 分
+        shouldShow = mins % 5 === 0;
+        label = `${hours}:${mins.toString().padStart(2, '0')}`;
+      } else if (interval < 86400000) { // 時
+        shouldShow = hours % 4 === 0 && mins === 0;
         label = `${hours.toString().padStart(2, '0')}:00`;
-      } else if (interval < 604800000) { // 日級 (1D - 5D)
-        shouldShow = hours === 0 && mins === 0 && secs === 0;
+      } else if (interval < 604800000) { // 日
+        shouldShow = hours === 0 && mins === 0;
         label = `${month + 1}/${day}`;
-      } else { // 週級/月級 以上
-        shouldShow = day === 1 && hours === 0 && mins === 0 && secs === 0;
+      } else { // 月/年
+        // 🚨 修正月線：只要月份有變就顯示
+        const prevTime = getTimeAtIndex(idx - 1);
+        const prevDate = new Date(prevTime);
+        shouldShow = month !== prevDate.getMonth();
         label = `${month + 1}月`;
       }
 
-      // 特別標註：新年或新的一天 (高優先級)
-      const isNewYear = month === 0 && day === 1 && hours === 0 && mins === 0 && secs === 0;
-      const isNewDay = hours === 0 && mins === 0 && secs === 0;
+      // 高優先級標籤
+      const isNewYear = month === 0 && day === 1 && hours === 0;
+      const isNewDay = hours === 0 && mins === 0;
 
       if (isNewYear) {
         shouldShow = true;
@@ -181,7 +174,6 @@ export class RenderEngine {
 
       if (centerX < 0 || centerX > drawWidth) continue;
 
-      // 密度檢查：標籤之間至少間隔 80 像素
       if (shouldShow && (centerX > lastLabelX + 80 || isBold)) {
         ctx.fillStyle = isBold ? '#fff' : '#929498';
         ctx.fillText(label, centerX, drawHeight + 15);
@@ -190,11 +182,6 @@ export class RenderEngine {
     }
   }
 
-  /**
-   * 繪製 K 線
-   * @param sliceStartIndex 切片數據在原數組中的開始 index
-   * @param exactStartIndex 視窗目前精確的開始 index (浮點數)
-   */
   public drawCandles(
     candles: Candle[],
     sliceStartIndex: number,
@@ -206,18 +193,14 @@ export class RenderEngine {
     const ctx = this.candleCtx;
     const drawWidth = scaleEngine.getDrawWidth();
     const drawHeight = scaleEngine.getDrawHeight();
-    
     ctx.clearRect(0, 0, this.width, this.height);
 
-    // 🚨 裁剪區域：確保 K 棒繪製被限制在左側繪圖區內
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, 0, drawWidth, drawHeight);
     ctx.clip();
 
     const bodyWidth = Math.max(0.1, candleWidth);
-    
-    // 🚨 效能與對齊優化：如果 K 棒太細 (例如小於 1.5px)，直接畫一條線即可
     const isVeryThin = bodyWidth < 1.5;
 
     for (let i = 0; i < candles.length; i++) {
@@ -225,7 +208,6 @@ export class RenderEngine {
       const actualIndex = sliceStartIndex + i;
       const x = scaleEngine.indexToX(actualIndex, exactStartIndex, candleWidth, spacing);
       
-      // 🚨 這裡改用 drawWidth 判斷，避免越過右側價格軸
       if (x + bodyWidth < 0 || x > drawWidth) continue;
 
       const trueCenter = x + bodyWidth / 2;
@@ -236,49 +218,36 @@ export class RenderEngine {
       const yHigh = scaleEngine.priceToY(candle.high);
       const yLow = scaleEngine.priceToY(candle.low);
 
-      const isUp = candle.close >= candle.open;
-      const color = isUp ? '#26a69a' : '#ef5350';
+      const color = candle.close >= candle.open ? '#26a69a' : '#ef5350';
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
 
       if (isVeryThin) {
-        // 🚨 極小縮放模式：只畫一條線，解決「雙線」問題
         ctx.beginPath();
         ctx.moveTo(centerX, Math.floor(yHigh));
         ctx.lineTo(centerX, Math.floor(yLow));
         ctx.stroke();
       } else {
-        // 標準模式：實體 + 影線
         const rectW = Math.max(1, Math.floor(bodyWidth));
         const rectX = Math.floor(centerX - rectW / 2);
-
-        // 1. 影線
         ctx.beginPath();
         ctx.moveTo(centerX, Math.floor(yHigh));
         ctx.lineTo(centerX, Math.floor(yLow));
         ctx.stroke();
-
-        // 2. 實體
         const rectY = Math.floor(Math.min(yOpen, yClose));
         const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
         ctx.fillRect(rectX, rectY, rectW, rectH);
       }
     }
-
-    ctx.restore(); // 🚨 解除裁剪
+    ctx.restore();
   }
 
-  /**
-   * 繪製十字線
-   */
   public drawCrosshair(mouseX: number, mouseY: number, price: string, time: string): void {
     const ctx = this.overlayCtx;
     ctx.clearRect(0, 0, this.width, this.height);
-
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = '#758696';
     ctx.lineWidth = 1;
-    
     ctx.beginPath();
     ctx.moveTo(Math.floor(mouseX) + 0.5, 0);
     ctx.lineTo(Math.floor(mouseX) + 0.5, this.height);
@@ -286,31 +255,22 @@ export class RenderEngine {
     ctx.lineTo(this.width, Math.floor(mouseY) + 0.5);
     ctx.stroke();
     ctx.setLineDash([]);
-
-    // 標籤樣式
     this.drawLabel(ctx, price, this.width - 40, mouseY, '#363c4e');
     this.drawLabel(ctx, time, mouseX, this.height - 10, '#363c4e');
   }
 
-  /**
-   * 繪製最新成交價橫線
-   */
   public drawLastPriceLine(price: number, color: string, scaleEngine: ScaleEngine): void {
-    const ctx = this.candleCtx; // 繪製在 K 線層，或可分層
+    const ctx = this.candleCtx;
     const y = scaleEngine.priceToY(price);
-    
     ctx.save();
     ctx.setLineDash([2, 2]);
-    ctx.strokeStyle = color; // 使用傳入的顏色
+    ctx.strokeStyle = color;
     ctx.lineWidth = 1;
-
     ctx.beginPath();
     ctx.moveTo(0, y);
     ctx.lineTo(this.width, y);
     ctx.stroke();
     ctx.restore();
-
-    // 繪製價格標籤
     this.drawLabel(ctx, price.toFixed(2), this.width - 40, y, color);
   }
 
@@ -320,10 +280,8 @@ export class RenderEngine {
     const textWidth = ctx.measureText(text).width;
     const rectW = textWidth + padding * 2;
     const rectH = 18;
-
     ctx.fillStyle = bgColor;
     ctx.fillRect(x - rectW / 2, y - rectH / 2, rectW, rectH);
-    
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
