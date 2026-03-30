@@ -77,7 +77,10 @@ export class ViewportEngine {
     const candlesMoved = deltaX / (this.candleWidth + this.spacing);
     const visibleCount = this.endIndex - this.startIndex;
     
-    this.startIndex = Math.max(0, Math.min(this.totalDataCount - visibleCount, this.startIndex + candlesMoved));
+    // 🚨 修正：允許滑動到最右側時，最新 K 棒顯示在中間
+    // 最大 startIndex 限制從 (total - visible) 改為 (total - visible/2)
+    const maxStartIndex = this.totalDataCount - visibleCount / 2;
+    this.startIndex = Math.max(0, Math.min(maxStartIndex, this.startIndex + candlesMoved));
     this.endIndex = this.startIndex + visibleCount;
     
     this.onRangeChanged();
@@ -88,21 +91,19 @@ export class ViewportEngine {
     const newVisibleCount = visibleCount * scaleFactor;
 
     // 🚨 限制顯示數量在 5 ~ 372 根之間
-    // 這樣可以防止縮得太小導致 K 棒顯示異常
     if (newVisibleCount < 5 || newVisibleCount > 372) return;
 
-    // 以滑鼠位置作為 anchor 的核心邏輯
     const ratio = mouseX / canvasWidth;
     const mouseIndex = this.startIndex + visibleCount * ratio;
 
     this.startIndex = Math.max(0, mouseIndex - newVisibleCount * ratio);
-    this.endIndex = Math.min(this.totalDataCount, this.startIndex + newVisibleCount);
     
-    // 確保縮放後重新校準位移，防止邊界漂移
-    if (this.endIndex === this.totalDataCount) {
-      this.startIndex = this.endIndex - newVisibleCount;
-    }
-
+    // 🚨 修正：縮放時也遵循「最新 K 棒可置中」的邊界邏輯
+    const maxStartIndex = this.totalDataCount - newVisibleCount / 2;
+    if (this.startIndex > maxStartIndex) this.startIndex = maxStartIndex;
+    
+    this.endIndex = this.startIndex + newVisibleCount;
+    
     this.updateCandleWidth(canvasWidth);
     this.onRangeChanged();
   }
