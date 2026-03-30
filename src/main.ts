@@ -4,7 +4,7 @@ import { ScaleEngine } from './core/ScaleEngine';
 import { RenderEngine } from './core/RenderEngine';
 import { InteractionEngine } from './core/InteractionEngine';
 import { LoaderController } from './core/LoaderController';
-import { formatPrice, formatTime } from './utils/math';
+import { formatPrice, formatTime, formatFullTime } from './utils/math';
 
 /**
  * 圖表引擎核心進入點
@@ -140,7 +140,7 @@ class ChartEngine {
     const dataIndex = Math.floor(startIndex + visibleCount * ratio);
     
     const candle = candles[dataIndex];
-    const timeStr = candle ? formatTime(candle.time) : '';
+    const timeStr = candle ? formatFullTime(candle.time) : '';
     const priceStr = formatPrice(price);
 
     this.renderEngine.drawCrosshair(mouseX, mouseY, priceStr, timeStr);
