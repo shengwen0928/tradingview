@@ -1,0 +1,21 @@
+PS C:\Users\admin\Desktop\tradingviewer\market> npx ts-node src/test-phase3.ts
+--- 測試 1: 測試多交易所抓取 (預設優先順序) ---
+成功從優先交易所抓取 5 筆 K 線
+最後一筆時間戳: 1774857600000
+
+--- 測試 2: 測試 Lazy Load (回溯歷史) ---
+正在請求 2026-03-29T08:36:42.888Z 以前的數據...
+成功抓取歷史數據，第一筆時間戳: 1774756800000
+資料是否早於請求時間: true
+
+--- 測試 3: 測試即時訂閱 (觀察 DataManager 輸出) ---
+[DataManager] Starting Binance WS subscription for ETH/USDT 1m
+[BinanceConnector] WebSocket connected to ethusdt@kline_1m
+收到 ETH/USDT 更新: {
+  timestamp: 1774859760000,
+  open: 2062.53,
+  high: 2064.42,
+  low: 2062.53,
+  close: 2064.28,
+  volume: 164.6821
+}

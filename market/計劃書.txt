@@ -1,0 +1,240 @@
+🧩 一、你的系統本質（重新定義）
+
+你不是在寫 backend，而是在做：
+
+Market Data Platform
+= Data Ingestion + Stream Processing + Storage + API + Distribution
+🏗 二、我幫你設計「最終架構」（先看全貌）
+                ┌────────────────────┐
+                │   Global Sources    │
+                │ Exchanges / APIs    │
+                └─────────┬──────────┘
+                          ↓
+                ┌────────────────────┐
+                │   Ingestion Layer   │
+                └─────────┬──────────┘
+                          ↓
+                ┌────────────────────┐
+                │ Stream Processing   │
+                └─────────┬──────────┘
+                          ↓
+                ┌────────────────────┐
+                │ Normalization Core  │
+                └─────────┬──────────┘
+                          ↓
+     ┌───────────────┬───────────────┬───────────────┐
+     ↓               ↓               ↓
+ Hot Storage     Query Storage   Cold Storage
+ (Redis)         (ClickHouse)    (Object Storage)
+
+                          ↓
+                ┌────────────────────┐
+                │ Aggregation API     │
+                └─────────┬──────────┘
+                          ↓
+                ┌────────────────────┐
+                │ WebSocket Gateway   │
+                └────────────────────┘
+🧱 三、你要自己做的「核心系統」
+
+我幫你拆成 6 大系統（這才是重點）
+
+1️⃣ Data Ingestion System（資料接入）
+
+👉 你要寫：
+
+Crypto Connector（Binance 等）
+Stock Connector（Yahoo / API）
+TW Connector（官方資料）
+Macro Connector
+
+👉 每個都要：
+
+REST 抓歷史
+WebSocket 抓即時
+retry / backoff
+rate limit 控制
+2️⃣ Stream Processing（資料流引擎）
+
+👉 你要做：
+
+queue（Kafka 或自己簡化版）
+pipeline：
+raw data → clean → normalize → distribute
+
+👉 功能：
+
+去重
+排序（時間）
+tick → K線
+修正異常值
+3️⃣ Normalization Core（🔥最關鍵）
+
+👉 這是整個系統的「大腦」
+
+你要統一：
+
+symbol
+market
+timeframe
+price precision
+timezone
+🔥 Symbol Mapping（超級關鍵）
+
+不同來源：
+
+BTCUSDT (Binance)
+BTC-USD (Coinbase)
+
+👉 你要做：
+
+統一 → BTC/USD
+4️⃣ Storage System（資料儲存）
+
+你要做三層：
+
+🔴 Hot（即時）
+Redis
+最新 candle
+🟡 Warm（查詢）
+ClickHouse（最佳）
+👉 查 K 線超快
+🔵 Cold（歷史）
+檔案 / S3
+5️⃣ Aggregation API（對外服務）
+
+👉 這是你 chart 用的
+
+GET /kline
+GET /symbols
+GET /markets
+
+👉 要支援：
+
+lazy load
+多市場
+多 timeframe
+6️⃣ Realtime Gateway
+
+👉 WebSocket server
+
+功能：
+
+訂閱 symbol
+推送最新 K 線
+fan-out（多 client）
+🔄 四、完整資料流（你要做到這樣）
+📡 即時資料
+Exchange
+ → WebSocket
+ → Ingestion
+ → Processing
+ → Normalize
+ → Redis
+ → WebSocket 推送
+📚 歷史資料
+API / 爬蟲
+ → Ingestion
+ → Normalize
+ → DB（ClickHouse）
+ → API
+⬅️ Lazy Load
+Client → API(beforeTime)
+       → DB 查詢
+       → 回傳
+🧠 五、你「一定要設計」的關鍵
+🔥 1. Symbol System
+
+👉 你要有：
+
+Global Symbol ID（自己定）
+
+例如：
+
+ID: 1001
+symbol: BTC/USD
+market: crypto
+sources: [Binance, Coinbase]
+🔥 2. Timeframe 系統
+1m / 5m / 1h / 1d
+
+👉 要支援：
+
+即時計算
+DB 預存
+🔥 3. 資料品質系統
+
+👉 要有：
+
+missing data 補
+outlier filter
+重複 제거
+🔥 4. 時間系統
+
+👉 全部：
+
+UTC timestamp（毫秒）
+⚠️ 六、你會死的地方（我直接講）
+❗1. Symbol mapping（最大坑）
+
+👉 不同交易所 naming 完全不同
+
+❗2. 時間對齊
+
+👉 candle close 不一致
+
+❗3. API 限制
+
+👉 會被 ban / rate limit
+
+❗4. 資料不一致
+
+👉 不同來源價格不同
+
+❗5. 成本（如果上真實 feed）
+
+👉 股票資料很貴
+
+🚀 七、我幫你規劃「實作路線」（最重要）
+🟢 Phase 1（你現在該做）
+
+👉 只做：
+
+Crypto（用 Binance）
+Ingestion + Normalize + API
+
+👉 目標：
+
+✔ 可抓
+✔ 可存
+✔ 可查
+
+🟡 Phase 2
+
+👉 加：
+
+WebSocket realtime
+Redis
+Lazy load
+🔴 Phase 3
+
+👉 加：
+
+多交易所（crypto）
+symbol mapping
+⚫ Phase 4
+
+👉 加：
+
+股票（API）
+台股
+🧨 Phase 5（真正困難）
+
+👉 全市場整合
+
+🧩 八、一句話總結
+
+👉 你現在在做的不是「抓資料」
+👉 而是：
+
+打造一個金融資料平台（Financial Data Platform）

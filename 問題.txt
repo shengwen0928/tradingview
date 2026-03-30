@@ -1,0 +1,33 @@
+DataManager.ts:145 [DataManager] Fetching initial data from backend: http://localhost:3001/klines?id=BTC/USDT&interval=1m
+IndicatorEngine.ts:33 Uncaught TypeError: Cannot read properties of undefined (reading 'close')
+    at IndicatorEngine.calculateEMA (IndicatorEngine.ts:33:30)
+    at ChartEngine.draw (main.ts:291:40)
+    at main.ts:250:14
+DataManager.ts:151 [DataManager] Received 500 initial candles
+DataManager.ts:156 [DataManager] Latest Candle: 2026/3/30 下午4:47:00
+DataManager.ts:173 [DataManager] Connecting to Backend WebSocket: ws://localhost:3002
+DataManager.ts:179 [DataManager] Backend WebSocket Connected ✅
+DataManager.ts:187 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
+DataManager.ts:254 [Backend Update] Price: 67747.07
+DataManager.ts:254 [Backend Update] Price: 67747.07
+DataManager.ts:254 [Backend Update] Price: 67737.86
+DataManager.ts:254 [Backend Update] Price: 67737.87
+DataManager.ts:254 [Backend Update] Price: 67737.87
+DataManager.ts:260 [Backend New Candle] Time: 下午4:48:00
+DataManager.ts:254 [Backend Update] Price: 67737.87
+DataManager.ts:254 [Backend Update] Price: 67737.87
+DataManager.ts:254 [Backend Update] Price: 67737.86
+DataManager.ts:254 [Backend Update] Price: 67737.86
+DataManager.ts:254 [Backend Update] Price: 67737.87
+DataManager.ts:254 [Backend Update] Price: 67728.01
+DataManager.ts:254 [Backend Update] Price: 67716.01
+DataManager.ts:254 [Backend Update] Price: 67716.01
+DataManager.ts:254 [Backend Update] Price: 67716
+DataManager.ts:254 [Backend Update] Price: 67716.01
+DataManager.ts:254 [Backend Update] Price: 67711.51
+DataManager.ts:254 [Backend Update] Price: 67689.61
+DataManager.ts:254 [Backend Update] Price: 67689.69
+DataManager.ts:254 [Backend Update] Price: 67689.7
+DataManager.ts:254 [Backend Update] Price: 67697.13
+DataManager.ts:254 [Backend Update] Price: 67697.14
+DataManager.ts:254 [Backend Update] Price: 67697.13
