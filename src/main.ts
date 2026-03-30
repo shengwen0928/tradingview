@@ -142,7 +142,9 @@ class ChartEngine {
     // 繪製最新成交價橫線
     const lastCandle = candles[candles.length - 1];
     if (lastCandle) {
-      this.renderEngine.drawLastPriceLine(lastCandle.close, this.scaleEngine);
+      const isUp = lastCandle.close >= lastCandle.open;
+      const color = isUp ? '#26a69a' : '#ef5350';
+      this.renderEngine.drawLastPriceLine(lastCandle.close, color, this.scaleEngine);
     }
 
     // 🚨 每一幀重繪時更新 UI 狀態文字

@@ -265,13 +265,13 @@ export class RenderEngine {
   /**
    * 繪製最新成交價橫線
    */
-  public drawLastPriceLine(price: number, scaleEngine: ScaleEngine): void {
+  public drawLastPriceLine(price: number, color: string, scaleEngine: ScaleEngine): void {
     const ctx = this.candleCtx; // 繪製在 K 線層，或可分層
     const y = scaleEngine.priceToY(price);
     
     ctx.save();
     ctx.setLineDash([2, 2]);
-    ctx.strokeStyle = '#26a69a'; // 使用綠色代表最新價
+    ctx.strokeStyle = color; // 使用傳入的顏色
     ctx.lineWidth = 1;
 
     ctx.beginPath();
@@ -281,7 +281,7 @@ export class RenderEngine {
     ctx.restore();
 
     // 繪製價格標籤
-    this.drawLabel(ctx, price.toFixed(2), this.width - 40, y, '#26a69a');
+    this.drawLabel(ctx, price.toFixed(2), this.width - 40, y, color);
   }
 
   private drawLabel(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, bgColor: string): void {
