@@ -45,17 +45,20 @@ export class DataManager {
     if (this.pingInterval) clearInterval(this.pingInterval);
 
     this.onStatusChange?.('connecting');
-    this.ws = new WebSocket('wss://ws.okx.com:443/ws/v5/public');
+    // 使用全球通用 AWS 節點，穩定性更高
+    this.ws = new WebSocket('wss://wsaws.okx.com:443/ws/v5/public');
 
     this.ws.onopen = () => {
       console.log('OKX WebSocket Connected ✅');
       this.onStatusChange?.('connected');
+      
+      // 交叉測試：訂閱 tickers (通常最穩定) 與 candle1m
       const subMsg = {
         op: 'subscribe',
-        args: [{
-          channel: `candle${this.bar}`,
-          instId: this.instId
-        }]
+        args: [
+          { channel: 'tickers', instId: this.instId },
+          { channel: `candle${this.bar}`, instId: this.instId }
+        ]
       };
       this.ws?.send(JSON.stringify(subMsg));
 
@@ -68,8 +71,15 @@ export class DataManager {
 
     this.ws.onmessage = (event) => {
       if (event.data === 'pong') return;
-      console.log('WS Raw Message:', event.data); // 🚨 打印所有原始訊息
+      console.log('WS Message:', event.data); 
       const res = JSON.parse(event.data);
+      
+      // 處理 tickers 數據 (僅作偵錯)
+      if (res.arg?.channel === 'tickers') {
+        // console.log('[Tickers Update]', res.data[0].last);
+      }
+
+      // 處理 K 線數據
       if (res.arg?.channel === `candle${this.bar}` && res.data) {
         const raw = res.data[0];
         const candle: Candle = {
