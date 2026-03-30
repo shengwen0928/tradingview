@@ -18,9 +18,28 @@ class ChartEngine {
   private loader: LoaderController;
   private connectionStatus: string = 'connecting';
   private currentSymbol: string = 'BTC-USDT'; 
-  private currentTimeframe: string = '1m'; // 🚨 新增：記錄當前週期
-  private allTimeframes = ['1s', '1m', '3m', '5m', '15m', '30m', '1H', '2H', '4H', '1D', '1W', '1M'];
+  private currentTimeframe: string = '1m'; 
+  private allTimeframes = [
+    '1s', '1m', '3m', '5m', '15m', '30m', 
+    '1H', '2H', '4H', '6H', '12H', 
+    '1D', '2D', '3D', '5D', '1W', '1M', '3M'
+  ];
   private favorites: string[] = []; // 我的最愛
+
+  // 🚨 新增：週期權重排序 (用於快捷列)
+  private sortTimeframes(tfs: string[]): string[] {
+    const weights: { [key: string]: number } = {
+      's': 1, 'm': 60, 'H': 3600, 'D': 86400, 'W': 604800, 'M': 2592000
+    };
+    return [...tfs].sort((a, b) => {
+      const getVal = (s: string) => {
+        const val = parseInt(s.slice(0, -1)) || 1;
+        const unit = s.slice(-1);
+        return val * (weights[unit] || 0);
+      };
+      return getVal(a) - getVal(b);
+    });
+  }
 
   constructor() {
     const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
@@ -141,7 +160,11 @@ class ChartEngine {
   private renderTfFavorites() {
     const container = document.getElementById('tf-favorites')!;
     container.innerHTML = '';
-    this.favorites.forEach(tf => {
+    
+    // 🚨 排序後再渲染
+    const sortedFavs = this.sortTimeframes(this.favorites);
+    
+    sortedFavs.forEach(tf => {
       const btn = document.createElement('button');
       btn.className = `fav-btn ${this.currentTimeframe === tf ? 'active' : ''}`;
       btn.innerText = tf;
