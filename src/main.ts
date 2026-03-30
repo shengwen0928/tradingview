@@ -62,6 +62,7 @@ class ChartEngine {
       },
       (mouseX, scale) => {
         this.viewport.handleZoom(mouseX, scale, this.renderEngine.getLogicalWidth());
+        this.loader.checkLoadMore(); // 🚨 補回：縮放時也檢查載入
       },
       (mouseX, mouseY) => {
         this.updateCrosshair(mouseX, mouseY);
