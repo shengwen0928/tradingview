@@ -99,8 +99,9 @@ export class DataManager {
 
   public async loadMoreHistory(beforeTime: number): Promise<Candle[]> {
     try {
-      const url = `https://www.okx.com/api/v5/market/candles?instId=${this.instId}&bar=${this.bar}&after=${beforeTime}&limit=100`;
-      console.log(`[API] Fetching history: ${url}`);
+      // 🚨 改用 history-candles，這是獲取深層歷史資料的正確端點
+      const url = `https://www.okx.com/api/v5/market/history-candles?instId=${this.instId}&bar=${this.bar}&after=${beforeTime}&limit=100`;
+      console.log(`[API] Fetching DEEP history: ${url}`);
       const response = await fetch(url);
       const result = await response.json();
 
