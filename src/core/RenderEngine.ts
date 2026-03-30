@@ -59,22 +59,72 @@ export class RenderEngine {
   public drawGrid(scaleEngine: ScaleEngine): void {
     const ctx = this.gridCtx;
     ctx.clearRect(0, 0, this.width, this.height);
-    ctx.strokeStyle = '#232631'; // 稍淡的網格色
+    ctx.strokeStyle = '#232631'; 
     ctx.lineWidth = 1;
-    ctx.beginPath();
+    
+    const drawWidth = scaleEngine.getDrawWidth();
+    const drawHeight = scaleEngine.getDrawHeight();
 
+    ctx.beginPath();
     const { min, max } = scaleEngine.getMinMax();
     const range = max - min;
     
-    // 繪製橫向價格線
+    // 繪製橫向價格線 (僅限繪圖區)
     const step = range / 10;
     for (let i = 0; i <= 10; i++) {
       const price = min + step * i;
       const y = scaleEngine.priceToY(price);
       ctx.moveTo(0, y);
-      ctx.lineTo(this.width, y);
+      ctx.lineTo(drawWidth, y);
     }
     ctx.stroke();
+
+    // 繪製右側與下方的軸線
+    ctx.strokeStyle = '#363c4e';
+    ctx.beginPath();
+    ctx.moveTo(drawWidth, 0);
+    ctx.lineTo(drawWidth, drawHeight);
+    ctx.moveTo(0, drawHeight);
+    ctx.lineTo(drawWidth, drawHeight);
+    ctx.stroke();
+  }
+
+  /**
+   * 繪製價格軸與時間軸的刻度文字
+   */
+  public drawAxes(candles: Candle[], startIndex: number, scaleEngine: ScaleEngine): void {
+    const ctx = this.gridCtx; // 使用網格層繪製刻度
+    const drawWidth = scaleEngine.getDrawWidth();
+    const drawHeight = scaleEngine.getDrawHeight();
+    
+    ctx.fillStyle = '#929498';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+
+    // 1. 繪製價格刻度 (右側)
+    const { min, max } = scaleEngine.getMinMax();
+    const range = max - min;
+    for (let i = 0; i <= 10; i++) {
+      const price = min + (range / 10) * i;
+      const y = scaleEngine.priceToY(price);
+      ctx.fillText(price.toFixed(2), drawWidth + 5, y);
+    }
+
+    // 2. 繪製時間刻度 (下方)
+    // 每隔約 50 像素找一根 K 棒顯示時間
+    ctx.textAlign = 'center';
+    const interval = Math.max(1, Math.floor(100 / (drawWidth / candles.length)));
+    for (let i = 0; i < candles.length; i += interval) {
+      const candle = candles[i];
+      const actualIndex = startIndex + i;
+      // 這裡需要直接呼叫 scaleEngine 的計算邏輯，或暫時簡化
+      const x = (actualIndex - startIndex) * (drawWidth / candles.length); 
+      
+      const date = new Date(candle.time);
+      const timeStr = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+      ctx.fillText(timeStr, x, drawHeight + 15);
+    }
   }
 
   /**

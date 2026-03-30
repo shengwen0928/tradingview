@@ -111,6 +111,7 @@ class ChartEngine {
 
     this.scaleEngine.updateScale(visibleCandles);
     this.renderEngine.drawGrid(this.scaleEngine);
+    this.renderEngine.drawAxes(visibleCandles, start, this.scaleEngine);
     
     // 渲染時傳遞：資料切片、該切片的第一根索引、精確的視窗起始索引
     this.renderEngine.drawCandles(
