@@ -112,18 +112,27 @@ export class RenderEngine {
     }
 
     // 2. 繪製時間刻度 (下方)
-    // 每隔約 50 像素找一根 K 棒顯示時間
     ctx.textAlign = 'center';
-    const interval = Math.max(1, Math.floor(100 / (drawWidth / candles.length)));
+    const interval = Math.max(1, Math.floor(100 / (drawWidth / (candles.length || 1))));
+    let lastDateStr = "";
+
     for (let i = 0; i < candles.length; i += interval) {
       const candle = candles[i];
       const actualIndex = startIndex + i;
-      // 這裡需要直接呼叫 scaleEngine 的計算邏輯，或暫時簡化
-      const x = (actualIndex - startIndex) * (drawWidth / candles.length); 
+      const x = (actualIndex - startIndex) * (drawWidth / (candles.length || 1)); 
       
       const date = new Date(candle.time);
+      const dateStr = `${date.getMonth() + 1}/${date.getDate()}`;
       const timeStr = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-      ctx.fillText(timeStr, x, drawHeight + 15);
+      
+      let label = timeStr;
+      // 🚨 如果日期與上一個標籤不同，則顯示日期
+      if (dateStr !== lastDateStr) {
+        label = `${dateStr} ${timeStr}`;
+        lastDateStr = dateStr;
+      }
+      
+      ctx.fillText(label, x, drawHeight + 15);
     }
   }
 
