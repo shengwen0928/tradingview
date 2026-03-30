@@ -100,14 +100,18 @@ export class DataManager {
   public async loadMoreHistory(beforeTime: number): Promise<Candle[]> {
     try {
       const url = `https://www.okx.com/api/v5/market/candles?instId=${this.instId}&bar=${this.bar}&after=${beforeTime}&limit=100`;
+      console.log(`[API] Fetching history: ${url}`);
       const response = await fetch(url);
       const result = await response.json();
 
       if (result.code === '0') {
         const moreData = this.parseOKXData(result.data).reverse();
+        console.log(`[API] Received ${moreData.length} candles from OKX`);
         this.candles = [...moreData, ...this.candles];
-        this.onDataUpdated(this.candles, true); // 🚨 標記為歷史
+        this.onDataUpdated(this.candles, true); // 標記為歷史
         return moreData;
+      } else {
+        console.error('[API] Error loading history:', result.msg);
       }
     } catch (error) {
       console.error('Failed to load more OKX history:', error);
