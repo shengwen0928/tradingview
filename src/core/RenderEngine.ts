@@ -123,7 +123,6 @@ export class RenderEngine {
     let lastLabelX = -100;
 
     for (let idx = Math.floor(exactStartIndex); idx <= endIndex; idx++) {
-      // 🚨 使用精確的回調獲取時間
       const time = getTimeAtIndex(idx);
       const date = new Date(time);
       
@@ -132,22 +131,31 @@ export class RenderEngine {
       let isBold = false;
 
       const mins = date.getUTCMinutes();
-      const secs = date.getUTCSeconds();
       const hours = date.getUTCHours();
+      const month = date.getUTCMonth();
+      const day = date.getUTCDate();
+      const year = date.getUTCFullYear();
 
-      // 🚨 統一使用 UTC 邏輯判斷邊界 (符合 OKX 規範)
-      const isNewDay = hours === 0 && mins === 0 && secs === 0;
+      // 🚨 根據週期調整標籤顯示邏輯
+      const isNewYear = month === 0 && day === 1 && hours === 0 && mins === 0;
+      const isNewMonth = day === 1 && hours === 0 && mins === 0;
+      const isNewDay = hours === 0 && mins === 0;
 
-      // 根據座標計算當前的「密度」來決定顯示頻率 (這裡簡化處理)
-      if (isNewDay) {
+      if (isNewYear) {
         shouldShow = true;
         isBold = true;
-        label = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
-      } else {
-        if (mins % 5 === 0 && secs === 0) {
-          shouldShow = true;
-          label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-        }
+        label = year.toString(); // 年份更替顯示年份
+      } else if (isNewMonth) {
+        shouldShow = true;
+        label = (month + 1).toString() + "月";
+      } else if (isNewDay) {
+        // 在日線或更小週期，顯示月/日
+        shouldShow = true;
+        label = `${month + 1}/${day}`;
+      } else if (mins % 5 === 0 && date.getUTCSeconds() === 0) {
+        // 在分鐘線，顯示時:分
+        shouldShow = true;
+        label = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
       }
 
       const x = scaleEngine.indexToX(idx, exactStartIndex, candleWidth, spacing);
@@ -155,7 +163,9 @@ export class RenderEngine {
 
       if (centerX < 0 || centerX > drawWidth) continue;
 
-      if (shouldShow && centerX > lastLabelX + 70) {
+      // 避免標籤過於擁擠 (月線模式下間距可稍微放寬)
+      const minGap = isBold ? 80 : 60;
+      if (shouldShow && centerX > lastLabelX + minGap) {
         ctx.fillStyle = isBold ? '#fff' : '#929498';
         ctx.fillText(label, centerX, drawHeight + 15);
         lastLabelX = centerX;
