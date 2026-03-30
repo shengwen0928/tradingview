@@ -42,9 +42,18 @@ class ChartEngine {
 
     this.interaction = new InteractionEngine(
       overlayCanvas,
-      (deltaX) => {
-        this.viewport.handleScroll(deltaX);
+      (deltaX, deltaY, zone) => {
+        if (zone === 'price') {
+          // 🚨 右側價格軸：僅垂直移動
+          this.scaleEngine.handleVerticalPan(deltaY);
+        } else {
+          // 🚨 圖表區域：自由移動 (上下左右)
+          this.viewport.handleScroll(deltaX);
+          this.scaleEngine.handleVerticalPan(deltaY);
+        }
+        
         this.loader.checkLoadMore();
+        this.requestRedraw();
       },
       (mouseX, mouseY, scale, zone) => {
         if (zone === 'price') {
