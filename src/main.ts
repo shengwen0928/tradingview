@@ -112,7 +112,16 @@ class ChartEngine {
 
     this.scaleEngine.updateScale(visibleCandles);
     this.renderEngine.drawGrid(this.scaleEngine);
-    this.renderEngine.drawAxes(visibleCandles, start, this.scaleEngine);
+    
+    // 更新：傳遞精確的範圍參數以對齊時間軸刻度
+    this.renderEngine.drawAxes(
+      visibleCandles, 
+      start, 
+      startIndex, 
+      candleWidth, 
+      2, 
+      this.scaleEngine
+    );
     
     // 渲染時傳遞：資料切片、該切片的第一根索引、精確的視窗起始索引
     this.renderEngine.drawCandles(

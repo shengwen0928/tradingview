@@ -92,7 +92,14 @@ export class RenderEngine {
   /**
    * 繪製價格軸與時間軸的刻度文字
    */
-  public drawAxes(candles: Candle[], startIndex: number, scaleEngine: ScaleEngine): void {
+  public drawAxes(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
     const ctx = this.gridCtx; // 使用網格層繪製刻度
     const drawWidth = scaleEngine.getDrawWidth();
     const drawHeight = scaleEngine.getDrawHeight();
@@ -113,11 +120,9 @@ export class RenderEngine {
 
     // 2. 繪製時間刻度 (下方)
     ctx.textAlign = 'center';
-    const drawWidth = scaleEngine.getDrawWidth();
-    const drawHeight = scaleEngine.getDrawHeight();
     
     // 計算標籤間距 (至少間隔 100 像素)
-    const labelGap = Math.max(1, Math.floor(100 / (drawWidth / (candles.length || 1))));
+    const labelGap = Math.max(1, Math.floor(100 / (candleWidth + spacing)));
     let lastLabelX = -100; // 避免標籤重疊
 
     for (let i = 0; i < candles.length; i++) {
@@ -126,22 +131,31 @@ export class RenderEngine {
       const isNewDay = i > 0 && new Date(candles[i-1].time).getDate() !== date.getDate();
       const isFirst = i === 0;
       
-      const x = (i) * (drawWidth / (candles.length || 1)); 
+      // 🚨 邏輯：如果是新的一天、視窗第一根、或者是 5 分鐘的倍數 (如 :00, :05, :10...)
+      const isFiveMin = date.getMinutes() % 5 === 0 && date.getSeconds() === 0;
 
-      // 🚨 邏輯：如果是新的一天 (00:00 附近) 或是滿足固定間隔，且不重疊
-      if (isNewDay || (i % labelGap === 0 && x > lastLabelX + 80)) {
-        let label = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+      const actualIndex = sliceStartIndex + i;
+      const x = scaleEngine.indexToX(actualIndex, exactStartIndex, candleWidth, spacing);
+      const centerX = x + candleWidth / 2;
+
+      // 避免標籤過於擁擠 (至少間隔 50 像素才繪製，除非是新的一天)
+      if (isNewDay || isFirst || (isFiveMin && centerX > lastLabelX + 50)) {
+        let label: string;
         
         if (isNewDay || isFirst) {
-          // 每天第一根或視窗第一根，加上日期
-          label = `${date.getMonth() + 1}/${date.getDate()} ${label}`;
-          ctx.fillStyle = '#fff'; // 日期標籤加亮
+          // 每天第一根或視窗第一根，僅顯示日期 (例如 "30")
+          label = date.getDate().toString();
+          ctx.fillStyle = '#fff'; // 加亮
         } else {
+          // 其他 5 分鐘間隔，顯示時間 (例如 "10:05")
+          const hours = date.getHours().toString().padStart(2, '0');
+          const minutes = date.getMinutes().toString().padStart(2, '0');
+          label = `${hours}:${minutes}`;
           ctx.fillStyle = '#929498';
         }
 
-        ctx.fillText(label, x, drawHeight + 15);
-        lastLabelX = x;
+        ctx.fillText(label, centerX, drawHeight + 15);
+        lastLabelX = centerX;
       }
     }
   }
