@@ -66,13 +66,10 @@ export class RenderEngine {
     const drawHeight = scaleEngine.getDrawHeight();
 
     ctx.beginPath();
-    const { min, max } = scaleEngine.getMinMax();
-    const range = max - min;
     
-    // 繪製橫向價格線 (僅限繪圖區)
-    const step = range / 10;
-    for (let i = 0; i <= 10; i++) {
-      const price = min + step * i;
+    // 🚨 修正：使用整數價格刻度繪製網格線
+    const ticks = scaleEngine.getNiceTickSteps();
+    for (const price of ticks) {
       const y = scaleEngine.priceToY(price);
       ctx.moveTo(0, y);
       ctx.lineTo(drawWidth, y);
@@ -110,10 +107,9 @@ export class RenderEngine {
     ctx.textBaseline = 'middle';
 
     // 1. 繪製價格刻度 (右側)
-    const { min, max } = scaleEngine.getMinMax();
-    const range = max - min;
-    for (let i = 0; i <= 10; i++) {
-      const price = min + (range / 10) * i;
+    // 🚨 修正：使用整數價格刻度
+    const ticks = scaleEngine.getNiceTickSteps();
+    for (const price of ticks) {
       const y = scaleEngine.priceToY(price);
       ctx.fillText(price.toFixed(2), drawWidth + 5, y);
     }
