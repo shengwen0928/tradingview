@@ -181,20 +181,22 @@ export class RenderEngine {
 
     for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
-      // 關鍵：使用 exactStartIndex 作為座標偏移基準點
       const actualIndex = sliceStartIndex + i;
       const x = scaleEngine.indexToX(actualIndex, exactStartIndex, candleWidth, spacing);
       
-      // 超出畫布範圍的略過不畫
       if (x + bodyWidth < 0 || x > this.width) continue;
 
-      // 🚨 修正對齊邏輯：先計算實體的整數座標與寬度
-      const rectX = Math.floor(x);
-      const rectW = Math.max(1, Math.floor(bodyWidth));
+      // 🚨 核心修正：以「中心線」為基準對齊
+      // 1. 先找出 K 棒在數學上的精確中心
+      const trueCenter = x + bodyWidth / 2;
+      // 2. 將影線中心固定在像素中點 (.5)，確保 1px 的線條絕對清晰不模糊
+      const centerX = Math.floor(trueCenter) + 0.5;
       
-      // 影線中心點 (centerX) 必須與實體 (rectX) 絕對對齊
-      // 使用 rectX + Math.floor(rectW / 2) + 0.5 確保在 1px 寬度時完美居中
-      const centerX = rectX + Math.floor(rectW / 2) + 0.5;
+      // 3. 計算實體寬度 (至少 1px)
+      const rectW = Math.max(1, Math.floor(bodyWidth));
+      // 4. 根據影線中心，反推實體的起始左側座標，確保對稱
+      // 這裡使用 Math.floor(centerX - rectW / 2) 確保 rectX 是整數，避免實體邊緣模糊
+      const rectX = Math.floor(centerX - rectW / 2);
 
       const yOpen = scaleEngine.priceToY(candle.open);
       const yClose = scaleEngine.priceToY(candle.close);
@@ -206,7 +208,7 @@ export class RenderEngine {
       ctx.fillStyle = color;
       ctx.strokeStyle = color;
 
-      // 繪製影線
+      // 繪製影線 (這會精準地落在實體的正中央)
       ctx.beginPath();
       ctx.moveTo(centerX, Math.floor(yHigh));
       ctx.lineTo(centerX, Math.floor(yLow));
