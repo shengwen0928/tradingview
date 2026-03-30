@@ -207,10 +207,18 @@ class ChartEngine {
     const ratio = mouseX / this.renderEngine.getLogicalWidth();
     const dataIndex = Math.floor(startIndex + visibleCount * ratio);
     
-    const candle = candles[dataIndex];
-    const timeStr = candle ? formatFullTime(candle.time) : '';
+    let timeStr = '';
+    if (candles.length > 0) {
+      // 🚨 修正：即使 dataIndex 超出範圍 (負數或太大)，也要推算時間
+      const refCandle = candles[candles.length - 1];
+      const refIndex = candles.length - 1;
+      const interval = this.dataManager.getIntervalMs();
+      
+      const projectedTime = refCandle.time + (dataIndex - refIndex) * interval;
+      timeStr = formatFullTime(projectedTime);
+    }
+    
     const priceStr = formatPrice(price);
-
     this.renderEngine.drawCrosshair(mouseX, mouseY, priceStr, timeStr);
   }
 }
