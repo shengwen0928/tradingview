@@ -7,10 +7,11 @@ export interface DrawingPoint {
 
 export interface DrawingObject {
     id: string;
-    type: 'trendline' | 'horizontal' | 'vertical' | 'rect' | 'fibonacci';
+    type: 'trendline' | 'horizontal' | 'vertical' | 'rect' | 'fibonacci' | 'text';
     points: DrawingPoint[];
     color: string;
     lineWidth: number;
+    text?: string;
 }
 
 /**
@@ -36,6 +37,76 @@ export class DrawingEngine {
 
     public getActiveDrawing() {
         return this.activeDrawing;
+    }
+
+    public deleteDrawing(id: string) {
+        this.drawings = this.drawings.filter(d => d.id !== id);
+    }
+
+    public updateDrawingColor(id: string, color: string) {
+        const draw = this.drawings.find(d => d.id === id);
+        if (draw) draw.color = color;
+    }
+
+    public updateDrawingText(id: string, text: string) {
+        const draw = this.drawings.find(d => d.id === id);
+        if (draw) draw.text = text;
+    }
+
+    /**
+     * 判斷滑鼠是否點擊在某個物件上
+     */
+    public hitTest(
+        mouseX: number, 
+        mouseY: number, 
+        scaleEngine: ScaleEngine, 
+        exactStartIndex: number, 
+        candleWidth: number, 
+        spacing: number, 
+        timeToIndex: (time: number) => number
+    ): DrawingObject | null {
+        // 從最後畫的開始找 (最上層)
+        for (let i = this.drawings.length - 1; i >= 0; i--) {
+            const draw = this.drawings[i];
+            if (draw.points.length < 1) continue;
+
+            const p1 = draw.points[0];
+            const x1 = scaleEngine.indexToX(timeToIndex(p1.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+            const y1 = scaleEngine.priceToY(p1.price);
+
+            if (draw.type === 'horizontal') {
+                if (Math.abs(mouseY - y1) < 10) return draw;
+            } else if (draw.type === 'vertical') {
+                if (Math.abs(mouseX - x1) < 10) return draw;
+            } else if (draw.type === 'text') {
+                if (Math.abs(mouseX - x1) < 20 && Math.abs(mouseY - y1) < 20) return draw;
+            } else if (draw.points.length >= 2) {
+                const p2 = draw.points[1];
+                const x2 = scaleEngine.indexToX(timeToIndex(p2.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+                const y2 = scaleEngine.priceToY(p2.price);
+
+                if (draw.type === 'trendline' || draw.type === 'fibonacci') {
+                    // 計算點到線段的距離
+                    const dist = this.distToSegment(mouseX, mouseY, x1, y1, x2, y2);
+                    if (dist < 10) return draw;
+                } else if (draw.type === 'rect') {
+                    const minX = Math.min(x1, x2);
+                    const maxX = Math.max(x1, x2);
+                    const minY = Math.min(y1, y2);
+                    const maxY = Math.max(y1, y2);
+                    if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) return draw;
+                }
+            }
+        }
+        return null;
+    }
+
+    private distToSegment(px: number, py: number, x1: number, y1: number, x2: number, y2: number) {
+        const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
+        if (l2 === 0) return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2);
+        let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
+        t = Math.max(0, Math.min(1, t));
+        return Math.sqrt((px - (x1 + t * (x2 - x1))) ** 2 + (py - (y1 + t * (y2 - y1))) ** 2);
     }
 
     /**
@@ -77,10 +148,29 @@ export class DrawingEngine {
                 this.drawRectangle(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
             } else if (draw.type === 'fibonacci' && draw.points.length >= 2) {
                 this.drawFibonacci(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
+            } else if (draw.type === 'text') {
+                this.drawText(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
             }
         });
 
         ctx.restore(); // 🚨 關鍵：還原狀態
+    }
+
+    private drawText(
+        ctx: CanvasRenderingContext2D,
+        draw: DrawingObject,
+        scaleEngine: ScaleEngine,
+        exactStartIndex: number,
+        candleWidth: number,
+        spacing: number,
+        timeToIndex: (time: number) => number
+    ) {
+        const x = scaleEngine.indexToX(timeToIndex(draw.points[0].time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const y = scaleEngine.priceToY(draw.points[0].price);
+
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText(draw.text || '文字', x + 10, y + 5);
+        this.drawPoint(ctx, x, y);
     }
 
     private drawTrendLine(

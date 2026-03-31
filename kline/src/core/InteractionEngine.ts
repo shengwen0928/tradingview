@@ -30,6 +30,10 @@ export class InteractionEngine {
     this.canvas.style.cursor = type ? 'crosshair' : 'default';
   }
 
+  public getDrawingMode() {
+    return this.drawingMode;
+  }
+
   public setSnapProvider(provider: (x: number, y: number) => { x: number, y: number } | null) {
     this.snapProvider = provider;
   }

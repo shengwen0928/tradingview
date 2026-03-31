@@ -173,7 +173,7 @@ class ChartEngine {
 
   // 🚨 新增：初始化繪圖工具列邏輯
   private initDrawingToolbar() {
-    const tools = ['cursor', 'trendline', 'horizontal', 'vertical', 'rect', 'fibonacci'];
+    const tools = ['cursor', 'trendline', 'horizontal', 'vertical', 'rect', 'fibonacci', 'text'];
     tools.forEach(tool => {
       const btn = document.getElementById(`tool-${tool}`);
       if (!btn) return;
@@ -192,9 +192,92 @@ class ChartEngine {
 
     const clearBtn = document.getElementById('tool-clear');
     if (clearBtn) clearBtn.onclick = () => {
-        // TODO: 實作清除邏輯
-        console.log('Clear all drawings');
+        if (confirm('確定要清除所有繪圖嗎？')) {
+          this.drawingEngine.getDrawings().forEach(d => this.drawingEngine.deleteDrawing(d.id));
+          this.requestRedraw();
+        }
     };
+
+    // 🚨 監聽游標點擊物件
+    overlayCanvas.addEventListener('click', (e) => {
+      if (this.interactionEngine.getDrawingMode()) return; // 繪圖模式中不處理選取
+      
+      const rect = overlayCanvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const { startIndex } = this.viewport.getRawRange();
+      const candleWidth = this.viewport.getCandleWidth();
+      
+      const hit = this.drawingEngine.hitTest(
+        mouseX, mouseY, 
+        this.scaleEngine, 
+        startIndex, 
+        candleWidth, 2, 
+        (t) => this.dataManager.getIndexAtTime(t)
+      );
+
+      if (hit) {
+        this.showEditToolbar(e.clientX, e.clientY, hit);
+      } else {
+        this.hideEditToolbar();
+      }
+    });
+  }
+
+  private showEditToolbar(x: number, y: number, obj: DrawingObject) {
+    let toolbar = document.getElementById('edit-toolbar');
+    if (!toolbar) {
+      toolbar = document.createElement('div');
+      toolbar.id = 'edit-toolbar';
+      toolbar.style.cssText = `
+        position: fixed; z-index: 1000; background: #1e222d; border: 1px solid #363c4e;
+        padding: 8px; border-radius: 6px; display: flex; gap: 8px; align-items: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      `;
+      document.body.appendChild(toolbar);
+    }
+    
+    toolbar.style.display = 'flex';
+    toolbar.style.left = `${x}px`;
+    toolbar.style.top = `${y - 50}px`;
+
+    toolbar.innerHTML = `
+      <input type="color" id="edit-color" value="${obj.color}" style="width: 24px; height: 24px; border: none; background: transparent; cursor: pointer;">
+      ${obj.type === 'text' ? '<button id="edit-text" style="background: transparent; border: none; color: #d1d4dc; cursor: pointer; padding: 4px; font-size: 12px;">T</button>' : ''}
+      <button id="edit-delete" style="background: transparent; border: none; color: #ef5350; cursor: pointer; padding: 4px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+      </button>
+    `;
+
+    const colorInput = toolbar.querySelector('#edit-color') as HTMLInputElement;
+    colorInput.oninput = () => {
+      this.drawingEngine.updateDrawingColor(obj.id, colorInput.value);
+      this.requestRedraw();
+    };
+
+    if (obj.type === 'text') {
+      const textBtn = toolbar.querySelector('#edit-text') as HTMLButtonElement;
+      textBtn.onclick = () => {
+        const newText = prompt('修改文字內容:', obj.text);
+        if (newText !== null) {
+          this.drawingEngine.updateDrawingText(obj.id, newText);
+          this.requestRedraw();
+        }
+      };
+    }
+
+    const delBtn = toolbar.querySelector('#edit-delete') as HTMLButtonElement;
+    delBtn.onclick = () => {
+      this.drawingEngine.deleteDrawing(obj.id);
+      this.hideEditToolbar();
+      this.requestRedraw();
+    };
+  }
+
+  private hideEditToolbar() {
+    const toolbar = document.getElementById('edit-toolbar');
+    if (toolbar) toolbar.style.display = 'none';
   }
 
   private startDrawing(type: string) {
@@ -208,22 +291,38 @@ class ChartEngine {
       const time = this.dataManager.getTimeAtIndex(dataIndex);
 
       if (eventType === 'start') {
-        currentDrawing = {
-          id: Date.now().toString(),
-          type: type as any,
-          points: [{ time, price }, { time, price }],
-          color: '#2962ff',
-          lineWidth: 2
-        };
-        this.drawingEngine.setActiveDrawing(currentDrawing);
+        if (type === 'text') {
+            const content = prompt('請輸入文字內容:');
+            if (content) {
+                const textObj: DrawingObject = {
+                    id: Date.now().toString(),
+                    type: 'text',
+                    points: [{ time, price }],
+                    color: '#fff',
+                    lineWidth: 2,
+                    text: content
+                };
+                this.drawingEngine.addDrawing(textObj);
+            }
+            this.interactionEngine.setDrawingMode(null);
+            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tool-cursor')?.classList.add('active');
+        } else {
+            currentDrawing = {
+              id: Date.now().toString(),
+              type: type as any,
+              points: [{ time, price }, { time, price }],
+              color: '#2962ff',
+              lineWidth: 2
+            };
+            this.drawingEngine.setActiveDrawing(currentDrawing);
+        }
       } else if (eventType === 'move' && currentDrawing) {
         currentDrawing.points[1] = { time, price };
       } else if (eventType === 'end' && currentDrawing) {
         this.drawingEngine.addDrawing(currentDrawing);
         this.drawingEngine.setActiveDrawing(null);
         currentDrawing = null;
-        // 畫完後自動切回游標 (可選)
-        // this.interactionEngine.setDrawingMode(null);
       }
       this.requestRedraw();
     });
