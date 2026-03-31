@@ -89,6 +89,47 @@ class ChartEngine {
       }
     );
 
+    // 🚨 實作磁吸邏輯
+    this.interactionEngine.setSnapProvider((mouseX, mouseY) => {
+      const candles = this.dataManager.getCandles();
+      const candleWidth = this.viewport.getCandleWidth();
+      const spacing = 2;
+      const { startIndex } = this.viewport.getRawRange();
+      
+      const floatIndex = mouseX / (candleWidth + spacing) + startIndex;
+      const index = Math.round(floatIndex);
+      const candle = candles[index];
+
+      if (!candle) return null;
+
+      // 計算該 K 線中心點 X
+      const centerX = (index - startIndex) * (candleWidth + spacing) + candleWidth / 2;
+      
+      // 計算所有可吸附的價格點
+      const prices = [candle.open, candle.high, candle.low, candle.close];
+      const points = prices.map(p => ({
+        x: centerX,
+        y: this.scaleEngine.priceToY(p)
+      }));
+
+      // 找出垂直距離最近的點
+      let closestPoint = points[0];
+      let minDistance = Infinity;
+
+      points.forEach(pt => {
+        const dist = Math.abs(pt.y - mouseY);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestPoint = pt;
+        }
+      });
+
+      // 如果距離太遠則不吸附 (例如超過 20 像素)
+      if (minDistance > 20) return null;
+
+      return closestPoint;
+    });
+
     symbolSearch.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && symbolSearch.value.trim() !== "") {
         const ticker = symbolSearch.value.trim().toUpperCase();
@@ -132,7 +173,7 @@ class ChartEngine {
 
   // 🚨 新增：初始化繪圖工具列邏輯
   private initDrawingToolbar() {
-    const tools = ['cursor', 'trendline', 'horizontal', 'rect'];
+    const tools = ['cursor', 'trendline', 'horizontal', 'vertical', 'rect', 'fibonacci'];
     tools.forEach(tool => {
       const btn = document.getElementById(`tool-${tool}`);
       if (!btn) return;

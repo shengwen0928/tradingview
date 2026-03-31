@@ -7,7 +7,7 @@ export interface DrawingPoint {
 
 export interface DrawingObject {
     id: string;
-    type: 'trendline' | 'horizontal' | 'vertical' | 'rect';
+    type: 'trendline' | 'horizontal' | 'vertical' | 'rect' | 'fibonacci';
     points: DrawingPoint[];
     color: string;
     lineWidth: number;
@@ -71,8 +71,12 @@ export class DrawingEngine {
                 this.drawTrendLine(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
             } else if (draw.type === 'horizontal') {
                 this.drawHorizontalLine(ctx, draw, scaleEngine);
+            } else if (draw.type === 'vertical') {
+                this.drawVerticalLine(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
             } else if (draw.type === 'rect' && draw.points.length >= 2) {
                 this.drawRectangle(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
+            } else if (draw.type === 'fibonacci' && draw.points.length >= 2) {
+                this.drawFibonacci(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
             }
         });
 
@@ -119,6 +123,26 @@ export class DrawingEngine {
         this.drawPoint(ctx, 10, y); 
     }
 
+    private drawVerticalLine(
+        ctx: CanvasRenderingContext2D,
+        draw: DrawingObject,
+        scaleEngine: ScaleEngine,
+        exactStartIndex: number,
+        candleWidth: number,
+        spacing: number,
+        timeToIndex: (time: number) => number
+    ) {
+        const x = scaleEngine.indexToX(timeToIndex(draw.points[0].time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const height = scaleEngine.getDrawHeight();
+
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+
+        this.drawPoint(ctx, x, 10);
+    }
+
     private drawRectangle(
         ctx: CanvasRenderingContext2D,
         draw: DrawingObject,
@@ -149,6 +173,59 @@ export class DrawingEngine {
         ctx.beginPath();
         ctx.rect(x1, y1, w, h);
         ctx.stroke();
+
+        // 畫端點
+        this.drawPoint(ctx, x1, y1);
+        this.drawPoint(ctx, x2, y2);
+    }
+
+    private drawFibonacci(
+        ctx: CanvasRenderingContext2D,
+        draw: DrawingObject,
+        scaleEngine: ScaleEngine,
+        exactStartIndex: number,
+        candleWidth: number,
+        spacing: number,
+        timeToIndex: (time: number) => number
+    ) {
+        const p1 = draw.points[0];
+        const p2 = draw.points[1];
+
+        const x1 = scaleEngine.indexToX(timeToIndex(p1.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const y1 = scaleEngine.priceToY(p1.price);
+        const x2 = scaleEngine.indexToX(timeToIndex(p2.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const y2 = scaleEngine.priceToY(p2.price);
+
+        const levels = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1.0];
+        const diff = p2.price - p1.price;
+        const width = scaleEngine.getDrawWidth();
+
+        // 畫主連線 (虛線)
+        ctx.save();
+        ctx.setLineDash([5, 5]);
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        ctx.restore();
+
+        levels.forEach(level => {
+            const price = p1.price + diff * level;
+            const y = scaleEngine.priceToY(price);
+
+            // 畫水平線
+            ctx.beginPath();
+            ctx.moveTo(Math.min(x1, x2), y);
+            ctx.lineTo(width, y);
+            ctx.globalAlpha = 0.6;
+            ctx.stroke();
+
+            // 標註百分比與價格
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(`${(level * 100).toFixed(1)}% (${price.toFixed(2)})`, width - 5, y - 5);
+        });
 
         // 畫端點
         this.drawPoint(ctx, x1, y1);

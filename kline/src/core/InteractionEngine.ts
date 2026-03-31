@@ -11,7 +11,9 @@ export class InteractionEngine {
 
   // 🚨 新增：繪圖相關狀態
   private drawingMode: string | null = null;
+  private magnetMode: boolean = true; // 預設開啟磁吸
   private onDrawingClick?: (mouseX: number, mouseY: number, type: 'start' | 'move' | 'end') => void;
+  private snapProvider?: (x: number, y: number) => { x: number, y: number } | null;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -28,6 +30,14 @@ export class InteractionEngine {
     this.canvas.style.cursor = type ? 'crosshair' : 'default';
   }
 
+  public setSnapProvider(provider: (x: number, y: number) => { x: number, y: number } | null) {
+    this.snapProvider = provider;
+  }
+
+  public setMagnetMode(enabled: boolean) {
+    this.magnetMode = enabled;
+  }
+
   private initEvents(): void {
     const getZone = (x: number, y: number): 'chart' | 'price' | 'time' => {
       const drawWidth = this.canvas.clientWidth - 60;
@@ -37,13 +47,22 @@ export class InteractionEngine {
       return 'chart';
     };
 
+    const handleDrawingPos = (x: number, y: number) => {
+      if (this.magnetMode && this.snapProvider) {
+        const snapped = this.snapProvider(x, y);
+        if (snapped) return snapped;
+      }
+      return { x, y };
+    };
+
     this.canvas.addEventListener('pointerdown', (e) => {
       const { mouseX, mouseY } = this.getMousePos(e);
       const zone = getZone(mouseX, mouseY);
 
       // 🚨 修正：如果是繪圖模式且在圖表區，觸發繪圖點
       if (this.drawingMode && zone === 'chart') {
-        this.onDrawingClick?.(mouseX, mouseY, 'start');
+        const { x, y } = handleDrawingPos(mouseX, mouseY);
+        this.onDrawingClick?.(x, y, 'start');
         return;
       }
 
@@ -62,7 +81,8 @@ export class InteractionEngine {
       const { mouseX, mouseY } = this.getMousePos(e);
 
       if (this.drawingMode) {
-        this.onDrawingClick?.(mouseX, mouseY, 'move');
+        const { x, y } = handleDrawingPos(mouseX, mouseY);
+        this.onDrawingClick?.(x, y, 'move');
       }
 
       if (this.isDragging) {
@@ -86,7 +106,8 @@ export class InteractionEngine {
     this.canvas.addEventListener('pointerup', (e) => {
       if (this.drawingMode) {
         const { mouseX, mouseY } = this.getMousePos(e);
-        this.onDrawingClick?.(mouseX, mouseY, 'end');
+        const { x, y } = handleDrawingPos(mouseX, mouseY);
+        this.onDrawingClick?.(x, y, 'end');
         return;
       }
 
