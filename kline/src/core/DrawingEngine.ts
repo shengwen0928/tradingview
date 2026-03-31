@@ -52,13 +52,21 @@ export class DrawingEngine {
         const all = [...this.drawings];
         if (this.activeDrawing) all.push(this.activeDrawing);
 
+        ctx.save(); // 🚨 關鍵：儲存 Canvas 原始狀態
+        
+        // 🚨 顯式重設狀態，防止被十字線等其他繪圖汙染
+        ctx.setLineDash([]); 
+        ctx.globalAlpha = 1.0;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
         all.forEach(draw => {
-            ctx.strokeStyle = draw.color;
-            ctx.fillStyle = draw.color; // 矩形或點點需要填充色
-            ctx.lineWidth = draw.lineWidth;
-            
             if (draw.points.length < 1) return;
 
+            ctx.strokeStyle = draw.color;
+            ctx.fillStyle = draw.color;
+            ctx.lineWidth = draw.lineWidth || 2;
+            
             if (draw.type === 'trendline' && draw.points.length >= 2) {
                 this.drawTrendLine(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
             } else if (draw.type === 'horizontal') {
@@ -67,6 +75,8 @@ export class DrawingEngine {
                 this.drawRectangle(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
             }
         });
+
+        ctx.restore(); // 🚨 關鍵：還原狀態
     }
 
     private drawTrendLine(
@@ -86,11 +96,13 @@ export class DrawingEngine {
         const x2 = scaleEngine.indexToX(timeToIndex(p2.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
         const y2 = scaleEngine.priceToY(p2.price);
 
+        // 畫主線
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
+        // 畫端點
         this.drawPoint(ctx, x1, y1);
         this.drawPoint(ctx, x2, y2);
     }
@@ -104,7 +116,7 @@ export class DrawingEngine {
         ctx.lineTo(width, y);
         ctx.stroke();
         
-        this.drawPoint(ctx, 10, y); // 在左側畫一個定位點
+        this.drawPoint(ctx, 10, y); 
     }
 
     private drawRectangle(
@@ -127,14 +139,18 @@ export class DrawingEngine {
         const w = x2 - x1;
         const h = y2 - y1;
 
-        // 畫外框
-        ctx.strokeRect(x1, y1, w, h);
-        
         // 畫半透明填充
-        ctx.globalAlpha = 0.15;
+        ctx.save();
+        ctx.globalAlpha = 0.2;
         ctx.fillRect(x1, y1, w, h);
-        ctx.globalAlpha = 1.0;
+        ctx.restore();
 
+        // 畫外框
+        ctx.beginPath();
+        ctx.rect(x1, y1, w, h);
+        ctx.stroke();
+
+        // 畫端點
         this.drawPoint(ctx, x1, y1);
         this.drawPoint(ctx, x2, y2);
     }
@@ -144,4 +160,5 @@ export class DrawingEngine {
         ctx.arc(x, y, 4, 0, Math.PI * 2);
         ctx.fill();
     }
+}
 }
