@@ -1,17 +1,13 @@
 import { DataManager } from './core/DataManager';
-// 🚀 Deployment Trigger: 2026-03-31 15:58
 import { ViewportEngine } from './core/ViewportEngine';
 import { ScaleEngine } from './core/ScaleEngine';
 import { RenderEngine } from './core/RenderEngine';
 import { InteractionEngine } from './core/InteractionEngine';
 import { LoaderController } from './core/LoaderController';
 import { IndicatorEngine } from './core/IndicatorEngine';
-import { DrawingEngine, DrawingObject } from './core/DrawingEngine'; // 🚨 新增
+import { DrawingEngine, DrawingObject } from './core/DrawingEngine';
 import { formatPrice, formatFullTime } from './utils/math';
 
-/**
- * 圖表引擎核心進入點
- */
 class ChartEngine {
   private dataManager: DataManager;
   private viewport: ViewportEngine;
@@ -19,55 +15,76 @@ class ChartEngine {
   private renderEngine: RenderEngine;
   private loader: LoaderController;
   private indicatorEngine: IndicatorEngine;
-  private drawingEngine: DrawingEngine; // 🚨 新增
-  private interactionEngine: InteractionEngine; // 🚨 改為私有屬性方便存取
-  private overlayCanvas: HTMLCanvasElement; // 🚨 新增為成員屬性
+  private drawingEngine: DrawingEngine;
+  private interactionEngine: InteractionEngine;
+  private overlayCanvas: HTMLCanvasElement;
   private connectionStatus: string = 'connecting';
   private currentSymbol: string = 'BTC/USDT'; 
   private currentTimeframe: string = '1m'; 
-  private allTimeframes = [
-    '1s', '1m', '3m', '5m', '15m', '30m', 
-    '1H', '2H', '4H', '6h', '8h', '12h', 
-    '1D', '2D', '3D', '5D', '1W', '1M', '3M'
-  ];
   private favorites: string[] = [];
+  private activeCategory: string = 'CRYPTO';
+
+  // 🚨 完整列出所有標的
+  private allSymbols: { [key: string]: { s: string, d: string }[] } = {
+    'CRYPTO': [
+      { s: 'BTC/USDT', d: 'Bitcoin' }, { s: 'ETH/USDT', d: 'Ethereum' }, { s: 'SOL/USDT', d: 'Solana' },
+      { s: 'BNB/USDT', d: 'Binance Coin' }, { s: 'XRP/USDT', d: 'Ripple' }, { s: 'ADA/USDT', d: 'Cardano' },
+      { s: 'DOGE/USDT', d: 'Dogecoin' }, { s: 'DOT/USDT', d: 'Polkadot' }, { s: 'MATIC/USDT', d: 'Polygon' },
+      { s: 'LTC/USDT', d: 'Litecoin' }, { s: 'SHIB/USDT', d: 'Shiba Inu' }, { s: 'AVAX/USDT', d: 'Avalanche' },
+      { s: 'TRX/USDT', d: 'TRON' }, { s: 'LINK/USDT', d: 'Chainlink' }, { s: 'UNI/USDT', d: 'Uniswap' },
+      { s: 'PEPE/USDT', d: 'Pepe' }, { s: 'STX/USDT', d: 'Stacks' }, { s: 'APT/USDT', d: 'Aptos' },
+      { s: 'OP/USDT', d: 'Optimism' }, { s: 'ARB/USDT', d: 'Arbitrum' }, { s: 'NEAR/USDT', d: 'Near' },
+      { s: 'FIL/USDT', d: 'Filecoin' }, { s: 'ICP/USDT', d: 'Internet Computer' }, { s: 'ETC/USDT', d: 'Ethereum Classic' },
+      { s: 'XLM/USDT', d: 'Stellar' }, { s: 'SUI/USDT', d: 'Sui' }, { s: 'TIA/USDT', d: 'Celestia' }
+    ],
+    'TW_STOCK': [
+      { s: '2330.TW', d: '台積電' }, { s: '2317.TW', d: '鴻海' }, { s: '2454.TW', d: '聯發科' },
+      { s: '3105.TWO', d: '穩懋' }, { s: '2603.TW', d: '長榮' }, { s: '2609.TW', d: '陽明' },
+      { s: '2308.TW', d: '台達電' }, { s: '2881.TW', d: '富邦金' }, { s: '2882.TW', d: '國泰金' },
+      { s: '2357.TW', d: '華碩' }, { s: '3231.TW', d: '緯創' }, { s: '2382.TW', d: '廣達' },
+      { s: '1101.TW', d: '台泥' }, { s: '2002.TW', d: '中鋼' }, { s: '2412.TW', d: '中華電' },
+      { s: '2886.TW', d: '兆豐金' }, { s: '2884.TW', d: '玉山金' }, { s: '5880.TW', d: '合庫金' },
+      { s: '2303.TW', d: '聯電' }, { s: '2618.TW', d: '星宇航空' }, { s: '2610.TW', d: '華航' },
+      { s: '2337.TW', d: '旺宏' }, { s: '2409.TW', d: '友達' }, { s: '3481.TW', d: '群創' },
+      { s: '2324.TW', d: '仁寶' }, { s: '2353.TW', d: '宏碁' }, { s: '2376.TW', d: '技嘉' },
+      { s: '2377.TW', d: '微星' }, { s: '3034.TW', d: '聯詠' }, { s: '3711.TW', d: '日月光' },
+      { s: '2408.TW', d: '南亞科' }, { s: '2344.TW', d: '華邦電' }, { s: '2301.TW', d: '光寶科' },
+      { s: '2313.TW', d: '華通' }, { s: '2327.TW', d: '國巨' }, { s: '2352.TW', d: '佳世達' },
+      { s: '2356.TW', d: '英業達' }, { s: '2360.TW', d: '致茂' }, { s: '2379.TW', d: '瑞昱' },
+      { s: '2383.TW', d: '台光電' }, { s: '2385.TW', d: '群光' }, { s: '2395.TW', d: '研華' },
+      { s: '3008.TW', d: '大立光' }, { s: '3037.TW', d: '欣興' }, { s: '3045.TW', d: '台灣大' },
+      { s: '4904.TW', d: '遠傳' }, { s: '4938.TW', d: '和碩' }, { s: '0050.TW', d: '元大台灣50' },
+      { s: '0056.TW', d: '元大高股息' }, { s: '00878.TW', d: '國泰永續高股息' }
+    ],
+    'US_STOCK': [
+      { s: 'AAPL', d: 'Apple' }, { s: 'NVDA', d: 'NVIDIA' }, { s: 'TSLA', d: 'Tesla' },
+      { s: 'MSFT', d: 'Microsoft' }, { s: 'GOOGL', d: 'Alphabet' }, { s: 'AMZN', d: 'Amazon' },
+      { s: 'META', d: 'Meta' }, { s: 'NFLX', d: 'Netflix' }, { s: 'AMD', d: 'AMD' },
+      { s: 'INTC', d: 'Intel' }, { s: 'PYPL', d: 'PayPal' }, { s: 'COIN', d: 'Coinbase' },
+      { s: 'BRK-B', d: 'Berkshire Hathaway' }, { s: 'V', d: 'Visa' }, { s: 'JPM', d: 'JPMorgan Chase' },
+      { s: 'WMT', d: 'Walmart' }, { s: 'DIS', d: 'Disney' }, { s: 'MA', d: 'Mastercard' },
+      { s: 'UNH', d: 'UnitedHealth' }, { s: 'HD', d: 'Home Depot' }, { s: 'BAC', d: 'Bank of America' },
+      { s: 'PG', d: 'P&G' }, { s: 'ORCL', d: 'Oracle' }, { s: 'ABNV', d: 'Airbnb' },
+      { s: 'AVGO', d: 'Broadcom' }, { s: 'COST', d: 'Costco' }, { s: 'CRM', d: 'Salesforce' }
+    ]
+  };
 
   constructor() {
-    const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
-    const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
     this.overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
-    
-    const marketTypeSelect = document.getElementById('market-type-select') as HTMLSelectElement;
-    const symbolSearch = document.getElementById('symbol-search') as HTMLInputElement;
-    const exchangeSelect = document.getElementById('exchange-select') as HTMLSelectElement;
-    
-    const tfMainBtn = document.getElementById('tf-main-btn') as HTMLButtonElement;
-    const tfPopup = document.getElementById('tf-popup') as HTMLDivElement;
-    const tfCustomInput = document.getElementById('tf-custom-input') as HTMLInputElement;
-
-    this.renderEngine = new RenderEngine(gridCanvas, candleCanvas, this.overlayCanvas);
+    this.renderEngine = new RenderEngine(document.getElementById('grid-canvas') as HTMLCanvasElement, document.getElementById('candle-canvas') as HTMLCanvasElement, this.overlayCanvas);
     this.scaleEngine = new ScaleEngine();
     this.viewport = new ViewportEngine(() => this.requestRedraw());
     this.indicatorEngine = new IndicatorEngine();
-    this.drawingEngine = new DrawingEngine(); // 🚨 初始化
+    this.drawingEngine = new DrawingEngine();
     
     this.dataManager = new DataManager(
-      (candles, isHistory) => {
-        this.viewport.setDataCount(candles.length, isHistory);
-      },
-      (status) => {
-        this.connectionStatus = status;
-        this.updateStatusUI();
-      }
+      (candles, isHistory) => { this.viewport.setDataCount(candles.length, isHistory); },
+      (status) => { this.connectionStatus = status; this.updateStatusUI(); }
     );
 
-    const savedFavs = localStorage.getItem('tf-favorites');
-    this.favorites = savedFavs ? JSON.parse(savedFavs) : ['1m', '1H', '1D'];
-
-    this.renderTfFavorites();
-    this.renderTfPopup();
-    this.initDrawingToolbar(); // 🚨 初始化工具列
-
+    this.favorites = JSON.parse(localStorage.getItem('tf-favorites') || '["1m", "1H", "1D"]');
+    this.initModalLogic();
+    this.initDrawingToolbar();
     this.loader = new LoaderController(this.dataManager, this.viewport);
 
     this.interactionEngine = new InteractionEngine(
@@ -75,398 +92,205 @@ class ChartEngine {
       (deltaX, deltaY, zone) => {
         if (zone === 'price') this.scaleEngine.handleVerticalPan(deltaY);
         else { this.viewport.handleScroll(deltaX); this.scaleEngine.handleVerticalPan(deltaY); }
-        this.loader.checkLoadMore();
-        this.requestRedraw();
+        this.loader.checkLoadMore(); this.requestRedraw();
       },
       (mouseX, _mouseY, scale, zone) => {
         if (zone === 'price') this.scaleEngine.handleVerticalZoom(scale);
         else if (zone === 'time') this.viewport.handleZoom(this.renderEngine.getLogicalWidth() / 2, scale, this.renderEngine.getLogicalWidth());
         else this.viewport.handleZoom(mouseX, scale, this.renderEngine.getLogicalWidth());
-        this.loader.checkLoadMore();
-        this.requestRedraw();
+        this.loader.checkLoadMore(); this.requestRedraw();
       },
-      (mouseX, mouseY) => {
-        this.updateCrosshair(mouseX, mouseY);
-      }
+      (mouseX, mouseY) => { this.updateCrosshair(mouseX, mouseY); }
     );
-
-    // 🚨 實作磁吸邏輯
-    this.interactionEngine.setSnapProvider((mouseX, mouseY) => {
-      const candles = this.dataManager.getCandles();
-      const candleWidth = this.viewport.getCandleWidth();
-      const spacing = 2;
-      const { startIndex } = this.viewport.getRawRange();
-      
-      const floatIndex = mouseX / (candleWidth + spacing) + startIndex;
-      const index = Math.round(floatIndex);
-      const candle = candles[index];
-
-      if (!candle) return null;
-
-      // 計算該 K 線中心點 X
-      const centerX = (index - startIndex) * (candleWidth + spacing) + candleWidth / 2;
-      
-      // 計算所有可吸附的價格點
-      const prices = [candle.open, candle.high, candle.low, candle.close];
-      const points = prices.map(p => ({
-        x: centerX,
-        y: this.scaleEngine.priceToY(p)
-      }));
-
-      // 找出垂直距離最近的點
-      let closestPoint = points[0];
-      let minDistance = Infinity;
-
-      points.forEach(pt => {
-        const dist = Math.abs(pt.y - mouseY);
-        if (dist < minDistance) {
-          minDistance = dist;
-          closestPoint = pt;
-        }
-      });
-
-      // 如果距離太遠則不吸附 (例如超過 20 像素)
-      if (minDistance > 20) return null;
-
-      return closestPoint;
-    });
-
-    symbolSearch.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && symbolSearch.value.trim() !== "") {
-        const ticker = symbolSearch.value.trim().toUpperCase();
-        const type = marketTypeSelect.value;
-        const fullId = ticker.includes(':') ? ticker : `${ticker}:${type}`;
-        this.currentSymbol = ticker;
-        this.dataManager.setSymbol(fullId);
-        this.scaleEngine.resetAutoScale();
-        symbolSearch.blur();
-      }
-    });
-
-    marketTypeSelect.addEventListener('change', () => {
-      const type = marketTypeSelect.value;
-      if (type === 'STOCK') { marketTypeSelect.style.color = '#ff9800'; exchangeSelect.value = 'Yahoo'; }
-      else if (type === 'PERP') marketTypeSelect.style.color = '#f44336';
-      else marketTypeSelect.style.color = '#2962ff';
-    });
-
-    exchangeSelect.addEventListener('change', () => {
-      this.dataManager.setExchange(exchangeSelect.value);
-      this.scaleEngine.resetAutoScale();
-    });
-
-    tfMainBtn.addEventListener('click', (e) => { e.stopPropagation(); tfPopup.classList.toggle('show'); });
-    window.addEventListener('click', () => tfPopup.classList.remove('show'));
-    tfPopup.addEventListener('click', (e) => e.stopPropagation());
-
-    tfCustomInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && tfCustomInput.value.trim() !== "") {
-        this.switchTimeframe(tfCustomInput.value.trim());
-        tfPopup.classList.remove('show');
-        tfCustomInput.value = "";
-      }
-    });
 
     this.handleResize();
     window.addEventListener('resize', () => this.handleResize());
     this.init();
   }
 
-  // 🚨 新增：初始化繪圖工具列邏輯
+  private initModalLogic() {
+    const btn = document.getElementById('symbol-search-btn') as HTMLButtonElement;
+    const modal = document.getElementById('symbol-modal') as HTMLDivElement;
+    const input = document.getElementById('modal-search-input') as HTMLInputElement;
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    btn.onclick = () => {
+      modal.classList.add('show');
+      input.value = '';
+      this.updateModalList('');
+      setTimeout(() => input.focus(), 50);
+    };
+
+    window.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+
+    input.oninput = () => this.updateModalList(input.value.trim());
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        this.loadSymbol(input.value.trim());
+        modal.classList.remove('show');
+      }
+    };
+
+    tabBtns.forEach(t => {
+      t.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        t.classList.add('active');
+        this.activeCategory = (t as HTMLElement).dataset.cat || 'CRYPTO';
+        this.updateModalList(input.value.trim());
+      });
+    });
+
+    const tfBtn = document.getElementById('tf-main-btn')!;
+    const tfPopup = document.getElementById('tf-popup')!;
+    tfBtn.onclick = (e) => { e.stopPropagation(); tfPopup.classList.toggle('show'); };
+    this.renderTfFavorites(); this.renderTfPopup();
+  }
+
+  private updateModalList(search: string) {
+    const listDiv = document.getElementById('modal-list')!;
+    const query = search.toUpperCase();
+    listDiv.innerHTML = '';
+
+    // 1. 如果有輸入，顯示即時搜尋項
+    if (query) {
+        const isNum = /^\d{4}$/.test(query);
+        const div = document.createElement('div');
+        div.className = 'symbol-item';
+        div.style.borderLeft = '4px solid #2962ff';
+        const exch = (isNum || this.activeCategory === 'TW_STOCK') ? 'Yahoo' : 'Binance';
+        div.innerHTML = `<div><div class="symbol-name">🔍 搜尋 "${query}${isNum ? '.TW' : ''}"</div><div class="symbol-desc">按 Enter 載入</div></div><div class="symbol-exch">${exch}</div>`;
+        div.onclick = () => { this.loadSymbol(query); document.getElementById('symbol-modal')?.classList.remove('show'); };
+        listDiv.appendChild(div);
+    }
+
+    // 2. 顯示目前分類的所有標的
+    const items = this.allSymbols[this.activeCategory] || [];
+    items.filter(i => i.s.includes(query) || i.d.toUpperCase().includes(query)).forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'symbol-item';
+        div.innerHTML = `<div><div class="symbol-name">${item.s}</div><div class="symbol-desc">${item.d}</div></div><div class="symbol-exch">${this.activeCategory === 'CRYPTO' ? 'Binance' : 'Yahoo'}</div>`;
+        div.onclick = () => { this.loadSymbol(item.s); document.getElementById('symbol-modal')?.classList.remove('show'); };
+        listDiv.appendChild(div);
+    });
+  }
+
+  private loadSymbol(symbol: string) {
+    let s = symbol.toUpperCase();
+    let isStock = this.activeCategory.includes('STOCK') || s.includes('.TW');
+
+    if (/^\d{4}$/.test(s)) { s += '.TW'; isStock = true; }
+
+    this.currentSymbol = s;
+    document.getElementById('symbol-search-btn')!.innerText = `${s} ▾`;
+    document.getElementById('exchange-display')!.innerText = isStock ? 'Yahoo' : 'Binance';
+    
+    this.dataManager.setExchange(isStock ? 'Yahoo' : 'Binance');
+    this.dataManager.setSymbol(s + (isStock ? ':STOCK' : ':SPOT'));
+    this.scaleEngine.resetAutoScale();
+  }
+
   private initDrawingToolbar() {
     const tools = ['cursor', 'trendline', 'horizontal', 'vertical', 'rect', 'fibonacci', 'text'];
     tools.forEach(tool => {
       const btn = document.getElementById(`tool-${tool}`);
-      if (!btn) return;
-      btn.onclick = () => {
-        // 清除所有按鈕 active 狀態
+      if (btn) btn.onclick = () => {
         document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-        if (tool === 'cursor') {
-          this.interactionEngine.setDrawingMode(null);
-          btn.classList.add('active');
-        } else {
-          btn.classList.add('active');
-          this.startDrawing(tool);
-        }
+        btn.classList.add('active');
+        if (tool === 'cursor') this.interactionEngine.setDrawingMode(null);
+        else this.startDrawing(tool);
       };
     });
-
-    const clearBtn = document.getElementById('tool-clear');
-    if (clearBtn) clearBtn.onclick = () => {
-        if (confirm('確定要清除所有繪圖嗎？')) {
-          this.drawingEngine.getDrawings().forEach(d => this.drawingEngine.deleteDrawing(d.id));
-          this.requestRedraw();
-        }
-    };
-
-    // 🚨 監聽游標點擊物件
+    const clear = document.getElementById('tool-clear');
+    if (clear) clear.onclick = () => { if (confirm('清除所有繪圖？')) { this.drawingEngine.getDrawings().forEach(d => this.drawingEngine.deleteDrawing(d.id)); this.requestRedraw(); } };
     this.overlayCanvas.addEventListener('click', (e: MouseEvent) => {
-      if (this.interactionEngine.getDrawingMode()) return; // 繪圖模式中不處理選取
-      
+      if (this.interactionEngine.getDrawingMode()) return;
       const rect = this.overlayCanvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      const { startIndex } = this.viewport.getRawRange();
-      const candleWidth = this.viewport.getCandleWidth();
-      
-      const hit = this.drawingEngine.hitTest(
-        mouseX, mouseY, 
-        this.scaleEngine, 
-        startIndex, 
-        candleWidth, 2, 
-        (t) => this.dataManager.getIndexAtTime(t)
-      );
-
-      if (hit) {
-        this.showEditToolbar(e.clientX, e.clientY, hit);
-      } else {
-        this.hideEditToolbar();
-      }
+      const hit = this.drawingEngine.hitTest(e.clientX - rect.left, e.clientY - rect.top, this.scaleEngine, this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2, (t) => this.dataManager.getIndexAtTime(t));
+      if (hit) this.showEditToolbar(e.clientX, e.clientY, hit); else this.hideEditToolbar();
     });
   }
 
   private showEditToolbar(x: number, y: number, obj: DrawingObject) {
-    let toolbar = document.getElementById('edit-toolbar');
-    if (!toolbar) {
-      toolbar = document.createElement('div');
-      toolbar.id = 'edit-toolbar';
-      toolbar.style.cssText = `
-        position: fixed; z-index: 1000; background: #1e222d; border: 1px solid #363c4e;
-        padding: 8px; border-radius: 6px; display: flex; gap: 8px; align-items: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      `;
-      document.body.appendChild(toolbar);
-    }
-    
-    toolbar.style.display = 'flex';
-    toolbar.style.left = `${x}px`;
-    toolbar.style.top = `${y - 50}px`;
-
-    toolbar.innerHTML = `
-      <input type="color" id="edit-color" value="${obj.color}" style="width: 24px; height: 24px; border: none; background: transparent; cursor: pointer;">
-      ${obj.type === 'text' ? '<button id="edit-text" style="background: transparent; border: none; color: #d1d4dc; cursor: pointer; padding: 4px; font-size: 12px;">T</button>' : ''}
-      <button id="edit-delete" style="background: transparent; border: none; color: #ef5350; cursor: pointer; padding: 4px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-      </button>
-    `;
-
-    const colorInput = toolbar.querySelector('#edit-color') as HTMLInputElement;
-    colorInput.oninput = () => {
-      this.drawingEngine.updateDrawingColor(obj.id, colorInput.value);
-      this.requestRedraw();
-    };
-
-    if (obj.type === 'text') {
-      const textBtn = toolbar.querySelector('#edit-text') as HTMLButtonElement;
-      textBtn.onclick = () => {
-        const newText = prompt('修改文字內容:', obj.text);
-        if (newText !== null) {
-          this.drawingEngine.updateDrawingText(obj.id, newText);
-          this.requestRedraw();
-        }
-      };
-    }
-
-    const delBtn = toolbar.querySelector('#edit-delete') as HTMLButtonElement;
-    delBtn.onclick = () => {
-      this.drawingEngine.deleteDrawing(obj.id);
-      this.hideEditToolbar();
-      this.requestRedraw();
-    };
+    let t = document.getElementById('edit-toolbar');
+    if (!t) { t = document.createElement('div'); t.id = 'edit-toolbar'; t.style.cssText = 'position: fixed; z-index: 1000; background: #1e222d; border: 1px solid #363c4e; padding: 8px; border-radius: 6px; display: flex; gap: 8px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5);'; document.body.appendChild(t); }
+    t.style.display = 'flex'; t.style.left = `${x}px`; t.style.top = `${y - 50}px`;
+    t.innerHTML = `<input type="color" id="edit-color" value="${obj.color}" style="width: 24px; height: 24px; border: none; background: transparent;"><button id="edit-delete" style="background:transparent;border:none;color:#ef5350;padding:4px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>`;
+    (t.querySelector('#edit-color') as HTMLInputElement).oninput = (e) => { this.drawingEngine.updateDrawingColor(obj.id, (e.target as HTMLInputElement).value); this.requestRedraw(); };
+    (t.querySelector('#edit-delete') as HTMLButtonElement).onclick = () => { this.drawingEngine.deleteDrawing(obj.id); this.hideEditToolbar(); this.requestRedraw(); };
   }
 
-  private hideEditToolbar() {
-    const toolbar = document.getElementById('edit-toolbar');
-    if (toolbar) toolbar.style.display = 'none';
-  }
+  private hideEditToolbar() { const t = document.getElementById('edit-toolbar'); if (t) t.style.display = 'none'; }
 
   private startDrawing(type: string) {
-    let currentDrawing: DrawingObject | null = null;
-
-    this.interactionEngine.setDrawingMode(type, (x, y, eventType) => {
+    let cur: DrawingObject | null = null;
+    this.interactionEngine.setDrawingMode(type, (x, y, ev) => {
       const price = this.scaleEngine.yToPrice(y);
-      const { startIndex } = this.viewport.getRawRange();
-      const candleWidth = this.viewport.getCandleWidth();
-      const dataIndex = x / (candleWidth + 2) + startIndex;
-      const time = this.dataManager.getTimeAtIndex(dataIndex);
-
-      if (eventType === 'start') {
+      const time = this.dataManager.getTimeAtIndex(x / (this.viewport.getCandleWidth() + 2) + this.viewport.getRawRange().startIndex);
+      if (ev === 'start') {
         if (type === 'text') {
-            const content = prompt('請輸入文字內容:');
-            if (content) {
-                const textObj: DrawingObject = {
-                    id: Date.now().toString(),
-                    type: 'text',
-                    points: [{ time, price }],
-                    color: '#fff',
-                    lineWidth: 2,
-                    text: content
-                };
-                this.drawingEngine.addDrawing(textObj);
-            }
-            this.interactionEngine.setDrawingMode(null);
-            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tool-cursor')?.classList.add('active');
-        } else {
-            currentDrawing = {
-              id: Date.now().toString(),
-              type: type as any,
-              points: [{ time, price }, { time, price }],
-              color: '#2962ff',
-              lineWidth: 2
-            };
-            this.drawingEngine.setActiveDrawing(currentDrawing);
-        }
-      } else if (eventType === 'move' && currentDrawing) {
-        currentDrawing.points[1] = { time, price };
-      } else if (eventType === 'end' && currentDrawing) {
-        this.drawingEngine.addDrawing(currentDrawing);
-        this.drawingEngine.setActiveDrawing(null);
-        currentDrawing = null;
-      }
+          const c = prompt('內容:'); if (c) this.drawingEngine.addDrawing({ id: Date.now().toString(), type: 'text', points: [{ time, price }], color: '#fff', lineWidth: 2, text: c });
+          this.interactionEngine.setDrawingMode(null); document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active')); document.getElementById('tool-cursor')?.classList.add('active');
+        } else { cur = { id: Date.now().toString(), type: type as any, points: [{ time, price }, { time, price }], color: '#2962ff', lineWidth: 2 }; this.drawingEngine.setActiveDrawing(cur); }
+      } else if (ev === 'move' && cur) { cur.points[1] = { time, price }; }
+      else if (ev === 'end' && cur) { this.drawingEngine.addDrawing(cur); this.drawingEngine.setActiveDrawing(null); cur = null; }
       this.requestRedraw();
     });
   }
 
-  private sortTimeframes(tfs: string[]): string[] {
-    const weights: { [key: string]: number } = { 's': 1, 'm': 60, 'H': 3600, 'D': 86400, 'W': 604800, 'M': 2592000 };
-    return [...tfs].sort((a, b) => {
-      const getVal = (s: string) => { const val = parseInt(s.slice(0, -1)) || 1; const unit = s.slice(-1); return val * (weights[unit] || 0); };
-      return getVal(a) - getVal(b);
-    });
-  }
-
-  private formatTfLabel(tf: string): string {
-    const value = parseInt(tf.slice(0, -1)) || 1;
-    const unit = tf.slice(-1);
-    const unitMap: { [key: string]: string } = { 's': '秒', 'm': '分', 'H': '時', 'D': '日', 'W': '週', 'M': '月' };
-    return `${value}${unitMap[unit] || unit}`;
-  }
-
-  private handleResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    this.renderEngine.resize(width, height);
-    this.scaleEngine.updateDimensions(width, height);
-    this.requestRedraw();
-  }
-
-  private async init() { await this.dataManager.loadInitialData(); }
-
   private renderTfFavorites() {
-    const container = document.getElementById('tf-favorites')!;
-    container.innerHTML = '';
-    this.sortTimeframes(this.favorites).forEach(tf => {
-      const btn = document.createElement('button');
-      btn.className = `fav-btn ${this.currentTimeframe === tf ? 'active' : ''}`;
-      btn.innerText = this.formatTfLabel(tf);
-      btn.onclick = () => this.switchTimeframe(tf);
-      container.appendChild(btn);
+    const c = document.getElementById('tf-favorites')!; c.innerHTML = '';
+    this.favorites.forEach(tf => {
+      const b = document.createElement('button'); b.className = `fav-btn ${this.currentTimeframe === tf ? 'active' : ''}`;
+      b.innerText = tf; b.onclick = () => this.switchTimeframe(tf); c.appendChild(b);
     });
   }
 
   private renderTfPopup() {
-    const list = document.getElementById('tf-list')!;
-    list.innerHTML = '';
-    this.allTimeframes.forEach(tf => {
-      const item = document.createElement('div');
-      item.className = 'tf-item';
-      const label = document.createElement('span');
-      label.innerText = this.formatTfLabel(tf);
-      label.style.flex = '1';
-      label.onclick = () => { this.switchTimeframe(tf); document.getElementById('tf-popup')?.classList.remove('show'); };
-      const star = document.createElement('span');
-      star.className = `star ${this.favorites.includes(tf) ? 'active' : ''}`;
-      star.innerHTML = this.favorites.includes(tf) ? '★' : '☆';
-      star.onclick = (e) => { e.stopPropagation(); this.toggleFavorite(tf); };
-      item.appendChild(label);
-      item.appendChild(star);
-      list.appendChild(item);
+    const l = document.getElementById('tf-list')!; l.innerHTML = '';
+    ['1m', '5m', '15m', '1H', '1D', '1W'].forEach(tf => {
+      const i = document.createElement('div'); i.className = 'tf-item'; i.innerText = tf;
+      i.onclick = () => { this.switchTimeframe(tf); document.getElementById('tf-popup')?.classList.remove('show'); };
+      l.appendChild(i);
     });
   }
 
-  private switchTimeframe(tf: string) {
-    this.currentTimeframe = tf;
-    this.dataManager.setTimeframe(tf);
-    this.scaleEngine.resetAutoScale();
-    document.getElementById('tf-main-btn')!.innerText = `${this.formatTfLabel(tf)} ▾`;
-    this.renderTfFavorites();
-  }
+  private switchTimeframe(tf: string) { this.currentTimeframe = tf; this.dataManager.setTimeframe(tf); this.scaleEngine.resetAutoScale(); this.renderTfFavorites(); }
 
-  private toggleFavorite(tf: string) {
-    if (this.favorites.includes(tf)) this.favorites = this.favorites.filter(f => f !== tf);
-    else this.favorites.push(tf);
-    localStorage.setItem('tf-favorites', JSON.stringify(this.favorites));
-    this.renderTfFavorites();
-    this.renderTfPopup();
-  }
-
-  private isRedrawRequested = false;
-  private requestRedraw() {
-    if (this.isRedrawRequested) return;
-    this.isRedrawRequested = true;
-    requestAnimationFrame(() => { try { this.draw(); } finally { this.isRedrawRequested = false; } });
-  }
+  private requestRedraw() { requestAnimationFrame(() => this.draw()); }
 
   private draw() {
     const candles = this.dataManager.getCandles();
     const { start, end } = this.viewport.getVisibleRange();
     const { startIndex } = this.viewport.getRawRange();
-    const visibleCandles = candles.slice(start, end);
-    const candleWidth = this.viewport.getCandleWidth();
-
-    this.scaleEngine.updateScale(visibleCandles);
+    const visible = candles.slice(start, end);
+    const cw = this.viewport.getCandleWidth();
+    this.scaleEngine.updateScale(visible);
     this.renderEngine.drawGrid(this.scaleEngine);
-    this.renderEngine.drawAxes(visibleCandles, startIndex, candleWidth, 2, (idx) => this.dataManager.getTimeAtIndex(idx), this.scaleEngine);
-    this.renderEngine.drawCandles(visibleCandles, start, startIndex, candleWidth, 2, this.scaleEngine);
-
+    this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx) => this.dataManager.getTimeAtIndex(idx), this.scaleEngine);
+    this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine);
     const ma20 = this.indicatorEngine.calculateMA(candles, 20);
-    this.renderEngine.drawIndicator(ma20.slice(start, end), start, startIndex, candleWidth, 2, '#ffeb3b', this.scaleEngine);
-
-    // 🚨 繪製圖形
-    const overlayCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
-    this.drawingEngine.render(
-        overlayCtx, 
-        this.scaleEngine, 
-        startIndex, 
-        candleWidth, 
-        2, 
-        (t) => this.dataManager.getIndexAtTime(t)
-    );
-
-    const lastCandle = candles[candles.length - 1];
-    if (lastCandle) {
-      const color = lastCandle.close >= lastCandle.open ? '#26a69a' : '#ef5350';
-      this.renderEngine.drawLastPriceLine(lastCandle.close, color, this.scaleEngine);
-    }
+    this.renderEngine.drawIndicator(ma20.slice(start, end), start, startIndex, cw, 2, '#ffeb3b', this.scaleEngine);
+    const oCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
+    this.drawingEngine.render(oCtx, this.scaleEngine, startIndex, cw, 2, (t) => this.dataManager.getIndexAtTime(t));
+    const last = candles[candles.length - 1];
+    if (last) this.renderEngine.drawLastPriceLine(last.close, last.close >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
     this.updateStatusUI();
   }
 
   private updateStatusUI() {
-    const dot = document.getElementById('status-dot');
-    const text = document.getElementById('status-text');
-    if (!dot || !text) return;
-    if (this.connectionStatus === 'connected') {
-      dot.style.background = '#26a69a'; text.innerText = `${this.currentSymbol} Live`;
-    } else {
-      dot.style.background = '#ef5350'; text.innerText = 'Disconnected';
-    }
+    const dot = document.getElementById('status-dot'), text = document.getElementById('status-text');
+    if (dot && text) { dot.style.background = this.connectionStatus === 'connected' ? '#26a69a' : '#ef5350'; text.innerText = this.currentSymbol; }
   }
 
   private updateCrosshair(mouseX: number, mouseY: number) {
     const price = this.scaleEngine.yToPrice(mouseY);
-    const { startIndex } = this.viewport.getRawRange();
-    const candleWidth = this.viewport.getCandleWidth();
-    const dataIndex = mouseX / (candleWidth + 2) + startIndex;
-    const timeStr = formatFullTime(this.dataManager.getTimeAtIndex(dataIndex));
-    this.renderEngine.drawCrosshair(mouseX, mouseY, formatPrice(price), timeStr);
-    
-    // 🚨 重新繪製繪圖層 (因為 Crosshair 會清除畫布)
-    const overlayCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
-    this.drawingEngine.render(overlayCtx, this.scaleEngine, startIndex, candleWidth, 2, (t) => this.dataManager.getIndexAtTime(t));
+    const time = this.dataManager.getTimeAtIndex(mouseX / (this.viewport.getCandleWidth() + 2) + this.viewport.getRawRange().startIndex);
+    this.renderEngine.drawCrosshair(mouseX, mouseY, formatPrice(price), formatFullTime(time));
+    this.draw();
   }
+
+  private handleResize() { const w = window.innerWidth, h = window.innerHeight; this.renderEngine.resize(w, h); this.scaleEngine.updateDimensions(w, h); this.requestRedraw(); }
+  private async init() { await this.dataManager.loadInitialData(); }
 }
 
 window.onload = () => { new ChartEngine(); };
-

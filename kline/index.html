@@ -83,33 +83,17 @@
             .tool-btn.active { background: #2962ff; color: #fff; }
         </style>
 
-        <!-- 🚨 新增：幣種與週期切換 UI (現代化版本) -->
+        <!-- 🚨 幣種與週期切換 UI (彈窗版) -->
         <div id="controls" style="position: absolute; top: 10px; left: 10px; z-index: 15; background: rgba(20, 24, 35, 0.8); padding: 4px 8px; border-radius: 6px; border: 1px solid #363c4e; display: flex; gap: 8px; align-items: center; backdrop-filter: blur(4px);">
             
-            <!-- 市場類型切換 -->
-            <select id="market-type-select" style="background: transparent; color: #2962ff; border: none; outline: none; font-size: 13px; cursor: pointer; font-weight: bold; padding: 4px;">
-                <option value="SPOT">SPOT</option>
-                <option value="PERP">PERP</option>
-                <option value="STOCK">STOCK</option>
-            </select>
+            <!-- 主標的按鈕：點擊開啟搜尋彈窗 -->
+            <button id="symbol-search-btn" class="menu-btn" style="font-weight: bold; color: #fff; font-size: 14px; min-width: 100px; text-align: left;">
+                BTC/USDT ▾
+            </button>
 
             <span style="color: #5d606b; margin: 0 2px;">|</span>
-
-            <!-- 標的搜尋輸入框 -->
-            <div style="position: relative; display: flex; align-items: center;">
-                <input id="symbol-search" type="text" placeholder="Search (e.g. BTC/USDT, NVDA)" 
-                    style="background: transparent; color: #fff; border: none; outline: none; font-size: 14px; width: 180px; padding: 4px; font-weight: bold;">
-                <span id="search-hint" style="font-size: 10px; color: #5d606b; position: absolute; right: 5px; pointer-events: none;">Enter ↵</span>
-            </div>
-
-            <span style="color: #5d606b; margin: 0 4px;">|</span>
             
-            <select id="exchange-select" style="background: transparent; color: #d1d4dc; border: none; outline: none; font-size: 13px; cursor: pointer; padding: 4px;">
-                <option value="">Auto (Best)</option>
-                <option value="Binance">Binance</option>
-                <option value="OKX">OKX</option>
-                <option value="Yahoo">Yahoo</option>
-            </select>
+            <div id="exchange-display" style="color: #929498; font-size: 12px; padding: 0 4px;">Binance</div>
             
             <div style="width: 1px; height: 20px; background: #363c4e;"></div>
 
@@ -122,10 +106,67 @@
                 <div id="tf-popup" class="menu-popup">
                     <div id="tf-list"></div>
                     <div style="height: 1px; background: #363c4e; margin: 4px 0;"></div>
-                    <input id="tf-custom-input" type="text" placeholder="自訂週期 (如 3m)" style="width: 100%; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 6px; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                    <input id="tf-custom-input" type="text" placeholder="自訂 (如 3m)" style="width: 100%; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 6px; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
                 </div>
             </div>
         </div>
+
+        <!-- 🚨 搜尋標的彈窗 (Symbol Search Modal) -->
+        <div id="symbol-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <input type="text" id="modal-search-input" placeholder="輸入代號或名稱 (如 3105, BTC, NVDA)..." autocomplete="off">
+                </div>
+                <div class="modal-tabs">
+                    <button class="tab-btn active" data-cat="CRYPTO">加密貨幣</button>
+                    <button class="tab-btn" data-cat="TW_STOCK">台股</button>
+                    <button class="tab-btn" data-cat="US_STOCK">美股</button>
+                </div>
+                <div id="modal-list" class="symbol-list">
+                    <!-- 由 JS 列出所有股票 -->
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(0, 0, 0, 0.7); z-index: 1000;
+                justify-content: center; align-items: flex-start;
+                padding-top: 100px; backdrop-filter: blur(4px);
+            }
+            .modal-overlay.show { display: flex; }
+            .modal-content {
+                background: #1e222d; width: 500px; border-radius: 8px;
+                border: 1px solid #363c4e; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+                overflow: hidden;
+            }
+            .modal-header { padding: 16px; border-bottom: 1px solid #363c4e; }
+            .modal-header input {
+                width: 100%; background: transparent; border: none;
+                outline: none; color: #fff; font-size: 18px;
+            }
+            .modal-tabs { display: flex; background: #131722; padding: 4px; gap: 4px; }
+            .tab-btn {
+                flex: 1; background: transparent; border: none; color: #929498;
+                padding: 8px; cursor: pointer; border-radius: 4px; font-size: 13px;
+            }
+            .tab-btn:hover { background: #2a2e39; }
+            .tab-btn.active { background: #2962ff; color: #fff; }
+            
+            .symbol-list { max-height: 400px; overflow-y: auto; padding: 8px 0; }
+            .symbol-item {
+                display: flex; justify-content: space-between; align-items: center;
+                padding: 10px 16px; cursor: pointer; transition: background 0.2s;
+                border-bottom: 1px solid #2a2e39;
+            }
+            .symbol-item:hover { background: #2a2e39; }
+            .symbol-item .symbol-name { font-weight: bold; color: #d1d4dc; }
+            .symbol-item .symbol-desc { font-size: 12px; color: #787b86; }
+            .symbol-item .symbol-exch { font-size: 11px; background: #363c4e; color: #d1d4dc; padding: 2px 6px; border-radius: 3px; }
+        </style>
 
         <style>
             .menu-btn {
@@ -178,13 +219,6 @@
                 border-radius: 4px;
             }
             .tf-item:hover { background: #2a2e39; }
-            .tf-item .star {
-                color: #5d606b;
-                transition: color 0.2s;
-                font-size: 16px;
-            }
-            .tf-item .star:hover { color: #f0b90b; }
-            .tf-item .star.active { color: #f0b90b; }
         </style>
 
         <div id="loading" class="loading-overlay">Loading Market Data...</div>
