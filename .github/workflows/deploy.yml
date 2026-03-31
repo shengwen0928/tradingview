@@ -1,0 +1,35 @@
+name: Build and Deploy Frontend
+
+on:
+  push:
+    branches:
+      - master # 當 master 分支有變動時觸發
+    paths:
+      - 'kline/**' # 只有 kline 資料夾有變動時才執行，避免浪費資源
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: kline/package-lock.json
+
+      - name: Install and Build
+        run: |
+          cd kline
+          npm install
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: kline/dist # 指定編譯後的資料夾
+          branch: gh-pages # 發布到 gh-pages 分支
+          clean: true
