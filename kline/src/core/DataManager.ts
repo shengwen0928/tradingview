@@ -239,7 +239,9 @@ export class DataManager {
 
   public async loadMoreHistory(beforeTime: number): Promise<Candle[]> {
     try {
-      const url = `${this.apiUrl}/klines?id=${this.instId}&interval=${this.bar}&endTime=${beforeTime}`;
+      let url = `${this.apiUrl}/klines?id=${this.instId}&interval=${this.bar}&endTime=${beforeTime}`;
+      if (this.currentSource) url += `&source=${this.currentSource}`;
+      
       console.log(`[DataManager] Fetching history from backend: ${url}`);
       const response = await fetch(url);
       const result = await response.json();

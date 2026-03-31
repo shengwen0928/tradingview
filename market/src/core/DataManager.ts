@@ -3,7 +3,7 @@ import { OKXConnector } from '../connectors/OKXConnector';
 import { YahooConnector } from '../connectors/YahooConnector';
 import { IConnector } from '../connectors/ConnectorInterface';
 import { SymbolManager } from './SymbolManager';
-import { Candle } from '../types/Candle';
+import { Candle, MarketType } from '../types/Candle';
 import { StorageManager } from './StorageManager';
 import { AggregationUtils } from '../utils/AggregationUtils';
 
@@ -60,9 +60,46 @@ export class DataManager {
             '1s': 1000, '1m': 60000, '3m': 180000, '5m': 300000, '15m': 900000, '30m': 1800000,
             '1h': 3600000, '2h': 7200000, '4h': 14400000, '6h': 21600000, '8h': 28800000, '12h': 43200000,
             '1d': 86400000, '2d': 172800000, '3d': 259200000, '5d': 432000000,
-            '1w': 604800000, '1M': 2592000000, '3M': 7776000000, '1Y': 31536000000
+            '1w': 604800000, '1M': 2592000000, '3M': 7776000000, '1y': 31536000000
         };
         return msMap[tag] || 60000;
+    }
+
+    private alignTimestamp(timestamp: number, interval: string): number {
+        const tag = this.getStrictTag(interval);
+        const ms = this.parseIntervalToMs(tag);
+        const d = new Date(timestamp);
+
+        if (tag.endsWith('M')) {
+            d.setUTCDate(1);
+            d.setUTCHours(0, 0, 0, 0);
+            const val = parseInt(tag.slice(0, -1)) || 1;
+            const month = d.getUTCMonth();
+            d.setUTCMonth(month - (month % val));
+            return d.getTime();
+        } else if (tag.endsWith('w')) {
+            const day = d.getUTCDay();
+            const diff = (day === 0 ? 6 : day - 1);
+            d.setUTCDate(d.getUTCDate() - diff);
+            d.setUTCHours(0, 0, 0, 0);
+            return d.getTime();
+        } else if (tag.endsWith('d')) {
+            // 🚨 修正：針對多日線 (如 2d, 3d, 5d) 進行特殊對齊
+            d.setUTCHours(0, 0, 0, 0);
+            const val = parseInt(tag.slice(0, -1)) || 1;
+            if (val > 1) {
+                // 以 1970-01-01 為基準計算天數偏移
+                const daysSinceEpoch = Math.floor(d.getTime() / 86400000);
+                const alignedDays = Math.floor(daysSinceEpoch / val) * val;
+                return alignedDays * 86400000;
+            }
+            return d.getTime();
+        } else if (ms >= 86400000) {
+            d.setUTCHours(0, 0, 0, 0);
+            return d.getTime();
+        } else {
+            return Math.floor(timestamp / ms) * ms;
+        }
     }
 
     private getBestBaseInterval(targetMs: number): string {
@@ -169,57 +206,74 @@ export class DataManager {
 
     public subscribe(id: string, interval: string, onUpdate: (candle: Candle) => void, source?: string) {
         const tag = this.getStrictTag(interval);
-        const cacheKey = `${id}_${tag}`;
+        const symbolInfo = SymbolManager.getSymbolById(id);
+        const effectiveSource = source || (symbolInfo?.market === MarketType.STOCK ? 'Yahoo' : 'Binance');
+        const cacheKey = `${id}_${tag}`; // 🚨 統一 Key，移除 source 尾綴
+        
         if (!this.subscribers.has(cacheKey)) this.subscribers.set(cacheKey, []);
         this.subscribers.get(cacheKey)?.push(onUpdate);
 
         if (!this.activeSubscriptions.has(cacheKey)) {
-            const symbolInfo = SymbolManager.getSymbolById(id);
             if (symbolInfo) {
                 const isNative = this.nativeIntervals.includes(tag);
-                // 🚨 修正：如果是合成週期，我們訂閱 1d (日線) 作為更新源，這比 1m 穩定的多
                 const subInterval = isNative ? tag : '1d';
-                const subKey = `${id}_${subInterval}`;
+                const subKey = `${id}_${subInterval}_${effectiveSource}`;
+                
                 if (!this.activeSubscriptions.has(subKey)) {
-                    const selSource = (source && symbolInfo.sourceMap[source]) ? source : Object.keys(symbolInfo.sourceMap)[0];
-                    const connector = this.connectors.get(selSource);
+                    const connector = this.connectors.get(effectiveSource);
                     if (connector) {
-                        connector.subscribeKlines(symbolInfo.sourceMap[selSource], subInterval, (c) => this.onNewUpdate(id, subInterval, c));
+                        connector.subscribeKlines(symbolInfo.sourceMap[effectiveSource], subInterval, (c) => this.onNewUpdate(id, subInterval, c, effectiveSource));
                         this.activeSubscriptions.add(subKey);
                     }
                 }
-                if (!isNative) this.activeSubscriptions.add(cacheKey);
+                this.activeSubscriptions.add(cacheKey);
             }
         }
     }
 
-    private onNewUpdate(id: string, interval: string, data: any) {
+    private async onNewUpdate(id: string, interval: string, data: any, source: string) {
         const tag = this.getStrictTag(interval);
-        const intervalMs = this.parseIntervalToMs(tag);
         const cacheKey = `${id}_${tag}`;
+        const intervalMs = this.parseIntervalToMs(tag);
+        
+        const alignedTs = (source === 'Yahoo') ? (data.timestamp || data.time) : this.alignTimestamp(data.timestamp || data.time, tag);
+
+        // 🚨 修正：如果快取為空，嘗試從 Storage 補載，防止「重新開始跑」
+        if (!this.caches.has(cacheKey)) {
+            const stored = await this.storage.loadKlines(id, tag);
+            if (stored.length > 0) this.caches.set(cacheKey, stored);
+        }
 
         let currentCache = this.caches.get(cacheKey) || [];
-        const alignedTs = Math.floor((data.timestamp || data.time) / intervalMs) * intervalMs;
-
         let candleToPush: Candle | null = null;
+
         if (data.isTrade) {
-            if (currentCache.length === 0) return;
-            const last = currentCache[currentCache.length - 1];
-            if (alignedTs === last.timestamp) {
-                last.close = data.close;
-                last.high = Math.max(last.high, data.close);
-                last.low = Math.min(last.low, data.close);
-                candleToPush = last;
-            } else if (alignedTs > last.timestamp) {
-                const newC = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: 0 };
-                currentCache.push(newC);
-                candleToPush = newC;
+            if (currentCache.length === 0) {
+                // 如果連 Storage 都沒數據，才開新的
+                const initCandle = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
+                currentCache.push(initCandle);
+                this.caches.set(cacheKey, currentCache);
+                candleToPush = initCandle;
+            } else {
+                const last = currentCache[currentCache.length - 1];
+                if (alignedTs === last.timestamp) {
+                    last.close = data.close;
+                    last.high = Math.max(last.high, data.close);
+                    last.low = Math.min(last.low, data.close);
+                    last.volume += (data.volume || 0);
+                    candleToPush = last;
+                } else if (alignedTs > last.timestamp) {
+                    const newC = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
+                    currentCache.push(newC);
+                    candleToPush = newC;
+                }
             }
         } else {
             const candle = data as Candle;
             if (currentCache.length > 0) {
                 const last = currentCache[currentCache.length - 1];
                 if (candle.timestamp === last.timestamp) {
+                    // 🚨 修正：保留原始 Open，僅更新波動
                     last.high = Math.max(last.high, candle.high);
                     last.low = Math.min(last.low, candle.low);
                     last.close = candle.close;
@@ -230,24 +284,29 @@ export class DataManager {
         }
 
         if (candleToPush) {
-            // 1. 推送給當前週期的訂閱者
             const subs = this.subscribers.get(cacheKey);
             if (subs) subs.forEach(cb => cb(candleToPush!));
 
-            // 2. 🚨 級聯推送：如果當前是 1d 更新，且有人訂閱了合成大週期 (如 1M, 5d)
-            if (tag === '1d') {
+            // 🚨 修正：級聯推送邏輯，適配統一後的 Key
+            if (tag === '1d' || tag === '1m') {
                 this.subscribers.forEach((syntheticSubs, sKey) => {
-                    const [sId, sTag] = sKey.split('_');
-                    if (sId === id && !this.nativeIntervals.includes(sTag)) {
-                        const sMs = this.parseIntervalToMs(sTag);
-                        let sCache = this.caches.get(sKey) || [];
-                        const lastS = sCache.length > 0 ? sCache[sCache.length - 1] : null;
-                        const updated = AggregationUtils.updateAggregated(lastS, candleToPush!, sMs);
-                        if (!lastS || lastS.timestamp !== updated.timestamp) {
-                            sCache.push(updated);
-                            this.caches.set(sKey, sCache);
-                        } else sCache[sCache.length - 1] = updated;
-                        syntheticSubs.forEach(cb => cb(updated));
+                    // 只要 ID 相同且不是當前發送的週期，就進行聚合推送
+                    if (sKey.startsWith(`${id}_`) && sKey !== cacheKey) {
+                        const sTag = sKey.replace(`${id}_`, '');
+                        if (!this.nativeIntervals.includes(sTag)) {
+                            const sMs = this.parseIntervalToMs(sTag);
+                            let sCache = this.caches.get(sKey) || [];
+                            const lastS = sCache.length > 0 ? sCache[sCache.length - 1] : null;
+                            const updated = AggregationUtils.updateAggregated(lastS, candleToPush!, sMs);
+                            
+                            if (!lastS || lastS.timestamp !== updated.timestamp) {
+                                sCache.push(updated);
+                                this.caches.set(sKey, sCache);
+                            } else {
+                                sCache[sCache.length - 1] = updated;
+                            }
+                            syntheticSubs.forEach(cb => cb(updated));
+                        }
                     }
                 });
             }

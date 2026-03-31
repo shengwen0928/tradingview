@@ -133,6 +133,7 @@ export class BinanceConnector implements IConnector {
                 onUpdate({
                     timestamp: msg.T, 
                     close: parseFloat(msg.p),
+                    volume: parseFloat(msg.q),
                     isTrade: true
                 } as any);
             }

@@ -80,10 +80,7 @@ export class YahooConnector implements IConnector {
                 const klines = await this.fetchKlines(symbol, interval, 10);
                 if (klines.length > 0) {
                     const latest = klines[klines.length - 1];
-                    onUpdate({
-                        ...latest,
-                        isTrade: true
-                    } as any);
+                    onUpdate(latest);
                 }
             } catch (err) {}
         }, 10000);
