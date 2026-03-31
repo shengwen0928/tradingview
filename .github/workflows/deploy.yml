@@ -33,3 +33,9 @@ jobs:
           folder: kline/dist
           branch: gh-pages
           clean: true
+
+      - name: Trigger Render Deployment
+        # 🚨 這裡就是幫你「自動按按鈕」的邏輯
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-cm6shonqd2ns73bd00cg?key=v_McGr66sq0"
+
