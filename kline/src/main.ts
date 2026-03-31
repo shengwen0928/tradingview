@@ -190,7 +190,7 @@ class ChartEngine {
   }
 
   private initDrawingToolbar() {
-    const tools = ['cursor', 'trendline', 'horizontal', 'vertical', 'rect', 'fibonacci', 'text'];
+    const tools = ['cursor', 'trendline', 'ray', 'arrow', 'horizontal', 'vertical', 'rect', 'fibonacci', 'text', 'priceRange', 'brush', 'parallelChannel', 'triangle', 'ellipse'];
     tools.forEach(tool => {
       const btn = document.getElementById(`tool-${tool}`);
       if (btn) btn.onclick = () => {
@@ -223,18 +223,77 @@ class ChartEngine {
 
   private startDrawing(type: string) {
     let cur: DrawingObject | null = null;
+    let clickCount = 0; // 🚨 改為記錄點擊次數
+
     this.interactionEngine.setDrawingMode(type, (x, y, ev) => {
       const price = this.scaleEngine.yToPrice(y);
       const time = this.dataManager.getTimeAtIndex(x / (this.viewport.getCandleWidth() + 2) + this.viewport.getRawRange().startIndex);
+      
+      // 🚨 處理「畫筆」：維持拖動模式
+      if (type === 'brush') {
+        if (ev === 'start') {
+          cur = { id: Date.now().toString(), type: 'brush', points: [{ time, price }], color: '#2962ff', lineWidth: 2 };
+          this.drawingEngine.setActiveDrawing(cur);
+        } else if (ev === 'move' && cur) {
+          cur.points.push({ time, price });
+        } else if (ev === 'end' && cur) {
+          this.drawingEngine.addDrawing(cur); this.drawingEngine.setActiveDrawing(null); cur = null;
+        }
+        this.requestRedraw();
+        return;
+      }
+
+      // 🚨 處理其餘工具：改為「點擊式」
       if (ev === 'start') {
-        if (type === 'text') {
-          const c = prompt('內容:'); if (c) this.drawingEngine.addDrawing({ id: Date.now().toString(), type: 'text', points: [{ time, price }], color: '#fff', lineWidth: 2, text: c });
-          this.interactionEngine.setDrawingMode(null); document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active')); document.getElementById('tool-cursor')?.classList.add('active');
-        } else { cur = { id: Date.now().toString(), type: type as any, points: [{ time, price }, { time, price }], color: '#2962ff', lineWidth: 2 }; this.drawingEngine.setActiveDrawing(cur); }
-      } else if (ev === 'move' && cur) { cur.points[1] = { time, price }; }
-      else if (ev === 'end' && cur) { this.drawingEngine.addDrawing(cur); this.drawingEngine.setActiveDrawing(null); cur = null; }
+        clickCount++;
+
+        if (clickCount === 1) {
+          // 第一下點擊：建立物件
+          if (type === 'text') {
+            const c = prompt('內容:');
+            if (c) this.drawingEngine.addDrawing({ id: Date.now().toString(), type: 'text', points: [{ time, price }], color: '#fff', lineWidth: 2, text: c });
+            this.finishDrawing();
+          } else if (type === 'parallelChannel' || type === 'triangle') {
+            cur = { id: Date.now().toString(), type: type as any, points: [{ time, price }, { time, price }, { time, price }], color: '#2962ff', lineWidth: 2 };
+            this.drawingEngine.setActiveDrawing(cur);
+          } else {
+            cur = { id: Date.now().toString(), type: type as any, points: [{ time, price }, { time, price }], color: '#2962ff', lineWidth: 2 };
+            this.drawingEngine.setActiveDrawing(cur);
+          }
+        } else if (clickCount === 2) {
+          // 第二下點擊
+          if (type === 'parallelChannel' || type === 'triangle') {
+            // 三點工具：固定第二點，繼續移動第三點
+            if (cur) cur.points[1] = { time, price };
+          } else {
+            // 二點工具：直接完成
+            if (cur) { cur.points[1] = { time, price }; this.drawingEngine.addDrawing(cur); }
+            this.finishDrawing();
+          }
+        } else if (clickCount === 3) {
+          // 第三下點擊：三點工具完成
+          if (cur) { cur.points[2] = { time, price }; this.drawingEngine.addDrawing(cur); }
+          this.finishDrawing();
+        }
+      } else if (ev === 'move' && cur) {
+        // 移動時預覽
+        if (clickCount === 1) {
+          cur.points[1] = { time, price };
+          if (cur.points[2]) cur.points[2] = { time, price };
+        } else if (clickCount === 2) {
+          cur.points[2] = { time, price };
+        }
+      }
+      
       this.requestRedraw();
     });
+  }
+
+  private finishDrawing() {
+    this.interactionEngine.setDrawingMode(null);
+    this.drawingEngine.setActiveDrawing(null);
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tool-cursor')?.classList.add('active');
   }
 
   private renderTfFavorites() {
@@ -284,8 +343,19 @@ class ChartEngine {
 
   private updateCrosshair(mouseX: number, mouseY: number) {
     const price = this.scaleEngine.yToPrice(mouseY);
-    const time = this.dataManager.getTimeAtIndex(mouseX / (this.viewport.getCandleWidth() + 2) + this.viewport.getRawRange().startIndex);
+    const { startIndex } = this.viewport.getRawRange();
+    const time = this.dataManager.getTimeAtIndex(mouseX / (this.viewport.getCandleWidth() + 2) + startIndex);
     this.renderEngine.drawCrosshair(mouseX, mouseY, formatPrice(price), formatFullTime(time));
+    
+    // 🚨 實作：偵測目前滑鼠指著哪個物件
+    this.hoveredDrawingId = this.drawingEngine.hitTest(
+      mouseX, mouseY, 
+      this.scaleEngine, 
+      startIndex, 
+      this.viewport.getCandleWidth(), 2, 
+      (t) => this.dataManager.getIndexAtTime(t)
+    )?.id || null;
+
     this.draw();
   }
 
