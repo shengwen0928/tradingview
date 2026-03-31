@@ -1,4 +1,5 @@
 import express from 'express';
+import http from 'http'; // 🚨 新增：用於 WebSocket 共用連接埠
 import { DataManager } from '../core/DataManager';
 import { RealtimeGateway } from './RealtimeGateway';
 
@@ -7,12 +8,12 @@ import { RealtimeGateway } from './RealtimeGateway';
  * 提供外部查詢 K 線、標的清單等介面
  */
 const app = express();
-const port = 3001;
-const wsPort = 3002;
+const server = http.createServer(app); // 🚨 新增：HTTP Server
+const port = process.env.PORT || 3001; // 🚨 修正：由環境變數決定
 const dataManager = DataManager.getInstance();
 
-// 啟動實時網關
-new RealtimeGateway(wsPort);
+// 啟動實時網關 (共用 HTTP Server)
+new RealtimeGateway(server);
 
 // CORS 簡易設定
 app.use((req, res, next) => {
@@ -56,6 +57,6 @@ app.get('/klines', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`[Market Data Platform] API server running on http://localhost:${port}`);
+server.listen(port, () => {
+    console.log(`[Market Data Platform] Server running on port ${port}`);
 });

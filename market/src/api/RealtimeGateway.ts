@@ -1,4 +1,5 @@
 import WebSocket, { Server } from 'ws';
+import http from 'http';
 import { DataManager } from '../core/DataManager';
 
 /**
@@ -9,11 +10,11 @@ export class RealtimeGateway {
     private wss: Server;
     private dataManager: DataManager;
 
-    constructor(port: number) {
+    constructor(server: http.Server) {
         this.dataManager = DataManager.getInstance();
-        this.wss = new Server({ port });
+        this.wss = new Server({ server });
         
-        console.log(`[RealtimeGateway] WebSocket server running on ws://localhost:${port}`);
+        console.log(`[RealtimeGateway] WebSocket server integrated with HTTP server`);
         this.setup();
     }
 

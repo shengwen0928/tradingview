@@ -15,8 +15,11 @@ export class DataManager {
   private pingInterval: number | null = null;
 
   // Backend URLs
-  private apiUrl = 'http://localhost:3001';
-  private wsUrl = 'ws://localhost:3002';
+  private apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3001' 
+    : 'https://tradingviewer-market.onrender.com'; // 🚨 這裡改為你 Render 的網址
+    
+  private wsUrl = this.apiUrl.replace('http', 'ws');
 
   constructor(
     onDataUpdated: (candles: Candle[], isHistory: boolean) => void,
