@@ -3,7 +3,7 @@ name: Build and Deploy Frontend
 on:
   push:
     branches:
-      - master # 當 master 分支有變動時觸發
+      - main # 當 main 分支有變動時觸發
     paths:
       - 'kline/**' # 只有 kline 資料夾有變動時才執行，避免浪費資源
 

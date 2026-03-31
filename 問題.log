@@ -1,50 +1,68 @@
-PS C:\Users\admin\Desktop\tradingviewer\market> npx ts-node src/verify-data.ts
+Run JamesIves/github-pages-deploy-action@v4
 
-🔍 比對驗證 [BTC/USDT] [1m] 來源: Binance
-=============================================================
+    ╭━━━╮╭╮╭╮╱╭╮╱╱╭╮╱╱╭━━━╮
+    ┃╭━╮┣╯╰┫┃╱┃┃╱╱┃┃╱╱┃╭━╮┃
+    ┃┃╱╰╋╮╭┫╰━╯┣╮╭┫╰━╮┃╰━╯┣━━┳━━┳━━┳━━╮
+    ┃┃╭━╋┫┃┃╭━╮┃┃┃┃╭╮┃┃╭━━┫╭╮┃╭╮┃┃━┫━━┫
+    ┃╰┻━┃┃╰┫┃╱┃┃╰╯┃╰╯┃┃┃╱╱┃╭╮┃╰╯┃┃━╋━━┃
+    ╰━━━┻┻━┻╯╱╰┻━━┻━━╯╰╯╱╱╰╯╰┻━╮┣━━┻━━╯
+    ╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭━╯┃
+    ╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰━━╯
+    ╭━━━╮╱╱╱╱╱╭╮╱╱╱╱╱╱╱╱╭━━━╮╱╱╭╮
+    ╰╮╭╮┃╱╱╱╱╱┃┃╱╱╱╱╱╱╱╱┃╭━╮┃╱╭╯╰╮
+    ╱┃┃┃┣━━┳━━┫┃╭━━┳╮╱╭╮┃┃╱┃┣━┻╮╭╋┳━━┳━╮
+    ╱┃┃┃┃┃━┫╭╮┃┃┃╭╮┃┃╱┃┃┃╰━╯┃╭━┫┃┣┫╭╮┃╭╮╮
+    ╭╯╰╯┃┃━┫╰╯┃╰┫╰╯┃╰━╯┃┃╭━╮┃╰━┫╰┫┃╰╯┃┃┃┃
+    ╰━━━┻━━┫╭━┻━┻━━┻━╮╭╯╰╯╱╰┻━━┻━┻┻━━┻╯╰╯
+    ╱╱╱╱╱╱╱┃┃╱╱╱╱╱╱╭━╯┃
+    ╱╱╱╱╱╱╱╰╯╱╱╱╱╱╱╰━━╯
+    
 
---- [1] DataManager (本地聚合/快取層) ---
-1. [下午2:03:00] O:67611.63 H:67618.98 L:67585.20 C:67600.00 V:3.09
-2. [下午2:04:00] O:67599.99 H:67705.27 L:67589.00 C:67705.27 V:22.59
-3. [下午2:05:00] O:67705.28 H:67705.28 L:67596.43 C:67621.77 V:25.86
-4. [下午2:06:00] O:67621.77 H:67637.68 L:67565.86 C:67579.02 V:10.24
-5. [下午2:07:00] O:67579.02 H:67619.61 L:67579.02 C:67610.67 V:7.65
+    💖 Support: https://github.com/sponsors/JamesIves
+    📣 Maintained by James Ives: https://jamesiv.es
 
---- [2] Binance Connector (交易所原始數據) ---
-1. [下午2:03:00] O:67611.63 H:67618.98 L:67585.20 C:67600.00 V:3.09
-2. [下午2:04:00] O:67599.99 H:67705.27 L:67589.00 C:67705.27 V:22.59
-3. [下午2:05:00] O:67705.28 H:67705.28 L:67596.43 C:67621.77 V:25.86
-4. [下午2:06:00] O:67621.77 H:67637.68 L:67565.86 C:67579.02 V:10.24
-5. [下午2:07:00] O:67579.02 H:67619.61 L:67579.02 C:67610.67 V:7.65
-
---- [3] 差異分析 ---
-✅ 第 1 根數據完全一致
-✅ 第 2 根數據完全一致
-✅ 第 3 根數據完全一致
-✅ 第 4 根數據完全一致
-✅ 第 5 根數據完全一致
-
-🔍 比對驗證 [2017.TW:STOCK] [1d] 來源: Yahoo
-=============================================================
-
---- [1] DataManager (本地聚合/快取層) ---
-1. [上午9:00:00] O:10.30 H:10.40 L:10.15 C:10.20 V:901405.00
-2. [上午9:00:00] O:10.30 H:10.30 L:9.99 C:10.05 V:1253567.00
-3. [上午9:00:00] O:10.00 H:10.10 L:9.84 C:10.05 V:690919.00
-4. [上午9:00:00] O:9.99 H:10.25 L:9.93 C:10.05 V:998400.00
-5. [上午9:00:00] O:10.15 H:10.15 L:9.85 C:9.90 V:932966.00
-
---- [2] Yahoo Connector (交易所原始數據) ---
-1. [上午9:00:00] O:10.30 H:10.40 L:10.15 C:10.20 V:901405.00
-2. [上午9:00:00] O:10.30 H:10.30 L:9.99 C:10.05 V:1253567.00
-3. [上午9:00:00] O:10.00 H:10.10 L:9.84 C:10.05 V:690919.00
-4. [上午9:00:00] O:9.99 H:10.25 L:9.93 C:10.05 V:998400.00
-5. [上午9:00:00] O:10.15 H:10.15 L:9.85 C:9.90 V:1095250.00
-
---- [3] 差異分析 ---
-⚠️ 第 1 根數據不一致!
-   成交量差異: 162284
-✅ 第 2 根數據完全一致
-✅ 第 3 根數據完全一致
-✅ 第 4 根數據完全一致
-✅ 第 5 根數據完全一致
+    🚀 Getting Started Guide: https://github.com/JamesIves/github-pages-deploy-action
+    ❓ Discussions / Q&A: https://github.com/JamesIves/github-pages-deploy-action/discussions
+    🔧 Report a Bug: https://github.com/JamesIves/github-pages-deploy-action/issues
+Checking configuration and starting deployment… 🚦
+Deploying using Deploy Token… 🔑
+Configuring git…
+/usr/bin/git config --global --add safe.directory /home/runner/work/tradingview/tradingview
+/usr/bin/git config user.name shengwen0928
+/usr/bin/git config user.email 100356538+shengwen0928@users.noreply.github.com
+/usr/bin/git config core.ignorecase false
+/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+/usr/bin/git remote rm origin
+/usr/bin/git remote add origin ***github.com/shengwen0928/tradingview.git
+Git configured… 🔧
+Starting to commit changes…
+/usr/bin/git ls-remote --heads ***github.com/shengwen0928/tradingview.git refs/heads/gh-pages
+a2a56d05da97d55d1ed30eeabb23d42cbddbb48d	refs/heads/gh-pages
+Creating worktree…
+/usr/bin/git fetch --no-recurse-submodules --depth=1 origin gh-pages
+From https://github.com/shengwen0928/tradingview
+ * branch            gh-pages   -> FETCH_HEAD
+ * [new branch]      gh-pages   -> origin/gh-pages
+/usr/bin/git worktree add --no-checkout --detach github-pages-deploy-action-temp-deployment-folder
+Preparing worktree (detached HEAD c90d75f)
+/usr/bin/git checkout -B gh-pages origin/gh-pages
+Previous HEAD position was c90d75f chore: 推送最新修改，觸發自動化部署流程
+Switched to a new branch 'gh-pages'
+branch 'gh-pages' set up to track 'origin/gh-pages'.
+/usr/bin/git config --global --add safe.directory /home/runner/work/tradingview/tradingview/github-pages-deploy-action-temp-deployment-folder
+/usr/bin/rsync -q -av --checksum --progress /home/runner/work/tradingview/tradingview/kline/dist/. github-pages-deploy-action-temp-deployment-folder --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+Checking if there are files to commit…
+/usr/bin/git add --all .
+/usr/bin/git checkout -b github-pages-deploy-action/a1dkvczo7
+Switched to a new branch 'github-pages-deploy-action/a1dkvczo7'
+/usr/bin/git commit -m Deploying to gh-pages from @ shengwen0928/tradingview@c90d75fff289d2be742b211b086ee9156d8ec8d6 🚀 --quiet --no-verify
+Force-pushing changes...
+/usr/bin/git push --force ***github.com/shengwen0928/tradingview.git github-pages-deploy-action/a1dkvczo7:gh-pages
+remote: Permission to shengwen0928/tradingview.git denied to github-actions[bot].
+fatal: unable to access 'https://github.com/shengwen0928/tradingview.git/': The requested URL returned error: 403
+Running post deployment cleanup jobs… 🗑️
+/usr/bin/git checkout -B github-pages-deploy-action/a1dkvczo7
+Reset branch 'github-pages-deploy-action/a1dkvczo7'
+/usr/bin/git worktree remove github-pages-deploy-action-temp-deployment-folder --force
+Error: The deploy step encountered an error: The process '/usr/bin/git' failed with exit code 128 ❌
+Notice: Deployment failed! ❌
