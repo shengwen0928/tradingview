@@ -119,6 +119,9 @@ export class RenderEngine {
     let lastLabelX = -100;
 
     for (let idx = startIndex; idx <= endIndex; idx++) {
+      // 🚨 修正：絕對禁止繪製資料開盤前的標籤
+      if (idx < 0 || idx >= candles.length) continue;
+
       const time = getTimeAtIndex(idx);
       const date = new Date(time);
       

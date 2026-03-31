@@ -15,19 +15,17 @@ export class OKXConnector implements IConnector {
     private ws: WebSocket | null = null;
 
     /**
-     * 將週期轉換為 OKX 格式
+     * 將週期轉換為 OKX 格式 (硬性映射)
      */
     private translateInterval(interval: string): string {
-        const unit = interval.slice(-1);
-        const val = interval.slice(0, -1);
-        
-        if (unit === 'm') return interval;
-        if (unit === 'h' || unit === 'H') return `${val}H`;
-        if (unit === 'd' || unit === 'D') return `${val}DUTC`;
-        if (unit === 'w' || unit === 'W') return `${val}WUTC`;
-        if (unit === 'M') return `${val}Mon`; // OKX 月線格式為 1Mon, 3Mon
-        if (unit === 'Y') return `${val}YUTC`; // OKX 年線格式
-        return interval;
+        const okxMap: any = {
+            '1m': '1m', '3m': '3m', '5m': '5m', '15m': '15m', '30m': '30m',
+            '1h': '1H', '2h': '2H', '4h': '4H', '6h': '6H', '12h': '12H',
+            '1d': '1DUTC', '3d': '3DUTC', '1w': '1WUTC',
+            '1M': '1Mon', '3M': '3Mon', '1Y': '1YUTC'
+        };
+        const norm = interval.slice(-1) === 'M' ? interval : interval.toLowerCase();
+        return okxMap[norm] || okxMap[interval] || interval;
     }
 
     /**

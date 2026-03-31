@@ -89,9 +89,9 @@ export class ViewportEngine {
     const candlesMoved = deltaX / (this.candleWidth + this.spacing);
     const visibleCount = this.endIndex - this.startIndex;
     
-    // 🚨 修正：下限改用 minStartIndex
+    // 🚨 修正：強硬鎖定邊界，絕對禁止 startIndex 小於 0
     const maxStartIndex = this.totalDataCount - visibleCount / 2;
-    this.startIndex = Math.max(this.minStartIndex, Math.min(maxStartIndex, this.startIndex + candlesMoved));
+    this.startIndex = Math.max(0, Math.min(maxStartIndex, this.startIndex + candlesMoved));
     this.endIndex = this.startIndex + visibleCount;
     
     this.onRangeChanged();
@@ -99,22 +99,19 @@ export class ViewportEngine {
 
   public handleZoom(mouseX: number, scaleFactor: number, canvasWidth: number): void {
     const visibleCount = this.endIndex - this.startIndex;
-    const newVisibleCount = visibleCount * scaleFactor;
+    const newVisibleCount = Math.min(this.totalDataCount, Math.max(5, visibleCount * scaleFactor));
 
-    // 🚨 限制顯示數量在 5 ~ 372 根之間
-    if (newVisibleCount < 5 || newVisibleCount > 372) return;
+    // 🚨 限制顯示數量上限，防止縮放過度
+    if (newVisibleCount > 1000) return;
 
     const ratio = mouseX / canvasWidth;
     const mouseIndex = this.startIndex + visibleCount * ratio;
 
-    // 🚨 修正：縮放時也遵循 minStartIndex
     let nextStart = mouseIndex - newVisibleCount * ratio;
     const maxStartIndex = this.totalDataCount - newVisibleCount / 2;
     
-    if (nextStart < this.minStartIndex) nextStart = this.minStartIndex;
-    if (nextStart > maxStartIndex) nextStart = maxStartIndex;
-
-    this.startIndex = nextStart;
+    // 🚨 修正：縮放時也強硬鎖定 0 為下限
+    this.startIndex = Math.max(0, Math.min(maxStartIndex, nextStart));
     this.endIndex = this.startIndex + newVisibleCount;
     
     this.updateCandleWidth(canvasWidth);

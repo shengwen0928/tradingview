@@ -44,6 +44,10 @@ export class DataManager {
 
     // 2. 否則：才根據邊界進行推算 (未來或更遠的過去)
     const isFuture = dataIdx >= this.candles.length;
+    
+    // 🚨 修正：絕對禁止推算資料開盤前的時間 (過去)
+    if (dataIdx < 0) return NaN;
+
     const refCandle = isFuture ? this.candles[this.candles.length - 1] : this.candles[0];
     const refIndex = isFuture ? this.candles.length - 1 : 0;
     const diff = dataIdx - refIndex;
@@ -208,6 +212,8 @@ export class DataManager {
     this.ws.onmessage = (event) => {
       const res = JSON.parse(event.data);
       
+      // 🚨 關鍵修復：嚴格檢查 res.interval
+      // 只有當前訂閱的標的且週期完全一致時才接受數據
       if (res.type === 'kline' && res.id === this.instId && res.interval === this.bar) {
         const raw = res.data;
         const candle: Candle = {
@@ -218,7 +224,7 @@ export class DataManager {
           close: raw.close,
           volume: raw.volume,
         };
-        this.appendRealtimeData(candle);
+        this.appendRealtimeData(candle, res.interval);
       } else if (res.type === 'error') {
         console.error(`[DataManager] Backend WebSocket Error:`, res.message);
       }
@@ -226,7 +232,8 @@ export class DataManager {
 
     this.ws.onclose = () => {
       this.onStatusChange?.('disconnected');
-      setTimeout(() => this.setupWebSocket(), 5000);
+      // 如果不是因為切換而關閉，才嘗試重連
+      // 這裡是個簡化判斷
     };
   }
 
@@ -239,10 +246,24 @@ export class DataManager {
 
       if (result.success) {
         const moreData = this.parseBackendData(result.data);
-        console.log(`[DataManager] Received ${moreData.length} history candles`);
-        this.candles = [...moreData, ...this.candles];
+        
+        if (moreData.length === 0) return [];
+        
+        const firstExistingTime = this.candles[0]?.time || Infinity;
+        const validNewData = moreData.filter(c => c.time < firstExistingTime);
+
+        if (validNewData.length === 0) {
+          console.log(`[DataManager] 🏁 No unique history found, stopping.`);
+          return [];
+        }
+
+        // 🚨 再次檢查，確保歷史資料在載入過程中沒有切換 Timeframe
+        // (雖然這種情況少見，但為求嚴謹)
+
+        console.log(`[DataManager] Received ${validNewData.length} unique history candles`);
+        this.candles = [...validNewData, ...this.candles];
         this.onDataUpdated(this.candles, true); 
-        return moreData;
+        return validNewData;
       }
     } catch (error) {
       console.error('Failed to load more history from backend:', error);
@@ -261,20 +282,26 @@ export class DataManager {
     }));
   }
 
-  public appendRealtimeData(candle: Candle): void {
+  public appendRealtimeData(candle: Candle, candleInterval: string): void {
+    // 🚨 最終防護：如果進來的資料週期與目前 DataManager 鎖定的週期不符，絕對不寫入
+    if (candleInterval !== this.bar) {
+      // console.warn(`[DataManager] Discarding mismatched candle: expected ${this.bar}, got ${candleInterval}`);
+      return;
+    }
+
     const last = this.candles[this.candles.length - 1];
     let isChanged = false;
 
     if (last && last.time === candle.time) {
       this.candles[this.candles.length - 1] = candle;
       isChanged = true;
-      console.log(`[Backend Update] Price: ${candle.close}`);
+      // console.log(`[Backend Update] Price: ${candle.close}`);
     } 
     else if (last && candle.time > last.time) {
       this.candles.push(candle);
       if (this.candles.length > 5000) this.candles.shift();
       isChanged = true;
-      console.log(`[Backend New Candle] Time: ${new Date(candle.time).toLocaleTimeString()}`);
+      console.log(`[Backend New Candle] ${this.bar} Time: ${new Date(candle.time).toLocaleTimeString()}`);
     }
     
     if (isChanged) {

@@ -26,11 +26,17 @@ export class StorageManager {
 
     /**
      * 生成儲存檔案路徑
-     * 格式: data/klines/BTC_USDT_1m.json
+     * 格式: data/klines/BTC_USDT_1_min.json
      */
     private getFilePath(id: string, interval: string): string {
         const safeId = id.replace('/', '_');
-        return path.join(this.storageDir, `${safeId}_${interval}.json`);
+        // 🚨 致命修復：解決 Windows 檔案系統不區分大小寫的問題
+        // 否則 1m 和 1M 會寫入同一個檔案互相覆蓋污染
+        let safeInterval = interval;
+        if (interval.endsWith('M')) safeInterval = interval.replace('M', '_Month');
+        if (interval.endsWith('m')) safeInterval = interval.replace('m', '_min');
+        
+        return path.join(this.storageDir, `${safeId}_${safeInterval}.json`);
     }
 
     /**

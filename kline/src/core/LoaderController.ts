@@ -37,14 +37,15 @@ export class LoaderController {
       const moreData = await this.dataManager.loadMoreHistory(firstTime);
       
       if (moreData.length === 0) {
-        console.log('[Loader] 🏁 已達歷史資料終點，啟用左側留白模式');
+        console.log('[Loader] 🏁 已達歷史資料終點');
         this.hasMoreHistory = false;
         
-        // 🚨 關鍵：允許向左滑動直到第一根 K 棒到中間
-        const visibleCount = this.viewport.getVisibleCount();
-        this.viewport.setMinStartIndex(-visibleCount / 2);
+        // 🚨 修正：不再設定負數索引，強制鎖定在 0 附近
+        this.viewport.setMinStartIndex(0);
       } else {
         console.log(`[Loader] ✅ 載入成功，新增 ${moreData.length} 根 K 線`);
+        // 加入短暫冷卻，防止載入太快導致閃爍
+        this.cooldownUntil = Date.now() + 500;
       }
       this.isLoading = false;
     }

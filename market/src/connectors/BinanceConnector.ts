@@ -22,21 +22,24 @@ export class BinanceConnector implements IConnector {
     private ws: WebSocket | null = null;
 
     /**
-     * 將週期字串轉換為 Binance 格式
-     * Binance 規範: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
+     * 將週期字串轉換為 Binance 官方格式 (硬性映射)
      */
     private formatInterval(interval: string): string {
-        const unit = interval.slice(-1);
-        if (unit === 'M') return interval; // 月線必須是大寫 M
-        return interval.toLowerCase(); // 分鐘、小時、天、週為小寫
+        const binanceMap: any = {
+            '1s': '1s', '1m': '1m', '3m': '3m', '5m': '5m', '15m': '15m', '30m': '30m',
+            '1h': '1h', '2h': '2h', '4h': '4h', '6h': '6h', '8h': '8h', '12h': '12h',
+            '1d': '1d', '3d': '3d', '1w': '1w', '1M': '1M'
+        };
+        return binanceMap[interval] || binanceMap[interval.toLowerCase()] || '1m';
     }
 
     /**
      * 檢查 Binance 是否原生支援此週期
      */
     private isNativeSupported(interval: string): boolean {
-        const supported = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'];
-        return supported.includes(this.formatInterval(interval));
+        const norm = interval.slice(-1) === 'M' ? interval : interval.toLowerCase();
+        const supported = ['1s', '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'];
+        return supported.includes(norm);
     }
 
     /**
