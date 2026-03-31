@@ -19,7 +19,7 @@ export class BinanceConnector implements IConnector {
     private readonly futuresApi = 'https://fapi.binance.com/fapi/v1';
     private readonly futuresWs = 'wss://fstream.binance.com';
 
-    private ws: WebSocket | null = null;
+    private activeWebSockets: Map<string, WebSocket> = new Map();
 
     /**
      * 將週期字串轉換為 Binance 官方格式 (硬性映射)
@@ -99,22 +99,27 @@ export class BinanceConnector implements IConnector {
         const s = symbol.toLowerCase();
         const useFutures = this.isFutures(symbol);
         const baseWs = useFutures ? this.futuresWs : this.spotWs;
+        const subKey = `${symbol}_${interval}`;
         
         // 雙流模式：kline + aggTrade
         const streams = `${s}@kline_${binanceInterval}/${s}@aggTrade`;
         const url = `${baseWs}/stream?streams=${streams}`;
 
-        if (this.ws) {
-            this.ws.close();
+        // 🚨 修正：如果已經有相同訂閱，先清理舊的
+        if (this.activeWebSockets.has(subKey)) {
+            const oldWs = this.activeWebSockets.get(subKey);
+            oldWs?.close();
+            this.activeWebSockets.delete(subKey);
         }
 
-        this.ws = new WebSocket(url);
+        const ws = new WebSocket(url);
+        this.activeWebSockets.set(subKey, ws);
 
-        this.ws.on('open', () => {
+        ws.on('open', () => {
             console.log(`[BinanceConnector] ${useFutures ? 'Futures' : 'Spot'} WS connected to ${streams}`);
         });
 
-        this.ws.on('message', (data: string) => {
+        ws.on('message', (data: string) => {
             const payload = JSON.parse(data);
             const stream = payload.stream;
             const msg = payload.data;
@@ -139,14 +144,17 @@ export class BinanceConnector implements IConnector {
             }
         });
 
-        this.ws.on('error', (err) => console.error(`[BinanceConnector] WS error:`, err));
-        this.ws.on('close', () => console.log(`[BinanceConnector] WS closed for ${symbol}`));
+        ws.on('error', (err) => console.error(`[BinanceConnector] WS error for ${subKey}:`, err));
+        ws.on('close', () => {
+            console.log(`[BinanceConnector] WS closed for ${subKey}`);
+            if (this.activeWebSockets.get(subKey) === ws) {
+                this.activeWebSockets.delete(subKey);
+            }
+        });
     }
 
     public close(): void {
-        if (this.ws) {
-            this.ws.close();
-            this.ws = null;
-        }
+        this.activeWebSockets.forEach(ws => ws.close());
+        this.activeWebSockets.clear();
     }
 }

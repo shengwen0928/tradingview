@@ -212,25 +212,23 @@ export class DataManager {
             if (stored.length > 0) this.caches.set(cacheKey, stored);
         }
 
-        if (!this.activeSubscriptions.has(cacheKey)) {
-            if (symbolInfo) {
-                const isNative = this.nativeIntervals.includes(tag);
-                const subInterval = isNative ? tag : (intervalMs < 86400000 ? '1m' : '1d');
-                const subKey = `${id}_${subInterval}_${effectiveSource}`;
-                
-                if (!this.activeSubscriptions.has(subKey)) {
-                    if (!this.caches.has(`${id}_${subInterval}`)) {
-                        const storedBase = await this.storage.loadKlines(id, subInterval);
-                        if (storedBase.length > 0) this.caches.set(`${id}_${subInterval}`, storedBase);
-                    }
+        const isNative = this.nativeIntervals.includes(tag);
+        const subInterval = isNative ? tag : (intervalMs < 86400000 ? '1m' : '1d');
+        const subKey = `${id}_${subInterval}_${effectiveSource}`;
 
-                    const connector = this.connectors.get(effectiveSource);
-                    if (connector) {
-                        connector.subscribeKlines(symbolInfo.sourceMap[effectiveSource], subInterval, (c) => this.onNewUpdate(id, subInterval, c, effectiveSource));
-                        this.activeSubscriptions.add(subKey);
-                    }
+        if (!this.activeSubscriptions.has(subKey)) {
+            if (symbolInfo) {
+                // 確保基礎週期快取已載入
+                if (!this.caches.has(`${id}_${subInterval}`)) {
+                    const storedBase = await this.storage.loadKlines(id, subInterval);
+                    if (storedBase.length > 0) this.caches.set(`${id}_${subInterval}`, storedBase);
                 }
-                this.activeSubscriptions.add(cacheKey);
+
+                const connector = this.connectors.get(effectiveSource);
+                if (connector) {
+                    connector.subscribeKlines(symbolInfo.sourceMap[effectiveSource], subInterval, (c) => this.onNewUpdate(id, subInterval, c, effectiveSource));
+                    this.activeSubscriptions.add(subKey);
+                }
             }
         }
     }
@@ -245,6 +243,9 @@ export class DataManager {
                 subs.splice(index, 1);
                 console.log(`[DataManager] Unsubscribed from ${cacheKey}. Remaining: ${subs.length}`);
             }
+            
+            // 🚨 如果該週期的所有訂閱者都沒了，可以考慮清理 activeSubscriptions
+            // 但為了效能，通常保留 Connector 訂閱沒關係，除非切換標的
         }
     }
 
