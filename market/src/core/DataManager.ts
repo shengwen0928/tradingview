@@ -235,6 +235,19 @@ export class DataManager {
         }
     }
 
+    public unsubscribe(id: string, interval: string, onUpdate: (candle: Candle) => void) {
+        const tag = this.getStrictTag(interval);
+        const cacheKey = `${id}_${tag}`;
+        const subs = this.subscribers.get(cacheKey);
+        if (subs) {
+            const index = subs.indexOf(onUpdate);
+            if (index !== -1) {
+                subs.splice(index, 1);
+                console.log(`[DataManager] Unsubscribed from ${cacheKey}. Remaining: ${subs.length}`);
+            }
+        }
+    }
+
     private onNewUpdate(id: string, interval: string, data: any, source: string) {
         const tag = this.getStrictTag(interval);
         const cacheKey = `${id}_${tag}`;
