@@ -21,6 +21,7 @@ class ChartEngine {
   private indicatorEngine: IndicatorEngine;
   private drawingEngine: DrawingEngine; // 🚨 新增
   private interactionEngine: InteractionEngine; // 🚨 改為私有屬性方便存取
+  private overlayCanvas: HTMLCanvasElement; // 🚨 新增為成員屬性
   private connectionStatus: string = 'connecting';
   private currentSymbol: string = 'BTC/USDT'; 
   private currentTimeframe: string = '1m'; 
@@ -34,7 +35,7 @@ class ChartEngine {
   constructor() {
     const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
     const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
-    const overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
+    this.overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
     
     const marketTypeSelect = document.getElementById('market-type-select') as HTMLSelectElement;
     const symbolSearch = document.getElementById('symbol-search') as HTMLInputElement;
@@ -44,7 +45,7 @@ class ChartEngine {
     const tfPopup = document.getElementById('tf-popup') as HTMLDivElement;
     const tfCustomInput = document.getElementById('tf-custom-input') as HTMLInputElement;
 
-    this.renderEngine = new RenderEngine(gridCanvas, candleCanvas, overlayCanvas);
+    this.renderEngine = new RenderEngine(gridCanvas, candleCanvas, this.overlayCanvas);
     this.scaleEngine = new ScaleEngine();
     this.viewport = new ViewportEngine(() => this.requestRedraw());
     this.indicatorEngine = new IndicatorEngine();
@@ -70,7 +71,7 @@ class ChartEngine {
     this.loader = new LoaderController(this.dataManager, this.viewport);
 
     this.interactionEngine = new InteractionEngine(
-      overlayCanvas,
+      this.overlayCanvas,
       (deltaX, deltaY, zone) => {
         if (zone === 'price') this.scaleEngine.handleVerticalPan(deltaY);
         else { this.viewport.handleScroll(deltaX); this.scaleEngine.handleVerticalPan(deltaY); }
@@ -199,10 +200,10 @@ class ChartEngine {
     };
 
     // 🚨 監聽游標點擊物件
-    overlayCanvas.addEventListener('click', (e) => {
+    this.overlayCanvas.addEventListener('click', (e: MouseEvent) => {
       if (this.interactionEngine.getDrawingMode()) return; // 繪圖模式中不處理選取
       
-      const rect = overlayCanvas.getBoundingClientRect();
+      const rect = this.overlayCanvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
 
