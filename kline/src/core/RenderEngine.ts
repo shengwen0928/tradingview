@@ -107,10 +107,10 @@ export class RenderEngine {
     ctx.textAlign = 'center';
     if (candles.length === 0) return;
 
-    // 取得當前週期跨度
+    // 取得當前週期跨度 (精確計算)
     const t0 = getTimeAtIndex(0);
     const t1 = getTimeAtIndex(1);
-    const interval = Math.abs(t1 - t0);
+    const interval = isNaN(t0) || isNaN(t1) ? 60000 : Math.abs(t1 - t0);
 
     const visibleCount = drawWidth / (candleWidth + spacing);
     const startIndex = Math.floor(exactStartIndex);
@@ -119,10 +119,12 @@ export class RenderEngine {
     let lastLabelX = -100;
 
     for (let idx = startIndex; idx <= endIndex; idx++) {
-      // 🚨 修正：絕對禁止繪製資料開盤前的標籤
-      if (idx < 0 || idx >= candles.length) continue;
+      // 🚨 修正：過去不畫，未來可以畫 (推算時間)
+      if (idx < 0) continue;
 
       const time = getTimeAtIndex(idx);
+      if (isNaN(time)) continue; 
+
       const date = new Date(time);
       
       let shouldShow = false;
@@ -137,24 +139,26 @@ export class RenderEngine {
       const month = date.getMonth();
       const year = date.getFullYear();
 
-      if (interval < 60000) { // 秒
+      if (interval < 60000) { // 秒級
         shouldShow = date.getSeconds() % 15 === 0;
         label = `${hours}:${mins.toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
-      } else if (interval < 3600000) { // 分
+      } else if (interval < 3600000) { // 分級
         shouldShow = mins % 5 === 0;
         label = `${hours}:${mins.toString().padStart(2, '0')}`;
-      } else if (interval < 86400000) { // 時
+      } else if (interval < 86400000) { // 時級
         shouldShow = hours % 4 === 0 && mins === 0;
         label = `${hours.toString().padStart(2, '0')}:00`;
-      } else if (interval < 604800000) { // 日
-        shouldShow = hours === 0 && mins === 0;
-        label = `${month + 1}/${day}`;
-      } else { // 月/年
-        // 🚨 修正月線：只要月份有變就顯示
+      } else { // 日級、月級、年級 (跨天/跨月/跨年)
         const prevTime = getTimeAtIndex(idx - 1);
-        const prevDate = new Date(prevTime);
-        shouldShow = month !== prevDate.getMonth();
-        label = `${month + 1}月`;
+        const prevDate = !isNaN(prevTime) ? new Date(prevTime) : null;
+        
+        if (interval < 604800001) { // 日
+          shouldShow = !prevDate || date.getDate() !== prevDate.getDate();
+          label = `${month + 1}/${day}`;
+        } else { // 月/年
+          shouldShow = !prevDate || date.getMonth() !== prevDate.getMonth();
+          label = `${month + 1}月`;
+        }
       }
 
       // 高優先級標籤
