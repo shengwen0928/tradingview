@@ -53,17 +53,20 @@ class ChartEngine {
   }
 
   constructor() {
+    // 1. 取得所有 UI 元素
     const gridCanvas = document.getElementById('grid-canvas') as HTMLCanvasElement;
     const candleCanvas = document.getElementById('candle-canvas') as HTMLCanvasElement;
     const overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
-    const symbolSelect = document.getElementById('symbol-select') as HTMLSelectElement;
+    
+    const marketTypeSelect = document.getElementById('market-type-select') as HTMLSelectElement;
+    const symbolSearch = document.getElementById('symbol-search') as HTMLInputElement;
     const exchangeSelect = document.getElementById('exchange-select') as HTMLSelectElement;
     
-    // 取得新 UI 元素
     const tfMainBtn = document.getElementById('tf-main-btn') as HTMLButtonElement;
     const tfPopup = document.getElementById('tf-popup') as HTMLDivElement;
     const tfCustomInput = document.getElementById('tf-custom-input') as HTMLInputElement;
 
+    // 2. 初始化引擎組件
     this.renderEngine = new RenderEngine(gridCanvas, candleCanvas, overlayCanvas);
     this.scaleEngine = new ScaleEngine();
     this.viewport = new ViewportEngine(() => this.requestRedraw());
@@ -79,38 +82,60 @@ class ChartEngine {
       }
     );
 
-    // 載入我的最愛 (從 LocalStorage)
+    // 3. 載入持久化狀態 (我的最愛等)
     const savedFavs = localStorage.getItem('tf-favorites');
     this.favorites = savedFavs ? JSON.parse(savedFavs) : ['1m', '1H', '1D'];
 
-    // 🚨 初始化 UI 渲染
+    // 4. UI 渲染初始化
     this.renderTfFavorites();
     this.renderTfPopup();
 
-    // 監聽幣種切換
-    symbolSelect.addEventListener('change', () => {
-      this.currentSymbol = symbolSelect.options[symbolSelect.selectedIndex].text;
-      this.dataManager.setSymbol(symbolSelect.value);
-      this.scaleEngine.resetAutoScale(); 
+    // 5. 事件監聽設定
+    
+    // 🚨 監聽搜尋輸入框 (Enter 鍵)
+    symbolSearch.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && symbolSearch.value.trim() !== "") {
+        const ticker = symbolSearch.value.trim().toUpperCase();
+        const type = marketTypeSelect.value;
+        const fullId = ticker.includes(':') ? ticker : `${ticker}:${type}`;
+        
+        console.log(`[ChartEngine] Searching for: ${fullId}`);
+        
+        this.currentSymbol = ticker;
+        this.dataManager.setSymbol(fullId);
+        this.scaleEngine.resetAutoScale();
+        symbolSearch.blur();
+      }
     });
 
-    // 🚨 監聽交易所切換
+    // 監聽市場類型切換
+    marketTypeSelect.addEventListener('change', () => {
+      const type = marketTypeSelect.value;
+      if (type === 'STOCK') {
+        marketTypeSelect.style.color = '#ff9800'; 
+        exchangeSelect.value = 'Yahoo';
+      } else if (type === 'PERP') {
+        marketTypeSelect.style.color = '#f44336';
+      } else {
+        marketTypeSelect.style.color = '#2962ff';
+      }
+    });
+
+    // 監聽交易所切換
     exchangeSelect.addEventListener('change', () => {
       this.dataManager.setExchange(exchangeSelect.value);
       this.scaleEngine.resetAutoScale();
     });
 
-    // 🚨 監聽週期主按鈕 (切換彈窗)
+    // 監聽週期切換相關
     tfMainBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       tfPopup.classList.toggle('show');
     });
 
-    // 點擊外部關閉彈窗
     window.addEventListener('click', () => tfPopup.classList.remove('show'));
     tfPopup.addEventListener('click', (e) => e.stopPropagation());
 
-    // 🚨 監聽自訂週期輸入
     tfCustomInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && tfCustomInput.value.trim() !== "") {
         const val = tfCustomInput.value.trim();
@@ -120,35 +145,29 @@ class ChartEngine {
       }
     });
 
+    // 6. 其他模組初始化
     this.loader = new LoaderController(this.dataManager, this.viewport);
 
     new InteractionEngine(
       overlayCanvas,
       (deltaX, deltaY, zone) => {
         if (zone === 'price') {
-          // 🚨 右側價格軸：僅垂直移動
           this.scaleEngine.handleVerticalPan(deltaY);
         } else {
-          // 🚨 圖表區域：自由移動 (上下左右)
           this.viewport.handleScroll(deltaX);
           this.scaleEngine.handleVerticalPan(deltaY);
         }
-        
         this.loader.checkLoadMore();
         this.requestRedraw();
       },
       (mouseX, _mouseY, scale, zone) => {
         if (zone === 'price') {
-          // 🚨 右側價格軸：垂直縮放
           this.scaleEngine.handleVerticalZoom(scale);
         } else if (zone === 'time') {
-          // 🚨 下方時間軸：水平縮放 (以畫面中心為準)
           this.viewport.handleZoom(this.renderEngine.getLogicalWidth() / 2, scale, this.renderEngine.getLogicalWidth());
         } else {
-          // 🚨 圖表區域：以滑鼠為中心縮放
           this.viewport.handleZoom(mouseX, scale, this.renderEngine.getLogicalWidth());
         }
-        
         this.loader.checkLoadMore();
         this.requestRedraw();
       },
