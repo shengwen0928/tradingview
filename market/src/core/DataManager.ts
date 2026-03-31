@@ -22,7 +22,7 @@ export class DataManager {
     private readonly nativeIntervals = [
         '1s', '1m', '3m', '5m', '15m', '30m',
         '1h', '2h', '4h', '6h', '8h', '12h',
-        '1d', '3d', '1w'
+        '1d', '3d', '1w', '1M'
     ];
 
     private constructor() {
@@ -84,11 +84,9 @@ export class DataManager {
             d.setUTCHours(0, 0, 0, 0);
             return d.getTime();
         } else if (tag.endsWith('d')) {
-            // 🚨 修正：針對多日線 (如 2d, 3d, 5d) 進行特殊對齊
             d.setUTCHours(0, 0, 0, 0);
             const val = parseInt(tag.slice(0, -1)) || 1;
             if (val > 1) {
-                // 以 1970-01-01 為基準計算天數偏移
                 const daysSinceEpoch = Math.floor(d.getTime() / 86400000);
                 const alignedDays = Math.floor(daysSinceEpoch / val) * val;
                 return alignedDays * 86400000;
@@ -120,17 +118,15 @@ export class DataManager {
         const cacheKey = `${id}_${tag}`;
         const intervalMs = this.parseIntervalToMs(tag);
 
-        // 1. 讀取快取
         let cached = this.caches.get(cacheKey) || [];
         if (cached.length === 0 && !endTime) {
             cached = await this.storage.loadKlines(id, tag);
             if (cached.length > 0) this.caches.set(cacheKey, cached);
         }
 
-        // 2. 判斷是否需要抓取
         let forceFetch = false;
         if (!endTime && cached.length > 0) {
-            if (Date.now() - cached[cached.length - 1].timestamp > intervalMs * 1.5) forceFetch = true;
+            if (Date.now() - cached[cached.length - 1].timestamp > intervalMs * 1.1) forceFetch = true;
         }
         const needsMore = !endTime && cached.length < limit;
 
@@ -138,7 +134,6 @@ export class DataManager {
             return cached.slice(-limit);
         }
 
-        // 3. 抓取逻辑
         const isNative = this.nativeIntervals.includes(tag);
         let finalResult: Candle[] = [];
 
@@ -190,15 +185,17 @@ export class DataManager {
         const mergedMap = new Map<number, Candle>();
         current.forEach(c => mergedMap.set(c.timestamp, c));
         newKlines.forEach(newC => {
-            const oldC = mergedMap.get(newC.timestamp);
+            const alignedTs = this.alignTimestamp(newC.timestamp, interval);
+            const oldC = mergedMap.get(alignedTs);
             if (oldC) {
-                mergedMap.set(newC.timestamp, {
+                mergedMap.set(alignedTs, {
                     ...newC,
+                    timestamp: alignedTs,
                     high: Math.max(oldC.high, newC.high),
                     low: Math.min(oldC.low, newC.low),
                     volume: Math.max(oldC.volume, newC.volume)
                 });
-            } else mergedMap.set(newC.timestamp, newC);
+            } else mergedMap.set(alignedTs, { ...newC, timestamp: alignedTs });
         });
         const sorted = Array.from(mergedMap.values()).sort((a, b) => a.timestamp - b.timestamp);
         this.caches.set(key, sorted.slice(-5000));
@@ -208,7 +205,8 @@ export class DataManager {
         const tag = this.getStrictTag(interval);
         const symbolInfo = SymbolManager.getSymbolById(id);
         const effectiveSource = source || (symbolInfo?.market === MarketType.STOCK ? 'Yahoo' : 'Binance');
-        const cacheKey = `${id}_${tag}`; // 🚨 統一 Key，移除 source 尾綴
+        const cacheKey = `${id}_${tag}`;
+        const intervalMs = this.parseIntervalToMs(tag);
         
         if (!this.subscribers.has(cacheKey)) this.subscribers.set(cacheKey, []);
         this.subscribers.get(cacheKey)?.push(onUpdate);
@@ -216,7 +214,7 @@ export class DataManager {
         if (!this.activeSubscriptions.has(cacheKey)) {
             if (symbolInfo) {
                 const isNative = this.nativeIntervals.includes(tag);
-                const subInterval = isNative ? tag : '1d';
+                const subInterval = isNative ? tag : (intervalMs < 86400000 ? '1m' : '1d');
                 const subKey = `${id}_${subInterval}_${effectiveSource}`;
                 
                 if (!this.activeSubscriptions.has(subKey)) {
@@ -234,11 +232,9 @@ export class DataManager {
     private async onNewUpdate(id: string, interval: string, data: any, source: string) {
         const tag = this.getStrictTag(interval);
         const cacheKey = `${id}_${tag}`;
-        const intervalMs = this.parseIntervalToMs(tag);
         
-        const alignedTs = (source === 'Yahoo') ? (data.timestamp || data.time) : this.alignTimestamp(data.timestamp || data.time, tag);
+        const alignedTs = this.alignTimestamp(data.timestamp || data.time, tag);
 
-        // 🚨 修正：如果快取為空，嘗試從 Storage 補載，防止「重新開始跑」
         if (!this.caches.has(cacheKey)) {
             const stored = await this.storage.loadKlines(id, tag);
             if (stored.length > 0) this.caches.set(cacheKey, stored);
@@ -247,50 +243,43 @@ export class DataManager {
         let currentCache = this.caches.get(cacheKey) || [];
         let candleToPush: Candle | null = null;
 
-        if (data.isTrade) {
+        const processCandle = (ts: number, open: number, high: number, low: number, close: number, volume: number, isOfficial: boolean) => {
             if (currentCache.length === 0) {
-                // 如果連 Storage 都沒數據，才開新的
-                const initCandle = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
+                const initCandle = { timestamp: ts, open, high, low, close, volume };
                 currentCache.push(initCandle);
-                this.caches.set(cacheKey, currentCache);
-                candleToPush = initCandle;
+                return initCandle;
             } else {
                 const last = currentCache[currentCache.length - 1];
-                if (alignedTs === last.timestamp) {
-                    last.close = data.close;
-                    last.high = Math.max(last.high, data.close);
-                    last.low = Math.min(last.low, data.close);
-                    last.volume += (data.volume || 0);
-                    candleToPush = last;
-                } else if (alignedTs > last.timestamp) {
-                    const newC = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
+                if (ts === last.timestamp) {
+                    last.close = close;
+                    last.high = Math.max(last.high, high);
+                    last.low = Math.min(last.low, low);
+                    last.volume = isOfficial ? Math.max(last.volume, volume) : last.volume + volume;
+                    return last;
+                } else if (ts > last.timestamp) {
+                    const newC = { timestamp: ts, open, high, low, close, volume };
                     currentCache.push(newC);
-                    candleToPush = newC;
+                    if (currentCache.length > 5000) currentCache.shift();
+                    return newC;
                 }
             }
+            return null;
+        };
+
+        if (data.isTrade) {
+            candleToPush = processCandle(alignedTs, data.close, data.close, data.close, data.close, data.volume || 0, false);
         } else {
-            const candle = data as Candle;
-            if (currentCache.length > 0) {
-                const last = currentCache[currentCache.length - 1];
-                if (candle.timestamp === last.timestamp) {
-                    // 🚨 修正：保留原始 Open，僅更新波動
-                    last.high = Math.max(last.high, candle.high);
-                    last.low = Math.min(last.low, candle.low);
-                    last.close = candle.close;
-                    last.volume = Math.max(last.volume, candle.volume);
-                } else if (candle.timestamp > last.timestamp) currentCache.push(candle);
-            } else currentCache.push(candle);
-            candleToPush = currentCache[currentCache.length - 1];
+            const c = data as Candle;
+            candleToPush = processCandle(alignedTs, c.open, c.high, c.low, c.close, c.volume, true);
         }
 
         if (candleToPush) {
+            this.caches.set(cacheKey, currentCache);
             const subs = this.subscribers.get(cacheKey);
             if (subs) subs.forEach(cb => cb(candleToPush!));
 
-            // 🚨 修正：級聯推送邏輯，適配統一後的 Key
             if (tag === '1d' || tag === '1m') {
                 this.subscribers.forEach((syntheticSubs, sKey) => {
-                    // 只要 ID 相同且不是當前發送的週期，就進行聚合推送
                     if (sKey.startsWith(`${id}_`) && sKey !== cacheKey) {
                         const sTag = sKey.replace(`${id}_`, '');
                         if (!this.nativeIntervals.includes(sTag)) {
