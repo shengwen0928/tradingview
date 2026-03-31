@@ -159,6 +159,38 @@ export class DataManager {
     return this.candles;
   }
 
+  /**
+   * 將時間戳轉換回索引 (支援浮點數索引，用於 K 棒之間的點位)
+   */
+  public getIndexAtTime(time: number): number {
+    if (this.candles.length === 0) return 0;
+
+    // 1. 如果在數據範圍內，使用二分搜尋尋找最接近的 K 棒
+    const first = this.candles[0].time;
+    const last = this.candles[this.candles.length - 1].time;
+
+    if (time >= first && time <= last) {
+      // 簡單起見，這裡假設時間間隔大致固定進行二分搜尋
+      let low = 0;
+      let high = this.candles.length - 1;
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        if (this.candles[mid].time === time) return mid;
+        if (this.candles[mid].time < time) low = mid + 1;
+        else high = mid - 1;
+      }
+      // 如果沒找到精確的，推算浮點索引
+      const idx = Math.max(0, high);
+      const ratio = (time - this.candles[idx].time) / this.intervalMs;
+      return idx + ratio;
+    }
+
+    // 2. 如果在未來或過去，根據邊界推算
+    const refTime = time > last ? last : first;
+    const refIdx = time > last ? this.candles.length - 1 : 0;
+    return refIdx + (time - refTime) / this.intervalMs;
+  }
+
   public async loadInitialData(): Promise<void> {
     try {
       let url = `${this.apiUrl}/klines?id=${this.instId}&interval=${this.bar}`;

@@ -9,6 +9,10 @@ export class InteractionEngine {
   private animationId: number | null = null;
   private lastMoveTime: number = 0;
 
+  // 🚨 新增：繪圖相關狀態
+  private drawingMode: string | null = null;
+  private onDrawingClick?: (mouseX: number, mouseY: number, type: 'start' | 'move' | 'end') => void;
+
   constructor(
     private canvas: HTMLCanvasElement,
     private onScroll: (deltaX: number, deltaY: number, zone: 'chart' | 'price' | 'time') => void,
@@ -16,6 +20,12 @@ export class InteractionEngine {
     private onMouseMove: (mouseX: number, mouseY: number) => void
   ) {
     this.initEvents();
+  }
+
+  public setDrawingMode(type: string | null, onClick?: (x: number, y: number, t: 'start' | 'move' | 'end') => void) {
+    this.drawingMode = type;
+    this.onDrawingClick = onClick;
+    this.canvas.style.cursor = type ? 'crosshair' : 'default';
   }
 
   private initEvents(): void {
@@ -28,9 +38,17 @@ export class InteractionEngine {
     };
 
     this.canvas.addEventListener('pointerdown', (e) => {
-      this.isDragging = true;
       const { mouseX, mouseY } = this.getMousePos(e);
-      this.dragZone = getZone(mouseX, mouseY);
+      const zone = getZone(mouseX, mouseY);
+
+      // 🚨 修正：如果是繪圖模式且在圖表區，觸發繪圖點
+      if (this.drawingMode && zone === 'chart') {
+        this.onDrawingClick?.(mouseX, mouseY, 'start');
+        return;
+      }
+
+      this.isDragging = true;
+      this.dragZone = zone;
       
       this.velocityX = 0;
       this.velocityY = 0;
@@ -43,9 +61,13 @@ export class InteractionEngine {
     this.canvas.addEventListener('pointermove', (e) => {
       const { mouseX, mouseY } = this.getMousePos(e);
 
+      if (this.drawingMode) {
+        this.onDrawingClick?.(mouseX, mouseY, 'move');
+      }
+
       if (this.isDragging) {
         const deltaX = -e.movementX;
-        const deltaY = e.movementY; // 垂直位移：往下拖應為價格向上移
+        const deltaY = e.movementY;
         
         this.onScroll(deltaX, deltaY, this.dragZone);
 
@@ -62,6 +84,12 @@ export class InteractionEngine {
     });
 
     this.canvas.addEventListener('pointerup', (e) => {
+      if (this.drawingMode) {
+        const { mouseX, mouseY } = this.getMousePos(e);
+        this.onDrawingClick?.(mouseX, mouseY, 'end');
+        return;
+      }
+
       if (this.isDragging) {
         this.isDragging = false;
         this.canvas.releasePointerCapture(e.pointerId);
