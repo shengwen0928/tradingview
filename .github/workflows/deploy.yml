@@ -3,15 +3,13 @@ name: Build and Deploy Frontend
 on:
   push:
     branches:
-      - main # 當 main 分支有變動時觸發
-    paths:
-      - 'kline/**' # 只有 kline 資料夾有變動時才執行，避免浪費資源
+      - main # 🚨 移除路徑限制，確保任何推送都觸發
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 🚨 補上明確的寫入權限
+      contents: write # 🚨 明確寫入權限
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,6 +30,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: kline/dist # 指定編譯後的資料夾
-          branch: gh-pages # 發布到 gh-pages 分支
+          folder: kline/dist
+          branch: gh-pages
           clean: true
