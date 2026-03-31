@@ -17,7 +17,7 @@ export class DataManager {
   // Backend URLs
   private apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:3001' 
-    : 'https://tradingviewer-market.onrender.com'; // 🚨 這裡改為你 Render 的網址
+    : 'https://tradingviewer-gtr2.onrender.com'; // 🚨 這裡改為你 Render 的網址
     
   private wsUrl = this.apiUrl.replace('http', 'ws');
 
