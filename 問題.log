@@ -1,68 +1,162 @@
-Run JamesIves/github-pages-deploy-action@v4
+tradingviewer
+Node
+Free
+Upgrade your instance
 
-    ╭━━━╮╭╮╭╮╱╭╮╱╱╭╮╱╱╭━━━╮
-    ┃╭━╮┣╯╰┫┃╱┃┃╱╱┃┃╱╱┃╭━╮┃
-    ┃┃╱╰╋╮╭┫╰━╯┣╮╭┫╰━╮┃╰━╯┣━━┳━━┳━━┳━━╮
-    ┃┃╭━╋┫┃┃╭━╮┃┃┃┃╭╮┃┃╭━━┫╭╮┃╭╮┃┃━┫━━┫
-    ┃╰┻━┃┃╰┫┃╱┃┃╰╯┃╰╯┃┃┃╱╱┃╭╮┃╰╯┃┃━╋━━┃
-    ╰━━━┻┻━┻╯╱╰┻━━┻━━╯╰╯╱╱╰╯╰┻━╮┣━━┻━━╯
-    ╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭━╯┃
-    ╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰━━╯
-    ╭━━━╮╱╱╱╱╱╭╮╱╱╱╱╱╱╱╱╭━━━╮╱╱╭╮
-    ╰╮╭╮┃╱╱╱╱╱┃┃╱╱╱╱╱╱╱╱┃╭━╮┃╱╭╯╰╮
-    ╱┃┃┃┣━━┳━━┫┃╭━━┳╮╱╭╮┃┃╱┃┣━┻╮╭╋┳━━┳━╮
-    ╱┃┃┃┃┃━┫╭╮┃┃┃╭╮┃┃╱┃┃┃╰━╯┃╭━┫┃┣┫╭╮┃╭╮╮
-    ╭╯╰╯┃┃━┫╰╯┃╰┫╰╯┃╰━╯┃┃╭━╮┃╰━┫╰┫┃╰╯┃┃┃┃
-    ╰━━━┻━━┫╭━┻━┻━━┻━╮╭╯╰╯╱╰┻━━┻━┻┻━━┻╯╰╯
-    ╱╱╱╱╱╱╱┃┃╱╱╱╱╱╱╭━╯┃
-    ╱╱╱╱╱╱╱╰╯╱╱╱╱╱╱╰━━╯
-    
+Connect
 
-    💖 Support: https://github.com/sponsors/JamesIves
-    📣 Maintained by James Ives: https://jamesiv.es
+Manual Deploy
+Service ID:
+srv-d75nf14hg0os73asl5qg
 
-    🚀 Getting Started Guide: https://github.com/JamesIves/github-pages-deploy-action
-    ❓ Discussions / Q&A: https://github.com/JamesIves/github-pages-deploy-action/discussions
-    🔧 Report a Bug: https://github.com/JamesIves/github-pages-deploy-action/issues
-Checking configuration and starting deployment… 🚦
-Deploying using Deploy Token… 🔑
-Configuring git…
-/usr/bin/git config --global --add safe.directory /home/runner/work/tradingview/tradingview
-/usr/bin/git config user.name shengwen0928
-/usr/bin/git config user.email 100356538+shengwen0928@users.noreply.github.com
-/usr/bin/git config core.ignorecase false
-/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
-/usr/bin/git remote rm origin
-/usr/bin/git remote add origin ***github.com/shengwen0928/tradingview.git
-Git configured… 🔧
-Starting to commit changes…
-/usr/bin/git ls-remote --heads ***github.com/shengwen0928/tradingview.git refs/heads/gh-pages
-a2a56d05da97d55d1ed30eeabb23d42cbddbb48d	refs/heads/gh-pages
-Creating worktree…
-/usr/bin/git fetch --no-recurse-submodules --depth=1 origin gh-pages
-From https://github.com/shengwen0928/tradingview
- * branch            gh-pages   -> FETCH_HEAD
- * [new branch]      gh-pages   -> origin/gh-pages
-/usr/bin/git worktree add --no-checkout --detach github-pages-deploy-action-temp-deployment-folder
-Preparing worktree (detached HEAD c90d75f)
-/usr/bin/git checkout -B gh-pages origin/gh-pages
-Previous HEAD position was c90d75f chore: 推送最新修改，觸發自動化部署流程
-Switched to a new branch 'gh-pages'
-branch 'gh-pages' set up to track 'origin/gh-pages'.
-/usr/bin/git config --global --add safe.directory /home/runner/work/tradingview/tradingview/github-pages-deploy-action-temp-deployment-folder
-/usr/bin/rsync -q -av --checksum --progress /home/runner/work/tradingview/tradingview/kline/dist/. github-pages-deploy-action-temp-deployment-folder --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-Checking if there are files to commit…
-/usr/bin/git add --all .
-/usr/bin/git checkout -b github-pages-deploy-action/a1dkvczo7
-Switched to a new branch 'github-pages-deploy-action/a1dkvczo7'
-/usr/bin/git commit -m Deploying to gh-pages from @ shengwen0928/tradingview@c90d75fff289d2be742b211b086ee9156d8ec8d6 🚀 --quiet --no-verify
-Force-pushing changes...
-/usr/bin/git push --force ***github.com/shengwen0928/tradingview.git github-pages-deploy-action/a1dkvczo7:gh-pages
-remote: Permission to shengwen0928/tradingview.git denied to github-actions[bot].
-fatal: unable to access 'https://github.com/shengwen0928/tradingview.git/': The requested URL returned error: 403
-Running post deployment cleanup jobs… 🗑️
-/usr/bin/git checkout -B github-pages-deploy-action/a1dkvczo7
-Reset branch 'github-pages-deploy-action/a1dkvczo7'
-/usr/bin/git worktree remove github-pages-deploy-action-temp-deployment-folder --force
-Error: The deploy step encountered an error: The process '/usr/bin/git' failed with exit code 128 ❌
-Notice: Deployment failed! ❌
+shengwen0928 / tradingview
+main
+https://tradingviewer-gtr2.onrender.com
+
+Settings
+Table of contents
+General
+Build & Deploy
+Custom Domains
+PR Previews
+Edge Caching
+Notifications
+Health Checks
+Maintenance Mode
+Delete or suspend
+General
+Name
+A unique name for your Web Service.
+tradingviewer
+
+Edit
+Region
+Your services in the same region can communicate over a private network.
+Singapore (Southeast Asia)
+Instance Type
+Free
+0.1 CPU
+512 MB
+Update
+Please enter your payment information to select an instance type with higher limits.
+See remaining free usage, or learn about free service limits.
+Build & Deploy
+Repository
+The repository used for your Web Service.
+https://github.com/shengwen0928/tradingview
+
+Edit
+Branch
+The Git branch to build and deploy.
+Branch
+main
+
+Edit
+Git Credentials
+User providing the credentials to pull the repository.
+ad565198ad56519867@gmail.com (you)
+Use My Credentials
+Root DirectoryOptional
+If set, Render runs commands from this directory instead of the repository root. Additionally, code changes outside of this directory do not trigger an auto-deploy. Most commonly used with a monorepo.
+market
+
+Edit
+Build Filters
+Include or ignore specific paths in your repo when determining whether to trigger an auto-deploy. Paths are relative to your repo's root directory. Learn more.
+
+Edit
+Included Paths
+Changes that match these paths will trigger a new build.
+
+
+Add Included Path
+Ignored Paths
+Changes that match these paths will not trigger a new build.
+
+
+Add Ignored Path
+Build Command
+Render runs this command to build your app before each deploy.
+market/ $
+npm install && npm run build
+
+Edit
+Pre-Deploy CommandOptional
+Render runs this command before the start command. Useful for database migrations and static asset uploads.
+market/ $
+
+Edit
+Start Command
+Render runs this command to start your app with each deploy.
+market/ $
+node dist/api/DataServer.js
+
+Edit
+Auto-Deploy
+By default, Render automatically deploys your service whenever you update its code or configuration. Disable to handle deploys manually. Learn more.
+autoDeployTrigger
+
+On Commit
+
+Edit
+Deploy Hook
+Your private URL to trigger a deploy for this server. Remember to keep this a secret.
+••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+
+
+Regenerate hook
+Custom Domains
+You can point custom domains you own to this service.
+
+
+Add Custom Domain
+Render Subdomain
+If enabled, your service remains reachable at its onrender.com subdomain in addition to all custom domains. Disable to serve exclusively from custom domains.
+
+
+enabled
+Your service is reachable at https://tradingviewer-gtr2.onrender.com.
+PR Previews
+Pull Request Previews
+Spin up temporary instances to test pull requests opened against the main branch of shengwen0928/tradingview. Choose Automatic to preview all PRs, or Manual for only PRs with [render preview] in their title. Pull Request Previews create a new instance for just this service. Use Preview Environments to clone a group of services for every PR.
+prPreviewsEnabled
+
+Off
+
+Edit
+Edge Caching
+Serve static content at the edge to improve performance and reduce service load. Learn more.
+Paid
+Edge Caching is only available for paid instances.
+Upgrade
+Notifications
+Service Notifications
+Set notifications to receive for your service. This setting will override your workspace's default settings.
+notificationsToSend
+
+Use workspace default (Only failure notifications)
+
+Edit
+Preview Environment Notifications
+Configure notifications for preview environments and service previews.
+previewNotificationsEnabled
+
+Use account default (Disabled)
+
+Edit
+Health Checks
+Health Check Path
+Provide an HTTP endpoint path that Render messages periodically to monitor your service. Learn More.
+
+Edit
+Maintenance Mode
+
+
+Paid
+Maintenance mode is only available for paid instances.
+Upgrade
+
+Delete Web Service
+
+Suspend Web Service
