@@ -20,8 +20,8 @@ export class DataManager {
 
     // 嚴格定義的原生週期 (交易所官方支援)
     private readonly nativeIntervals = [
-        '1s', '1m', '3m', '5m', '15m', '30m', 
-        '1h', '2h', '4h', '6h', '8h', '12h', 
+        '1s', '1m', '3m', '5m', '15m', '30m',
+        '1h', '2h', '4h', '6h', '8h', '12h',
         '1d', '3d', '1w'
     ];
 
@@ -82,7 +82,7 @@ export class DataManager {
         const tag = this.getStrictTag(interval);
         const cacheKey = `${id}_${tag}`;
         const intervalMs = this.parseIntervalToMs(tag);
-        
+
         // 1. 讀取快取
         let cached = this.caches.get(cacheKey) || [];
         if (cached.length === 0 && !endTime) {
@@ -197,7 +197,7 @@ export class DataManager {
         const tag = this.getStrictTag(interval);
         const intervalMs = this.parseIntervalToMs(tag);
         const cacheKey = `${id}_${tag}`;
-        
+
         let currentCache = this.caches.get(cacheKey) || [];
         const alignedTs = Math.floor((data.timestamp || data.time) / intervalMs) * intervalMs;
 

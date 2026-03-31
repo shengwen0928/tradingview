@@ -5,7 +5,6 @@ import { IConnector } from './ConnectorInterface';
 /**
  * Yahoo Finance 資料接入器 (股票市場)
  * 支援 美股、台股、外匯等
- * 註：Yahoo 本身不具備公開免費 WebSocket，故即時更新採輪詢模擬
  */
 export class YahooConnector implements IConnector {
     public readonly name = 'Yahoo';
@@ -13,11 +12,15 @@ export class YahooConnector implements IConnector {
     private pollingIntervals: Map<string, NodeJS.Timeout> = new Map();
 
     /**
-     * 週期轉換 (Yahoo 使用 1m, 5m, 1h, 1d)
+     * 週期轉換 (Yahoo 規格)
      */
     private formatInterval(interval: string): string {
-        const map: any = { '1m': '1m', '5m': '5m', '15m': '15m', '1h': '60m', '1d': '1d' };
-        return map[interval] || '1d';
+        const norm = interval.toLowerCase();
+        const map: any = { 
+            '1m': '1m', '5m': '5m', '15m': '15m', '30m': '30m',
+            '1h': '60m', '1d': '1d', '1w': '1wk', '1M': '1mo'
+        };
+        return map[interval] || map[norm] || '1d';
     }
 
     /**
@@ -27,23 +30,25 @@ export class YahooConnector implements IConnector {
         const yahooInterval = this.formatInterval(interval);
         
         try {
-            // 計算時間範圍
-            let range = '5d'; // 預設 5 天
-            if (yahooInterval === '1d') range = '1y';
+            const p2 = endTime ? Math.floor(endTime / 1000) : Math.floor(Date.now() / 1000);
+            
+            // 🚨 修正：大幅增加回溯緩衝 (10倍)，確保覆蓋所有非交易時段
+            const msMap: any = { '1m': 60, '5m': 300, '15m': 900, '30m': 1800, '60m': 3600, '1d': 86400, '1wk': 604800, '1mo': 2592000 };
+            const secondsPerBar = msMap[yahooInterval] || 86400;
+            const p1 = p2 - (limit * secondsPerBar * 10); 
 
             const url = `${this.baseUrl}/${symbol}`;
             const params: any = {
                 interval: yahooInterval,
-                range: range
+                period1: Math.floor(p1),
+                period2: p2,
+                includePrePost: false
             };
-
-            if (endTime) {
-                params.period2 = Math.floor(endTime / 1000);
-                params.period1 = params.period2 - (limit * 60 * 60 * 24); // 粗略回溯
-            }
 
             const response = await axios.get(url, { params });
             const result = response.data.chart.result[0];
+            if (!result || !result.timestamp) return [];
+
             const indicators = result.indicators.quote[0];
             const timestamps = result.timestamp;
 
@@ -56,9 +61,9 @@ export class YahooConnector implements IConnector {
                 volume: indicators.volume[i] || 0
             })).filter((c: any) => c.close !== null).slice(-limit);
 
-        } catch (error) {
-            console.error(`[YahooConnector] Fetch error for ${symbol}:`, error);
-            throw error;
+        } catch (error: any) {
+            // console.error(`[YahooConnector] Fetch error for ${symbol}:`, error.message);
+            return [];
         }
     }
 
@@ -67,24 +72,20 @@ export class YahooConnector implements IConnector {
      */
     public subscribeKlines(symbol: string, interval: string, onUpdate: (candle: Candle) => void): void {
         this.unsubscribe(symbol, interval);
-
-        console.log(`[YahooConnector] Starting simulation for ${symbol}...`);
+        console.log(`[YahooConnector] Starting robust simulation for ${symbol} @ ${interval}...`);
         
-        // 首次立即抓取
-        this.fetchKlines(symbol, interval, 1).then(klines => {
-            if (klines.length > 0) onUpdate(klines[0]);
-        }).catch(() => {});
-
-        // 開啟輪詢 (每 10 秒檢查一次股票價格)
         const timer = setInterval(async () => {
             try {
-                const klines = await this.fetchKlines(symbol, interval, 1);
+                // 🚨 修正：輪詢時抓取最近 10 根，取最後一根有效數據，確保跳過休市期
+                const klines = await this.fetchKlines(symbol, interval, 10);
                 if (klines.length > 0) {
-                    onUpdate(klines[0]);
+                    const latest = klines[klines.length - 1];
+                    onUpdate({
+                        ...latest,
+                        isTrade: true
+                    } as any);
                 }
-            } catch (err) {
-                // 忽略輪詢報錯
-            }
+            } catch (err) {}
         }, 10000);
 
         this.pollingIntervals.set(`${symbol}_${interval}`, timer);
