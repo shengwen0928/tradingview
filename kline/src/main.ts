@@ -1,4 +1,5 @@
 import { DataManager } from './core/DataManager';
+// 🚀 Deployment Trigger: 2026-03-31 15:58
 import { ViewportEngine } from './core/ViewportEngine';
 import { ScaleEngine } from './core/ScaleEngine';
 import { RenderEngine } from './core/RenderEngine';
