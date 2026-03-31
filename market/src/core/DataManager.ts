@@ -22,7 +22,7 @@ export class DataManager {
     private readonly nativeIntervals = [
         '1s', '1m', '3m', '5m', '15m', '30m',
         '1h', '2h', '4h', '6h', '8h', '12h',
-        '1d', '3d', '1w'
+        '1d', '3d', '1w', '1M'
     ];
 
     private constructor() {
@@ -42,16 +42,13 @@ export class DataManager {
         return DataManager.instance;
     }
 
-    /**
-     * 嚴格的週期標籤格式化 (絕不混淆 m 與 M)
-     */
     private getStrictTag(interval: string): string {
         const unit = interval.slice(-1);
         const val = interval.slice(0, -1);
-        if (unit === 'M') return `${val}M`; // 月線
-        if (unit === 'm') return `${val}m`; // 分鐘
-        if (unit === 's') return `${val}s`; // 秒
-        return interval.toLowerCase();      // h, d, w 統一小寫
+        if (unit === 'M') return `${val}M`; 
+        if (unit === 'm') return `${val}m`; 
+        if (unit === 's') return `${val}s`; 
+        return interval.toLowerCase();      
     }
 
     private parseIntervalToMs(interval: string): number {
@@ -84,11 +81,9 @@ export class DataManager {
             d.setUTCHours(0, 0, 0, 0);
             return d.getTime();
         } else if (tag.endsWith('d')) {
-            // 🚨 修正：針對多日線 (如 2d, 3d, 5d) 進行特殊對齊
             d.setUTCHours(0, 0, 0, 0);
             const val = parseInt(tag.slice(0, -1)) || 1;
             if (val > 1) {
-                // 以 1970-01-01 為基準計算天數偏移
                 const daysSinceEpoch = Math.floor(d.getTime() / 86400000);
                 const alignedDays = Math.floor(daysSinceEpoch / val) * val;
                 return alignedDays * 86400000;
@@ -120,17 +115,15 @@ export class DataManager {
         const cacheKey = `${id}_${tag}`;
         const intervalMs = this.parseIntervalToMs(tag);
 
-        // 1. 讀取快取
         let cached = this.caches.get(cacheKey) || [];
         if (cached.length === 0 && !endTime) {
             cached = await this.storage.loadKlines(id, tag);
             if (cached.length > 0) this.caches.set(cacheKey, cached);
         }
 
-        // 2. 判斷是否需要抓取
         let forceFetch = false;
         if (!endTime && cached.length > 0) {
-            if (Date.now() - cached[cached.length - 1].timestamp > intervalMs * 1.5) forceFetch = true;
+            if (Date.now() - cached[cached.length - 1].timestamp > intervalMs * 1.1) forceFetch = true;
         }
         const needsMore = !endTime && cached.length < limit;
 
@@ -138,7 +131,6 @@ export class DataManager {
             return cached.slice(-limit);
         }
 
-        // 3. 抓取逻辑
         const isNative = this.nativeIntervals.includes(tag);
         let finalResult: Candle[] = [];
 
@@ -194,6 +186,7 @@ export class DataManager {
             if (oldC) {
                 mergedMap.set(newC.timestamp, {
                     ...newC,
+                    open: oldC.open, // 🚨 關鍵：保護現有開盤價，不被歷史更新覆蓋
                     high: Math.max(oldC.high, newC.high),
                     low: Math.min(oldC.low, newC.low),
                     volume: Math.max(oldC.volume, newC.volume)
@@ -204,22 +197,33 @@ export class DataManager {
         this.caches.set(key, sorted.slice(-5000));
     }
 
-    public subscribe(id: string, interval: string, onUpdate: (candle: Candle) => void, source?: string) {
+    public async subscribe(id: string, interval: string, onUpdate: (candle: Candle) => void, source?: string) {
         const tag = this.getStrictTag(interval);
         const symbolInfo = SymbolManager.getSymbolById(id);
         const effectiveSource = source || (symbolInfo?.market === MarketType.STOCK ? 'Yahoo' : 'Binance');
-        const cacheKey = `${id}_${tag}`; // 🚨 統一 Key，移除 source 尾綴
+        const cacheKey = `${id}_${tag}`;
+        const intervalMs = this.parseIntervalToMs(tag);
         
         if (!this.subscribers.has(cacheKey)) this.subscribers.set(cacheKey, []);
         this.subscribers.get(cacheKey)?.push(onUpdate);
 
+        if (!this.caches.has(cacheKey)) {
+            const stored = await this.storage.loadKlines(id, tag);
+            if (stored.length > 0) this.caches.set(cacheKey, stored);
+        }
+
         if (!this.activeSubscriptions.has(cacheKey)) {
             if (symbolInfo) {
                 const isNative = this.nativeIntervals.includes(tag);
-                const subInterval = isNative ? tag : '1d';
+                const subInterval = isNative ? tag : (intervalMs < 86400000 ? '1m' : '1d');
                 const subKey = `${id}_${subInterval}_${effectiveSource}`;
                 
                 if (!this.activeSubscriptions.has(subKey)) {
+                    if (!this.caches.has(`${id}_${subInterval}`)) {
+                        const storedBase = await this.storage.loadKlines(id, subInterval);
+                        if (storedBase.length > 0) this.caches.set(`${id}_${subInterval}`, storedBase);
+                    }
+
                     const connector = this.connectors.get(effectiveSource);
                     if (connector) {
                         connector.subscribeKlines(symbolInfo.sourceMap[effectiveSource], subInterval, (c) => this.onNewUpdate(id, subInterval, c, effectiveSource));
@@ -231,28 +235,18 @@ export class DataManager {
         }
     }
 
-    private async onNewUpdate(id: string, interval: string, data: any, source: string) {
+    private onNewUpdate(id: string, interval: string, data: any, source: string) {
         const tag = this.getStrictTag(interval);
         const cacheKey = `${id}_${tag}`;
-        const intervalMs = this.parseIntervalToMs(tag);
-        
-        const alignedTs = (source === 'Yahoo') ? (data.timestamp || data.time) : this.alignTimestamp(data.timestamp || data.time, tag);
-
-        // 🚨 修正：如果快取為空，嘗試從 Storage 補載，防止「重新開始跑」
-        if (!this.caches.has(cacheKey)) {
-            const stored = await this.storage.loadKlines(id, tag);
-            if (stored.length > 0) this.caches.set(cacheKey, stored);
-        }
+        const alignedTs = this.alignTimestamp(data.timestamp || data.time, tag);
 
         let currentCache = this.caches.get(cacheKey) || [];
         let candleToPush: Candle | null = null;
 
         if (data.isTrade) {
             if (currentCache.length === 0) {
-                // 如果連 Storage 都沒數據，才開新的
                 const initCandle = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
                 currentCache.push(initCandle);
-                this.caches.set(cacheKey, currentCache);
                 candleToPush = initCandle;
             } else {
                 const last = currentCache[currentCache.length - 1];
@@ -272,25 +266,28 @@ export class DataManager {
             const candle = data as Candle;
             if (currentCache.length > 0) {
                 const last = currentCache[currentCache.length - 1];
-                if (candle.timestamp === last.timestamp) {
-                    // 🚨 修正：保留原始 Open，僅更新波動
+                const incomingTs = this.alignTimestamp(candle.timestamp, tag);
+                if (incomingTs === last.timestamp) {
                     last.high = Math.max(last.high, candle.high);
                     last.low = Math.min(last.low, candle.low);
                     last.close = candle.close;
                     last.volume = Math.max(last.volume, candle.volume);
-                } else if (candle.timestamp > last.timestamp) currentCache.push(candle);
-            } else currentCache.push(candle);
+                } else if (incomingTs > last.timestamp) {
+                    currentCache.push({ ...candle, timestamp: incomingTs });
+                }
+            } else {
+                currentCache.push({ ...candle, timestamp: alignedTs });
+            }
             candleToPush = currentCache[currentCache.length - 1];
         }
 
         if (candleToPush) {
+            this.caches.set(cacheKey, currentCache);
             const subs = this.subscribers.get(cacheKey);
             if (subs) subs.forEach(cb => cb(candleToPush!));
 
-            // 🚨 修正：級聯推送邏輯，適配統一後的 Key
             if (tag === '1d' || tag === '1m') {
                 this.subscribers.forEach((syntheticSubs, sKey) => {
-                    // 只要 ID 相同且不是當前發送的週期，就進行聚合推送
                     if (sKey.startsWith(`${id}_`) && sKey !== cacheKey) {
                         const sTag = sKey.replace(`${id}_`, '');
                         if (!this.nativeIntervals.includes(sTag)) {
