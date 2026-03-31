@@ -22,21 +22,27 @@ export class BinanceConnector implements IConnector {
     private ws: WebSocket | null = null;
 
     /**
-     * 將週期字串轉換為 Binance 格式 (小寫)
+     * 將週期字串轉換為 Binance 格式
+     * Binance 規範: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
      */
     private formatInterval(interval: string): string {
-        return interval.toLowerCase();
+        const unit = interval.slice(-1);
+        if (unit === 'M') return interval; // 月線必須是大寫 M
+        return interval.toLowerCase(); // 分鐘、小時、天、週為小寫
+    }
+
+    /**
+     * 檢查 Binance 是否原生支援此週期
+     */
+    private isNativeSupported(interval: string): boolean {
+        const supported = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'];
+        return supported.includes(this.formatInterval(interval));
     }
 
     /**
      * 判定是否為合約交易對
-     * 這裡我們需要傳入統一 ID (如 BTC/USDT:PERP) 來判定，
-     * 但 IConnector 介面通常傳入的是原始 Symbol。
-     * 因此我們增加一個輔助判定邏輯。
      */
     private isFutures(symbol: string): boolean {
-        // 在 Binance 中，如果我們能拿到統一 ID 是最好的
-        // 這裡暫時透過「反向查找」SymbolManager
         const allSymbols = SymbolManager.getAllSymbols();
         const found = allSymbols.find(s => s.sourceMap['Binance'] === symbol);
         return found?.market === MarketType.PERP;
@@ -46,6 +52,10 @@ export class BinanceConnector implements IConnector {
      * 抓取歷史 K 線資料 (REST API)
      */
     public async fetchKlines(symbol: string, interval: string, limit: number = 500, endTime?: number): Promise<Candle[]> {
+        if (!this.isNativeSupported(interval)) {
+            throw new Error(`Binance does not support native interval: ${interval}`);
+        }
+        
         const binanceInterval = this.formatInterval(interval);
         const useFutures = this.isFutures(symbol);
         const baseUrl = useFutures ? this.futuresApi : this.spotApi;

@@ -18,11 +18,15 @@ export class OKXConnector implements IConnector {
      * 將週期轉換為 OKX 格式
      */
     private translateInterval(interval: string): string {
-        const unit = interval.slice(-1).toLowerCase();
+        const unit = interval.slice(-1);
         const val = interval.slice(0, -1);
+        
         if (unit === 'm') return interval;
-        if (unit === 'h') return `${val}H`;
-        if (unit === 'd') return `${val}DUTC`;
+        if (unit === 'h' || unit === 'H') return `${val}H`;
+        if (unit === 'd' || unit === 'D') return `${val}DUTC`;
+        if (unit === 'w' || unit === 'W') return `${val}WUTC`;
+        if (unit === 'M') return `${val}Mon`; // OKX 月線格式為 1Mon, 3Mon
+        if (unit === 'Y') return `${val}YUTC`; // OKX 年線格式
         return interval;
     }
 
@@ -73,11 +77,13 @@ export class OKXConnector implements IConnector {
         this.ws = new WebSocket(this.wsUrl);
 
         this.ws.on('open', () => {
-            console.log(`[OKXConnector] Subscribing to ${symbol} (K-line & Trades)`);
+            // 注意：OKX 的頻道名如果包含大寫 Mon，必須維持大寫
+            const channel = `candles${okxInterval}`;
+            console.log(`[OKXConnector] Subscribing to ${symbol} (Channel: ${channel} & Trades)`);
             const subMsg = {
                 op: 'subscribe',
                 args: [
-                    { channel: `candles${okxInterval}`, instId: symbol },
+                    { channel: channel, instId: symbol },
                     { channel: 'trades', instId: symbol }
                 ]
             };
