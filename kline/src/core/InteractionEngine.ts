@@ -11,9 +11,9 @@ export class InteractionEngine {
 
   // 🚨 新增：繪圖相關狀態
   private drawingMode: string | null = null;
-  private magnetMode: boolean = true; // 預設開啟磁吸
+  private magnetMode: 'off' | 'weak' | 'strong' = 'off'; // 預設關閉
   private onDrawingClick?: (mouseX: number, mouseY: number, type: 'start' | 'move' | 'end') => void;
-  private snapProvider?: (x: number, y: number) => { x: number, y: number } | null;
+  private snapProvider?: (x: number, y: number, mode: 'weak' | 'strong') => { x: number, y: number } | null;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -34,12 +34,16 @@ export class InteractionEngine {
     return this.drawingMode;
   }
 
-  public setSnapProvider(provider: (x: number, y: number) => { x: number, y: number } | null) {
+  public setSnapProvider(provider: (x: number, y: number, mode: 'weak' | 'strong') => { x: number, y: number } | null) {
     this.snapProvider = provider;
   }
 
-  public setMagnetMode(enabled: boolean) {
-    this.magnetMode = enabled;
+  public setMagnetMode(mode: 'off' | 'weak' | 'strong') {
+    this.magnetMode = mode;
+  }
+
+  public getMagnetMode() {
+    return this.magnetMode;
   }
 
   private initEvents(): void {
@@ -52,8 +56,8 @@ export class InteractionEngine {
     };
 
     const handleDrawingPos = (x: number, y: number) => {
-      if (this.magnetMode && this.snapProvider) {
-        const snapped = this.snapProvider(x, y);
+      if (this.magnetMode !== 'off' && this.snapProvider) {
+        const snapped = this.snapProvider(x, y, this.magnetMode);
         if (snapped) return snapped;
       }
       return { x, y };

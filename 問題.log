@@ -1,22 +1,21 @@
-[plugin:vite:esbuild] Transform failed with 1 error:
-C:/Users/admin/Desktop/tradingviewer/kline/src/core/DrawingEngine.ts:382:0: ERROR: Expected identifier but found end of file
-C:/Users/admin/Desktop/tradingviewer/kline/src/core/DrawingEngine.ts:382:0
-Expected identifier but found end of file
-379|          ctx.fillText(draw.text || '文字', x + 10, y + 5);
-380|          if (isHovered) this.drawPoint(ctx, x, y);
-381|      }
-   |        ^
-382|  
-   |  ^
-    at failureErrorWithLog (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:1649:15)
-    at C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:847:29
-    at responseCallbacks.<computed> (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:703:9)
-    at handleIncomingPacket (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:762:9)
-    at Socket.readFromStdout (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:679:7)
-    at Socket.emit (node:events:524:28)
-    at addChunk (node:internal/streams/readable:561:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
-    at Readable.push (node:internal/streams/readable:392:5)
-    at Pipe.onStreamRead (node:internal/stream_base_commons:191:23
-Click outside, press Esc key, or fix the code to dismiss.
-You can also disable this overlay by setting server.hmr.overlay to false in vite.config.js.
+Run cd kline
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 51 packages, and audited 52 packages in 1s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+2 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+> high-performance-kline-engine@1.0.0 build
+> tsc && vite build
+
+Error: src/main.ts(351,10): error TS2339: Property 'hoveredDrawingId' does not exist on type 'ChartEngine'.
+Error: Process completed with exit code 2.

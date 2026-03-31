@@ -23,6 +23,7 @@ class ChartEngine {
   private currentTimeframe: string = '1m'; 
   private favorites: string[] = [];
   private activeCategory: string = 'CRYPTO';
+  private hoveredDrawingId: string | null = null; // 🚨 補回：定義此屬性
 
   // 🚨 完整列出所有標的
   private allSymbols: { [key: string]: { s: string, d: string }[] } = {
@@ -85,6 +86,7 @@ class ChartEngine {
     this.favorites = JSON.parse(localStorage.getItem('tf-favorites') || '["1m", "1H", "1D"]');
     this.initModalLogic();
     this.initDrawingToolbar();
+    this.initMagnetLogic(); // 🚨 初始化磁鐵
     this.loader = new LoaderController(this.dataManager, this.viewport);
 
     this.interactionEngine = new InteractionEngine(
@@ -106,6 +108,60 @@ class ChartEngine {
     this.handleResize();
     window.addEventListener('resize', () => this.handleResize());
     this.init();
+  }
+
+  private initMagnetLogic() {
+    const btn = document.getElementById('tool-magnet')!;
+    
+    btn.onclick = () => {
+      const current = this.interactionEngine.getMagnetMode();
+      let next: 'off' | 'weak' | 'strong' = 'off';
+      
+      if (current === 'off') next = 'weak';
+      else if (current === 'weak') next = 'strong';
+      else next = 'off';
+
+      this.interactionEngine.setMagnetMode(next);
+      
+      // 更新 UI 樣式
+      if (next === 'off') {
+        btn.style.color = '#787b86';
+        btn.title = '磁鐵模式 (關閉)';
+        btn.classList.remove('active');
+      } else if (next === 'weak') {
+        btn.style.color = '#2962ff';
+        btn.title = '磁鐵模式 (弱磁鐵)';
+        btn.classList.add('active');
+      } else {
+        btn.style.color = '#f0b90b'; // 強磁鐵用金色
+        btn.title = '磁鐵模式 (強磁鐵)';
+        btn.classList.add('active');
+      }
+    };
+
+    // 🚨 實作強/弱磁鐵吸附邏輯
+    this.interactionEngine.setSnapProvider((mouseX, mouseY, mode) => {
+      const candles = this.dataManager.getCandles();
+      const candleWidth = this.viewport.getCandleWidth();
+      const { startIndex } = this.viewport.getRawRange();
+      const index = Math.round(mouseX / (candleWidth + 2) + startIndex);
+      const candle = candles[index];
+      if (!candle) return null;
+
+      const centerX = (index - startIndex) * (candleWidth + 2) + candleWidth / 2;
+      const prices = [candle.open, candle.high, candle.low, candle.close];
+      const points = prices.map(p => ({ x: centerX, y: this.scaleEngine.priceToY(p) }));
+      
+      let closest = points[0];
+      let minDist = Infinity;
+      points.forEach(pt => {
+        const d = Math.abs(pt.y - mouseY);
+        if (d < minDist) { minDist = d; closest = pt; }
+      });
+
+      if (mode === 'weak' && minDist > 30) return null; // 弱磁鐵距離限制
+      return closest; // 強磁鐵直接回傳最近點
+    });
   }
 
   private initModalLogic() {
