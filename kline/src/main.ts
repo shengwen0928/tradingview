@@ -213,6 +213,40 @@ class ChartEngine {
         }
     };
 
+    // 🚀 新增：Pine Script 編輯器邏輯
+    const editorBtn = document.getElementById('pine-editor-btn')!;
+    const editorPanel = document.getElementById('pine-editor')!;
+    const editorClose = document.getElementById('pine-close')!;
+    const editorApply = document.getElementById('pine-apply')!;
+    const editorSave = document.getElementById('pine-save')!;
+    const editorCode = document.getElementById('pine-code') as HTMLTextAreaElement;
+
+    editorBtn.onclick = () => editorPanel.style.display = (editorPanel.style.display === 'flex' ? 'none' : 'flex');
+    editorClose.onclick = () => editorPanel.style.display = 'none';
+
+    // 載入儲存的腳本
+    const savedScript = localStorage.getItem('pine-script-default');
+    if (savedScript) editorCode.value = savedScript;
+    else editorCode.value = `// 範例：SMA 20\nplot(ta.sma(close, 20), "MA20", "#ffeb3b")`;
+
+    editorApply.onclick = () => {
+        const code = editorCode.value;
+        console.log('[ChartEngine] Applying script...');
+        try {
+            // 立即執行一次計算測試
+            const fn = this.pineEngine.compile(code);
+            this.pineEngine.execute(this.activeManager.getCandles(), fn);
+            this.requestRedraw();
+        } catch (e) {
+            alert('腳本錯誤，請檢查語法');
+        }
+    };
+
+    editorSave.onclick = () => {
+        localStorage.setItem('pine-script-default', editorCode.value);
+        alert('指標已儲存 ✅');
+    };
+
     this.renderTfFavorites(); this.renderTfPopup();
   }
 
