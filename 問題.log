@@ -1,11 +1,4 @@
-
 build-and-deploy
 Process completed with exit code 2.
 build-and-deploy
-Property 'calculateMA' does not exist on type 'IndicatorEngine'.
-build-and-deploy
-'indicatorPlots' is declared but its value is never read.
-build-and-deploy
-'pineEngine' is declared but its value is never read.
-build-and-deploy
-Property 'pineEngine' has no initializer and is not definitely assigned in the constructor.
+'}' expected.
