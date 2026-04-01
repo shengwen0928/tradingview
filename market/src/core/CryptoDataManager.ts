@@ -72,8 +72,14 @@ export class CryptoDataManager {
 
     private alignTimestamp(timestamp: number, interval: string): number {
         const tag = this.getStrictTag(interval);
+        if (tag === '1M') {
+            const d = new Date(timestamp);
+            d.setUTCDate(1);
+            d.setUTCHours(0, 0, 0, 0);
+            return d.getTime();
+        }
         const ms = this.parseIntervalToMs(tag);
-        return Math.floor(timestamp / ms) * ms; // 加密貨幣通常使用簡單對齊
+        return Math.floor(timestamp / ms) * ms; 
     }
 
     public async getKlines(id: string, interval: string, limit: number = 500, endTime?: number, source?: string): Promise<Candle[]> {

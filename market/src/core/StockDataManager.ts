@@ -119,9 +119,17 @@ export class StockDataManager {
     }
 
     private onNewUpdate(id: string, tag: string, data: any, cacheKey: string) {
-        // 🚨 修正：針對 Yahoo 數據進行嚴格的分鐘邊界對齊
-        const intervalMs = this.parseIntervalToMs(tag);
-        const alignedTs = Math.floor(data.timestamp / intervalMs) * intervalMs;
+        // 🚨 修正：針對月線進行日曆月對齊，其餘使用固定間隔對齊
+        let alignedTs: number;
+        if (tag === '1M') {
+            const d = new Date(data.timestamp);
+            d.setUTCDate(1);
+            d.setUTCHours(0, 0, 0, 0);
+            alignedTs = d.getTime();
+        } else {
+            const intervalMs = this.parseIntervalToMs(tag);
+            alignedTs = Math.floor(data.timestamp / intervalMs) * intervalMs;
+        }
         
         let currentCache = this.caches.get(cacheKey) || [];
         let candleToPush: Candle | null = null;
