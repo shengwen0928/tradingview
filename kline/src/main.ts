@@ -501,14 +501,17 @@ class ChartEngine {
   }
 
   private updateOHLCUI(candle: any) {
-    const o = document.getElementById('ohlc-o')!;
-    const h = document.getElementById('ohlc-h')!;
-    const l = document.getElementById('ohlc-l')!;
-    const c = document.getElementById('ohlc-c')!;
-    const chg = document.getElementById('ohlc-chg')!;
+    const o = document.getElementById('ohlc-o');
+    const h = document.getElementById('ohlc-h');
+    const l = document.getElementById('ohlc-l');
+    const c = document.getElementById('ohlc-c');
+    const chg = document.getElementById('ohlc-chg');
 
-    if (!candle) {
+    if (!o || !h || !l || !c || !chg) return;
+
+    if (!candle || typeof candle.open === 'undefined') {
       o.innerText = h.innerText = l.innerText = c.innerText = chg.innerText = '--';
+      chg.style.color = '#929498';
       return;
     }
 
