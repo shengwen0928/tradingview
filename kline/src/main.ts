@@ -250,6 +250,135 @@ class ChartEngine {
     });
   }
 
+  private injectCustomStyles() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .unit-btn { background: #1e222d; border: 1px solid #363c4e; color: #d1d4dc; padding: 6px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .unit-btn:hover { background: #2a2e39; }
+        .unit-btn.active { background: #2962ff; color: #fff; border-color: #2962ff; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  private updateModalList(search: string) {
+    const listDiv = document.getElementById('modal-list')!;
+    const query = search.toUpperCase();
+    listDiv.innerHTML = '';
+    if (query) {
+        const isNum = /^\d{4}$/.test(query);
+        const div = document.createElement('div');
+        div.className = 'symbol-item';
+        div.style.borderLeft = '4px solid #2962ff';
+        const exch = (isNum || this.activeCategory === 'TW_STOCK') ? 'Yahoo' : 'Binance';
+        div.innerHTML = `<div><div class="symbol-name">🔍 搜尋 "${query}${isNum ? '.TW' : ''}"</div><div class="symbol-desc">按 Enter 載入</div></div><div class="symbol-exch">${exch}</div>`;
+        div.onclick = () => { this.loadSymbol(query); document.getElementById('symbol-modal')?.classList.remove('show'); };
+        listDiv.appendChild(div);
+    }
+    const items = this.allSymbols[this.activeCategory] || [];
+    items.filter(i => i.s.includes(query) || i.d.toUpperCase().includes(query)).forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'symbol-item';
+        div.innerHTML = `<div><div class="symbol-name">${item.s}</div><div class="symbol-desc">${item.d}</div></div><div class="symbol-exch">${this.activeCategory === 'CRYPTO' ? 'Binance' : 'Yahoo'}</div>`;
+        div.onclick = () => { this.loadSymbol(item.s); document.getElementById('symbol-modal')?.classList.remove('show'); };
+        listDiv.appendChild(div);
+    });
+  }
+
+  private initDrawingToolbar() {
+    const tools = ['cursor', 'move', 'trendline', 'ray', 'arrow', 'horizontal', 'vertical', 'rect', 'fibonacci', 'text', 'priceRange', 'brush', 'parallelChannel', 'triangle', 'ellipse'];
+    tools.forEach(tool => {
+      const btn = document.getElementById(`tool-${tool}`);
+      if (btn) btn.onclick = () => {
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (tool === 'cursor') this.interactionEngine.setDrawingMode(null);
+        else this.startDrawing(tool);
+      };
+    });
+    const clear = document.getElementById('tool-clear');
+    if (clear) clear.onclick = () => { if (confirm('清除所有繪圖？')) { this.drawingEngine.getDrawings().forEach(d => this.drawingEngine.deleteDrawing(d.id)); this.requestRedraw(); } };
+    this.overlayCanvas.addEventListener('click', (e: MouseEvent) => {
+      if (this.interactionEngine.getDrawingMode()) return;
+      const rect = this.overlayCanvas.getBoundingClientRect();
+      const hit = this.drawingEngine.hitTest(e.clientX - rect.left, e.clientY - rect.top, this.scaleEngine, this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2, (t) => this.activeManager.getIndexAtTime(t));
+      if (hit) this.showEditToolbar(e.clientX, e.clientY, hit); else this.hideEditToolbar();
+    });
+  }
+
+  private showEditToolbar(x: number, y: number, obj: DrawingObject) {
+    let t = document.getElementById('edit-toolbar');
+    if (!t) { t = document.createElement('div'); t.id = 'edit-toolbar'; t.style.cssText = 'position: fixed; z-index: 1000; background: #1e222d; border: 1px solid #363c4e; padding: 8px; border-radius: 6px; display: flex; gap: 8px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5);'; document.body.appendChild(t); }
+    t.style.display = 'flex'; t.style.left = `${x}px`; t.style.top = `${y - 50}px`;
+    t.innerHTML = `<input type="color" id="edit-color" value="${obj.color}" style="width: 24px; height: 24px; border: none; background: transparent;"><button id="edit-delete" style="background:transparent;border:none;color:#ef5350;padding:4px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>`;
+    (t.querySelector('#edit-color') as HTMLInputElement).oninput = (e) => { this.drawingEngine.updateDrawingColor(obj.id, (e.target as HTMLInputElement).value); this.requestRedraw(); };
+    (t.querySelector('#edit-delete') as HTMLButtonElement).onclick = () => { this.drawingEngine.deleteDrawing(obj.id); this.hideEditToolbar(); this.requestRedraw(); };
+  }
+
+  private hideEditToolbar() { const t = document.getElementById('edit-toolbar'); if (t) t.style.display = 'none'; }
+
+  private startDrawing(type: string) {
+    let cur: DrawingObject | null = null;
+    let clickCount = 0;
+    let lastX = 0, lastY = 0;
+    let startPointsSnapshot: DrawingPoint[] = [];
+
+    this.interactionEngine.setDrawingMode(type, (x, y, ev) => {
+      const price = this.scaleEngine.yToPrice(y);
+      const time = this.activeManager.getTimeAtIndex(x / (this.viewport.getCandleWidth() + 2) + this.viewport.getRawRange().startIndex);
+      
+      if (type === 'move') {
+        if (ev === 'start') {
+            const hit = this.drawingEngine.hitTest(x, y, this.scaleEngine, this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2, (t) => this.activeManager.getIndexAtTime(t));
+            if (hit) { cur = hit; lastX = x; lastY = y; startPointsSnapshot = JSON.parse(JSON.stringify(hit.points)); }
+        } else if (ev === 'move' && cur && startPointsSnapshot.length > 0) {
+            const dx = x - lastX, dy = y - lastY;
+            cur.points.forEach((p, i) => {
+                const snapP = startPointsSnapshot[i];
+                const snapX = this.scaleEngine.indexToX(this.activeManager.getIndexAtTime(snapP.time), this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2);
+                const snapY = this.scaleEngine.priceToY(snapP.price);
+                const nextX = snapX + dx, nextY = snapY + dy;
+                p.time = this.activeManager.getTimeAtIndex(this.scaleEngine.xToIndex(nextX, this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2));
+                p.price = this.scaleEngine.yToPrice(nextY);
+            });
+        } else if (ev === 'end') { cur = null; startPointsSnapshot = []; }
+        this.requestRedraw(); return;
+      }
+
+      if (type === 'brush') {
+        if (ev === 'start') { cur = { id: Date.now().toString(), type: 'brush', points: [{ time, price }], color: '#2962ff', lineWidth: 2 }; this.drawingEngine.setActiveDrawing(cur); }
+        else if (ev === 'move' && cur) { cur.points.push({ time, price }); }
+        else if (ev === 'end' && cur) { this.drawingEngine.addDrawing(cur); this.drawingEngine.setActiveDrawing(null); cur = null; }
+        this.requestRedraw(); return;
+      }
+      if (ev === 'start') {
+        clickCount++;
+        if (clickCount === 1) {
+          if (type === 'text') { const c = prompt('內容:'); if (c) this.drawingEngine.addDrawing({ id: Date.now().toString(), type: 'text', points: [{ time, price }], color: '#fff', lineWidth: 2, text: c }); this.finishDrawing(); }
+          else if (type === 'horizontal' || type === 'vertical') { const obj: DrawingObject = { id: Date.now().toString(), type: type as any, points: [{ time, price }], color: '#2962ff', lineWidth: 2 }; this.drawingEngine.addDrawing(obj); this.finishDrawing(); }
+          else if (type === 'parallelChannel' || type === 'triangle') { cur = { id: Date.now().toString(), type: type as any, points: [{ time, price }, { time, price }, { time, price }], color: '#2962ff', lineWidth: 2 }; this.drawingEngine.setActiveDrawing(cur); }
+          else { cur = { id: Date.now().toString(), type: type as any, points: [{ time, price }, { time, price }], color: '#2962ff', lineWidth: 2 }; this.drawingEngine.setActiveDrawing(cur); }
+        } else if (clickCount === 2) {
+          if (type === 'parallelChannel' || type === 'triangle') { if (cur) cur.points[1] = { time, price }; }
+          else { if (cur) { cur.points[1] = { time, price }; this.drawingEngine.addDrawing(cur); } this.finishDrawing(); }
+        } else if (clickCount === 3) { if (cur) { cur.points[2] = { time, price }; this.drawingEngine.addDrawing(cur); } this.finishDrawing(); }
+      } else if (ev === 'move' && cur) {
+        if (clickCount === 1) { cur.points[1] = { time, price }; if (cur.points[2]) cur.points[2] = { time, price }; }
+        else if (clickCount === 2) { cur.points[2] = { time, price }; }
+      }
+      this.requestRedraw();
+    });
+  }
+
+  private finishDrawing() { this.interactionEngine.setDrawingMode(null); this.drawingEngine.setActiveDrawing(null); document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active')); document.getElementById('tool-cursor')?.classList.add('active'); }
+
+  private renderTfFavorites() {
+    const c = document.getElementById('tf-favorites')!; c.innerHTML = '';
+    this.favorites.forEach(tf => {
+      const b = document.createElement('button'); b.className = `fav-btn ${this.currentTimeframe === tf ? 'active' : ''}`;
+      b.innerText = tf; b.onclick = () => this.switchTimeframe(tf); c.appendChild(b);
+    });
+  }
+
   private switchTimeframe(tf: string) { this.currentTimeframe = tf; this.activeManager.setTimeframe(tf); this.scaleEngine.resetAutoScale(); this.renderTfFavorites(); }
   private requestRedraw() { requestAnimationFrame(() => this.draw()); }
 

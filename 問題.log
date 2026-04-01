@@ -1,22 +1,20 @@
-[plugin:vite:esbuild] Transform failed with 1 error:
-C:/Users/admin/Desktop/tradingviewer/kline/src/main.ts:252:0: ERROR: Expected identifier but found end of file
-C:/Users/admin/Desktop/tradingviewer/kline/src/main.ts:252:0
-Expected identifier but found end of file
-249|        btn.appendChild(label); btn.appendChild(star); grid.appendChild(btn);
-250|      });
-251|    }
-   |      ^
-252|  
-   |  ^
-    at failureErrorWithLog (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:1649:15)
-    at C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:847:29
-    at responseCallbacks.<computed> (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:703:9)
-    at handleIncomingPacket (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:762:9)
-    at Socket.readFromStdout (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:679:7)
-    at Socket.emit (node:events:524:28)
-    at addChunk (node:internal/streams/readable:561:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
-    at Readable.push (node:internal/streams/readable:392:5)
-    at Pipe.onStreamRead (node:internal/stream_base_commons:191:23
-Click outside, press Esc key, or fix the code to dismiss.
-You can also disable this overlay by setting server.hmr.overlay to false in vite.config.js.
+build-and-deploy
+Property 'updateModalList' does not exist on type 'ChartEngine'.
+build-and-deploy
+Property 'updateModalList' does not exist on type 'ChartEngine'.
+build-and-deploy
+Property 'injectCustomStyles' does not exist on type 'ChartEngine'.
+build-and-deploy
+Property 'initDrawingToolbar' does not exist on type 'ChartEngine'.
+build-and-deploy
+'allSymbols' is declared but its value is never read.
+build-and-deploy
+'activeCategory' is declared but its value is never read.
+build-and-deploy
+'currentTimeframe' is declared but its value is never read.
+build-and-deploy
+'stockManager' is declared but its value is never read.
+build-and-deploy
+'DrawingPoint' is declared but its value is never read.
+build-and-deploy
+'DrawingObject' is declared but its value is never read.
