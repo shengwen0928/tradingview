@@ -107,14 +107,20 @@ export class StockDataManager {
         this.subscribers.get(cacheKey)?.push(onUpdate);
 
         if (!this.activeSubscriptions.has(subKey)) {
-            // 🚨 智慧路由：如果是台股用 Yahoo，如果是美股用 Alpaca (WebSocket)
+            // 🚨 智慧路由：如果是台股用 Yahoo，如果是美股且有 Key 用 Alpaca (WebSocket)，否則退回 Yahoo
             const isTW = id.includes('.TW') || id.includes('.TWO');
-            const sourceName = isTW ? 'Yahoo' : 'Alpaca';
+            const alpaca = this.connectors.get('Alpaca') as AlpacaConnector;
+            
+            let sourceName = 'Yahoo';
+            if (!isTW && alpaca && alpaca.hasValidKey()) {
+                sourceName = 'Alpaca';
+            }
+
             const connector = this.connectors.get(sourceName);
             const sourceSymbol = symbolInfo.sourceMap[sourceName] || symbolInfo.sourceMap['Yahoo'];
 
             if (connector && sourceSymbol) {
-                console.log(`[StockDataManager] Subscribing ${id} via ${sourceName}`);
+                console.log(`[StockDataManager] Subscribing ${id} via ${sourceName} (Mode: ${isTW ? 'TW' : 'US'})`);
                 connector.subscribeKlines(sourceSymbol, tag, (c) => {
                     this.onNewUpdate(id, tag, c, cacheKey);
                 });
@@ -124,8 +130,10 @@ export class StockDataManager {
     }
 
     private onNewUpdate(id: string, tag: string, data: any, cacheKey: string) {
+        // 🚨 修復：使用傳入數據的時間戳作為基準
         const ts = data.timestamp;
-        const alignedTs = Math.floor(ts / this.parseIntervalToMs(tag)) * this.parseIntervalToMs(tag);
+        const intervalMs = this.parseIntervalToMs(tag);
+        const alignedTs = Math.floor(ts / intervalMs) * intervalMs;
         
         let currentCache = this.caches.get(cacheKey) || [];
         let candleToPush: Candle | null = null;
@@ -133,13 +141,24 @@ export class StockDataManager {
         if (currentCache.length > 0) {
             const last = currentCache[currentCache.length - 1];
             if (alignedTs === last.timestamp) {
+                // 🔄 更新現有 K 棒：確保高低價與實體正確
                 last.high = Math.max(last.high, data.high);
                 last.low = Math.min(last.low, data.low);
                 last.close = data.close;
-                last.volume = data.volume;
+                // 如果是新開的一根，但時間戳相同，補齊 Open
+                if (last.open === 0) last.open = data.open || data.close;
+                last.volume = Math.max(last.volume, data.volume);
                 candleToPush = last;
             } else if (alignedTs > last.timestamp) {
-                const newC = { ...data, timestamp: alignedTs };
+                // 🆕 真正的下一根
+                const newC = { 
+                    timestamp: alignedTs, 
+                    open: data.open || data.close, 
+                    high: data.high || data.close, 
+                    low: data.low || data.close, 
+                    close: data.close, 
+                    volume: data.volume || 0 
+                };
                 currentCache.push(newC);
                 candleToPush = newC;
             }
@@ -152,7 +171,10 @@ export class StockDataManager {
         if (candleToPush) {
             this.caches.set(cacheKey, currentCache.slice(-2000));
             const subs = this.subscribers.get(cacheKey);
-            if (subs) subs.forEach(cb => cb(candleToPush!));
+            if (subs) {
+                // console.log(`[StockDataManager] Pushing update for ${id}: ${new Date(candleToPush.timestamp).toLocaleTimeString()}`);
+                subs.forEach(cb => cb(candleToPush!));
+            }
         }
     }
 

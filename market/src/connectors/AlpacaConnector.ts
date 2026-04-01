@@ -91,11 +91,20 @@ export class AlpacaConnector implements IConnector {
         console.log(`[AlpacaConnector] Subscribed to bars: ${symbols.join(', ')}`);
     }
 
+    public hasValidKey(): boolean {
+        return this.apiKey !== '' && this.apiSecret !== '';
+    }
+
     private handleBar(msg: any) {
         const callback = this.subscribers.get(msg.S);
         if (callback) {
+            // 🚨 關鍵修復：強制對齊到分鐘邊界，防止一分鐘內出現多根 K 棒
+            const d = new Date(msg.t);
+            d.setSeconds(0, 0); 
+            const timestamp = d.getTime();
+
             const candle: Candle = {
-                timestamp: new Date(msg.t).getTime(),
+                timestamp,
                 open: msg.o,
                 high: msg.h,
                 low: msg.l,
