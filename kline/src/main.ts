@@ -258,7 +258,14 @@ class ChartEngine {
     const fullId = s + (isStock ? ':STOCK' : ':SPOT');
     
     console.log(`[ChartEngine] Loading symbol: ${fullId} from ${exch}`);
+    
+    // 🚨 修正：載入新標的前先清空視圖偏移，防止指向量測範圍外
+    this.scaleEngine.resetAutoScale();
+    
     await this.dataManager.update(fullId, this.currentTimeframe, exch);
+    
+    // 載入後再次強制重繪
+    this.requestRedraw();
   }
 
   private initDrawingToolbar() {
