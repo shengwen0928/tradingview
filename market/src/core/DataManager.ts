@@ -207,21 +207,33 @@ export class DataManager {
     private updateCache(id: string, interval: string, newKlines: Candle[]) {
         const key = `${id}_${interval}`;
         let current = this.caches.get(key) || [];
+        
+        // 建立 Map 進行精確合併
         const mergedMap = new Map<number, Candle>();
         current.forEach(c => mergedMap.set(c.timestamp, c));
+        
         newKlines.forEach(newC => {
             const oldC = mergedMap.get(newC.timestamp);
             if (oldC) {
+                // 🚨 修正合併邏輯：確保實時變動的數據能更新舊的靜態數據
                 mergedMap.set(newC.timestamp, {
-                    ...newC,
-                    open: oldC.open, // 🚨 關鍵：保護現有開盤價，不被歷史更新覆蓋
-                    high: Math.max(oldC.high, newC.high),
-                    low: Math.min(oldC.low, newC.low),
+                    timestamp: newC.timestamp,
+                    open: oldC.open || newC.open,
+                    high: Math.max(oldC.high, newC.high, newC.close),
+                    low: Math.min(oldC.low, newC.low, newC.close),
+                    close: newC.close, // 始終以最新傳入的價格為準
                     volume: Math.max(oldC.volume, newC.volume)
                 });
-            } else mergedMap.set(newC.timestamp, newC);
+            } else {
+                mergedMap.set(newC.timestamp, newC);
+            }
         });
-        const sorted = Array.from(mergedMap.values()).sort((a, b) => a.timestamp - b.timestamp);
+
+        // 排序並過濾掉可能的無效數據
+        const sorted = Array.from(mergedMap.values())
+            .sort((a, b) => a.timestamp - b.timestamp)
+            .filter(c => c.close > 0);
+
         this.caches.set(key, sorted.slice(-5000));
     }
 
