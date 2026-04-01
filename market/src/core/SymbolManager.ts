@@ -89,16 +89,16 @@ export class SymbolManager {
         // 2. 🚨 關鍵升級：動態解析 (Dynamic Resolution)
         // 如果還是找不到，但格式符合 TICKER:TYPE，則動態生成定義
         if (!symbol && id.includes(':')) {
-            const [ticker, type] = id.split(':');
-            const marketType = type.toLowerCase() as MarketType;
+            const parts = id.split(':');
+            const ticker = parts[0].toUpperCase();
+            const type = parts[1].toUpperCase(); // 🚨 改為大寫匹配
             
-            if (marketType === MarketType.STOCK) {
-                // 🚨 關鍵升級：台股代碼自動補全
-                // 如果是純數字 (例如 2330)，自動加上 .TW 後綴
+            if (type === 'STOCK') {
+                // 已經有後綴 (.TW 或 .TWO) 則直接使用，否則針對純數字補全
                 let yahooTicker = ticker;
-                if (/^\d+$/.test(ticker)) {
+                if (/^\d{4,6}$/.test(ticker)) {
+                    // 這裡預設補 .TW，但如果是上櫃股票，前端應傳入 .TWO
                     yahooTicker = `${ticker}.TW`;
-                    console.log(`[SymbolManager] Auto-suffixing ${ticker} to ${yahooTicker} for Taiwan Stock Market`);
                 }
 
                 return {
@@ -108,7 +108,7 @@ export class SymbolManager {
                     assetClass: AssetClass.STOCK,
                     precision: 2
                 };
-            } else if (marketType === MarketType.SPOT || marketType === MarketType.PERP) {
+            } else if (type === 'SPOT' || type === 'PERP') {
                 // 自動生成 Binance/OKX 的加密貨幣定義 (假設符號一致)
                 const cryptoSymbol = ticker.replace('/', '');
                 return {

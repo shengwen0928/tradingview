@@ -104,29 +104,15 @@ export class DataManager {
   }
 
   public async setTimeframe(bar: string): Promise<void> {
-    // 🚨 格式化為 OKX 規格：h->H, d->D, w->W, M->M, y->Y, 只有 s 和 m 維持小寫
     const formattedBar = bar
-      .replace('h', 'H')
-      .replace('d', 'D')
-      .replace('w', 'W')
-      .replace('y', 'Y')
-      .replace('M', 'M'); // 月份本來就是大寫，確保一致性
+      .replace('h', 'H').replace('d', 'D').replace('w', 'W').replace('y', 'Y').replace('M', 'M');
     
     if (this.bar === formattedBar) return;
     
     this.bar = formattedBar;
     this.intervalMs = this.parseBarToMs(formattedBar);
     this.candles = [];
-    
-    console.log(`[DataManager] Timeframe changed to: ${this.bar} (${this.intervalMs}ms)`);
-
-    if (this.ws) {
-      this.ws.onclose = null;
-      this.ws.close();
-    }
-    if (this.pingInterval) clearInterval(this.pingInterval);
-
-    await this.loadInitialData();
+    await this.reload();
   }
 
   private parseBarToMs(bar: string): number {
