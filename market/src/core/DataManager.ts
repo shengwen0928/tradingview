@@ -278,19 +278,23 @@ export class DataManager {
             }
         } else {
             const candle = data as Candle;
+            const incomingTs = this.alignTimestamp(candle.timestamp || candle.time, tag);
+            
             if (currentCache.length > 0) {
                 const last = currentCache[currentCache.length - 1];
-                const incomingTs = this.alignTimestamp(candle.timestamp, tag);
                 if (incomingTs === last.timestamp) {
-                    last.high = Math.max(last.high, candle.high);
-                    last.low = Math.min(last.low, candle.low);
+                    // 🚨 關鍵：合併時保護開盤價，並更新高低點
+                    last.high = Math.max(last.high, candle.high, candle.close);
+                    last.low = Math.min(last.low, candle.low, candle.close);
                     last.close = candle.close;
                     last.volume = Math.max(last.volume, candle.volume);
+                    // 如果原有的開盤價是 0 或無效，才使用新的
+                    if (!last.open || last.open === 0) last.open = candle.open;
                 } else if (incomingTs > last.timestamp) {
                     currentCache.push({ ...candle, timestamp: incomingTs });
                 }
             } else {
-                currentCache.push({ ...candle, timestamp: alignedTs });
+                currentCache.push({ ...candle, timestamp: incomingTs });
             }
             candleToPush = currentCache[currentCache.length - 1];
         }
