@@ -2,10 +2,10 @@
 build-and-deploy
 Process completed with exit code 2.
 build-and-deploy
-Property 'loadSymbol' does not exist on type 'ChartEngine'.
+Property 'calculateMA' does not exist on type 'IndicatorEngine'.
 build-and-deploy
-Property 'loadSymbol' does not exist on type 'ChartEngine'.
+'indicatorPlots' is declared but its value is never read.
 build-and-deploy
-Property 'loadSymbol' does not exist on type 'ChartEngine'.
+'pineEngine' is declared but its value is never read.
 build-and-deploy
-'stockManager' is declared but its value is never read.
+Property 'pineEngine' has no initializer and is not definitely assigned in the constructor.

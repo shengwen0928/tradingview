@@ -81,6 +81,7 @@ class ChartEngine {
     this.scaleEngine = new ScaleEngine();
     this.viewport = new ViewportEngine(() => this.requestRedraw());
     this.indicatorEngine = new IndicatorEngine();
+    this.pineEngine = new PineEngine(); // 🚀 補回初始化
     this.drawingEngine = new DrawingEngine();
     
     const onDataUpdate = (candles: any[], isHistory: boolean) => {
@@ -414,12 +415,20 @@ class ChartEngine {
     const { startIndex } = this.viewport.getRawRange();
     const visible = candles.slice(start, end);
     const cw = this.viewport.getCandleWidth();
+    
     this.scaleEngine.updateScale(visible);
     this.renderEngine.drawGrid(this.scaleEngine);
     this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx) => this.activeManager.getTimeAtIndex(idx), this.scaleEngine);
     this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine);
-    const ma20 = this.indicatorEngine.calculateMA(candles, 20);
-    this.renderEngine.drawIndicator(ma20.slice(start, end), start, startIndex, cw, 2, '#ffeb3b', this.scaleEngine);
+
+    // 🚀 指標引擎計算邏輯 (模擬 Pine Script 預設行為)
+    const script = `plot(ta.sma(close, 20), "MA20", "#ffeb3b")`;
+    const scriptFn = this.pineEngine.compile(script);
+    this.indicatorPlots = this.pineEngine.execute(candles, scriptFn);
+
+    // 🎨 動態繪製所有指標 (自動根據 PineEngine 回傳結果繪製)
+    this.renderEngine.drawIndicators(this.indicatorPlots, start, end, startIndex, cw, 2, this.scaleEngine);
+    
     const oCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
     this.drawingEngine.render(oCtx, this.scaleEngine, startIndex, cw, 2, (t) => this.activeManager.getIndexAtTime(t), this.hoveredDrawingId);
     if (this.lastMousePos.x > 0 || this.lastMousePos.y > 0) {
