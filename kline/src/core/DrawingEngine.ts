@@ -290,7 +290,8 @@ export class DrawingEngine {
         const y2 = scaleEngine.priceToY(draw.points[1].price);
         const angle = Math.atan2(y2 - y1, x2 - x1);
         const length = 5000; 
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x1 + Math.cos(angle) * length, y1 + Math.sin(angle) * length); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x1 + Math.cos(angle) * length, y1 + Math.sin(angle) * length); 
+        ctx.stroke(); // 🚨 補回：渲染線條
         if (isHovered) this.drawPoint(ctx, x1, y1);
     }
 
@@ -299,7 +300,8 @@ export class DrawingEngine {
         const y1 = scaleEngine.priceToY(draw.points[0].price);
         const x2 = scaleEngine.indexToX(timeToIndex(draw.points[1].time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
         const y2 = scaleEngine.priceToY(draw.points[1].price);
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); 
+        ctx.stroke(); // 🚨 補回：渲染主幹
         const angle = Math.atan2(y2 - y1, x2 - x1);
         ctx.beginPath(); ctx.moveTo(x2, y2);
         ctx.lineTo(x2 - 15 * Math.cos(angle - Math.PI / 6), y2 - 15 * Math.sin(angle - Math.PI / 6));
@@ -316,7 +318,8 @@ export class DrawingEngine {
         const p1 = draw.points[0].price, p2 = draw.points[1].price;
         const diff = p2 - p1, pct = (diff / p1) * 100;
         ctx.save(); ctx.globalAlpha = 0.1; ctx.fillStyle = diff >= 0 ? '#26a69a' : '#ef5350'; ctx.fillRect(x1, y1, x2 - x1, y2 - y1); ctx.restore();
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y1); ctx.moveTo(x1, y2); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y1); ctx.moveTo(x1, y2); ctx.lineTo(x2, y2); 
+        ctx.stroke(); // 🚨 補回：渲染水平邊界線
         ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
         ctx.fillText(`${diff.toFixed(2)} (${pct.toFixed(2)}%)`, (x1 + x2) / 2, (y1 + y2) / 2);
         if (isHovered) { this.drawPoint(ctx, x1, y1); this.drawPoint(ctx, x2, y2); }
@@ -332,46 +335,29 @@ export class DrawingEngine {
         timeToIndex: (time: number) => number,
         isHovered: boolean
     ) {
-        const p1 = draw.points[0];
-        const p2 = draw.points[1];
-
-        const x1 = scaleEngine.indexToX(timeToIndex(p1.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
-        const y1 = scaleEngine.priceToY(p1.price);
-        const x2 = scaleEngine.indexToX(timeToIndex(p2.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
-        const y2 = scaleEngine.priceToY(p2.price);
-
+        const x1 = scaleEngine.indexToX(timeToIndex(draw.points[0].time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const y1 = scaleEngine.priceToY(draw.points[0].price);
+        const x2 = scaleEngine.indexToX(timeToIndex(draw.points[1].time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const y2 = scaleEngine.priceToY(draw.points[1].price);
         const levels = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1.0];
-        const diff = p2.price - p1.price;
+        const diff = draw.points[1].price - draw.points[0].price;
         const width = scaleEngine.getDrawWidth();
 
-        // 畫主連線 (虛線)
         ctx.save();
-        ctx.setLineDash([5, 5]);
-        ctx.globalAlpha = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
+        ctx.setLineDash([5, 5]); ctx.globalAlpha = 0.5;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); 
+        ctx.stroke(); // 🚨 補回：渲染趨勢連線 (虛線)
         ctx.restore();
 
         levels.forEach(level => {
-            const price = p1.price + diff * level;
+            const price = draw.points[0].price + diff * level;
             const y = scaleEngine.priceToY(price);
-
-            // 畫水平線
-            ctx.beginPath();
-            ctx.moveTo(Math.min(x1, x2), y);
-            ctx.lineTo(width, y);
-            ctx.globalAlpha = 0.6;
-            ctx.stroke();
-
-            // 標註百分比與價格
-            ctx.font = '10px sans-serif';
-            ctx.textAlign = 'right';
+            ctx.beginPath(); ctx.moveTo(Math.min(x1, x2), y); ctx.lineTo(width, y); 
+            ctx.globalAlpha = 0.6; 
+            ctx.stroke(); // 🚨 補回：渲染水平回撤線
+            ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
             ctx.fillText(`${(level * 100).toFixed(1)}% (${price.toFixed(2)})`, width - 5, y - 5);
         });
-
-        // 畫端點
         if (isHovered) { this.drawPoint(ctx, x1, y1); this.drawPoint(ctx, x2, y2); }
     }
 
