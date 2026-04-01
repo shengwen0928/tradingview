@@ -277,24 +277,40 @@ export class DataManager {
                 }
             }
         } else {
-            const candle = data as Candle;
-            const incomingTs = this.alignTimestamp(candle.timestamp, tag);
+            const candle = data as any; // 🚨 改為 any 以便檢查不同命名的欄位
+            const ts = candle.timestamp || candle.time;
+            if (!ts) return; // 無效數據直接跳過
+
+            const incomingTs = this.alignTimestamp(ts, tag);
             
             if (currentCache.length > 0) {
                 const last = currentCache[currentCache.length - 1];
                 if (incomingTs === last.timestamp) {
-                    // 🚨 關鍵：合併時保護開盤價，並更新高低點
-                    last.high = Math.max(last.high, candle.high, candle.close);
-                    last.low = Math.min(last.low, candle.low, candle.close);
+                    // 合併邏輯
+                    last.high = Math.max(last.high, candle.high || candle.close);
+                    last.low = Math.min(last.low, candle.low || candle.close);
                     last.close = candle.close;
-                    last.volume = Math.max(last.volume, candle.volume);
-                    // 如果原有的開盤價是 0 或無效，才使用新的
-                    if (!last.open || last.open === 0) last.open = candle.open;
+                    last.volume = Math.max(last.volume, candle.volume || 0);
+                    if (!last.open || last.open === 0) last.open = candle.open || candle.close;
                 } else if (incomingTs > last.timestamp) {
-                    currentCache.push({ ...candle, timestamp: incomingTs });
+                    currentCache.push({
+                        timestamp: incomingTs,
+                        open: candle.open || candle.close,
+                        high: candle.high || candle.close,
+                        low: candle.low || candle.close,
+                        close: candle.close,
+                        volume: candle.volume || 0
+                    });
                 }
             } else {
-                currentCache.push({ ...candle, timestamp: incomingTs });
+                currentCache.push({
+                    timestamp: incomingTs,
+                    open: candle.open || candle.close,
+                    high: candle.high || candle.close,
+                    low: candle.low || candle.close,
+                    close: candle.close,
+                    volume: candle.volume || 0
+                });
             }
             candleToPush = currentCache[currentCache.length - 1];
         }
