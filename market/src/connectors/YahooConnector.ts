@@ -42,12 +42,21 @@ export class YahooConnector implements IConnector {
                 interval: yahooInterval,
                 period1: Math.floor(p1),
                 period2: p2,
-                includePrePost: false
+                includePrePost: true // 🚨 改為 true 以獲取更多盤後數據，增加穩定性
             };
 
-            const response = await axios.get(url, { params });
+            const response = await axios.get(url, { 
+                params,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'Referer': 'https://finance.yahoo.com/'
+                }
+            });
             const result = response.data.chart.result[0];
-            if (!result || !result.timestamp) return [];
+            if (!result || !result.timestamp) {
+                console.warn(`[YahooConnector] No data returned for ${symbol}`);
+                return [];
+            }
 
             const indicators = result.indicators.quote[0];
             const timestamps = result.timestamp;
@@ -62,7 +71,7 @@ export class YahooConnector implements IConnector {
             })).filter((c: any) => c.close !== null).slice(-limit);
 
         } catch (error: any) {
-            // console.error(`[YahooConnector] Fetch error for ${symbol}:`, error.message);
+            console.error(`[YahooConnector] Fetch error for ${symbol}:`, error.response?.status, error.message);
             return [];
         }
     }
