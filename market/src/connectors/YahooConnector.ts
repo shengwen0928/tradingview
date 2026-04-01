@@ -61,14 +61,27 @@ export class YahooConnector implements IConnector {
             const indicators = result.indicators.quote[0];
             const timestamps = result.timestamp;
 
-            return timestamps.map((ts: number, i: number) => ({
-                timestamp: ts * 1000,
-                open: indicators.open[i] || indicators.close[i],
-                high: indicators.high[i] || indicators.close[i],
-                low: indicators.low[i] || indicators.close[i],
-                close: indicators.close[i],
-                volume: indicators.volume[i] || 0
-            })).filter((c: any) => c.close !== null).slice(-limit);
+            return timestamps.map((ts: number, i: number) => {
+                const timestamp = ts * 1000;
+                // 🚨 修正：針對台股進行正規盤時間過濾 (09:00 - 13:30)
+                if (symbol.endsWith('.TW') || symbol.endsWith('.TWO')) {
+                    const d = new Date(timestamp);
+                    const hours = d.getHours();
+                    const minutes = d.getMinutes();
+                    const timeVal = hours * 100 + minutes;
+                    // 如果超過 13:30，視為盤後數據，予以過濾 (或標記為最後一盤)
+                    if (timeVal > 1330) return null;
+                }
+
+                return {
+                    timestamp,
+                    open: indicators.open[i] || indicators.close[i],
+                    high: indicators.high[i] || indicators.close[i],
+                    low: indicators.low[i] || indicators.close[i],
+                    close: indicators.close[i],
+                    volume: indicators.volume[i] || 0
+                };
+            }).filter((c: any) => c !== null && c.close !== null).slice(-limit);
 
         } catch (error: any) {
             console.error(`[YahooConnector] Fetch error for ${symbol}:`, error.response?.status, error.message);
