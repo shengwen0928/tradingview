@@ -233,19 +233,22 @@ class ChartEngine {
     });
   }
 
-  private loadSymbol(symbol: string) {
+  private async loadSymbol(symbol: string) {
     let s = symbol.toUpperCase();
-    let isStock = this.activeCategory.includes('STOCK') || s.includes('.TW');
+    let isStock = this.activeCategory.includes('STOCK') || s.includes('.TW') || s.includes('.TWO');
 
     if (/^\d{4}$/.test(s)) { s += '.TW'; isStock = true; }
 
     this.currentSymbol = s;
     document.getElementById('symbol-search-btn')!.innerText = `${s} ▾`;
-    document.getElementById('exchange-display')!.innerText = isStock ? 'Yahoo' : 'Binance';
     
-    this.dataManager.setExchange(isStock ? 'Yahoo' : 'Binance');
-    this.dataManager.setSymbol(s + (isStock ? ':STOCK' : ':SPOT'));
-    this.scaleEngine.resetAutoScale();
+    const exch = isStock ? 'Yahoo' : 'Binance';
+    document.getElementById('exchange-display')!.innerText = exch;
+    
+    const fullId = s + (isStock ? ':STOCK' : ':SPOT');
+    
+    // 🚨 修正：一次性更新所有參數，防止競爭條件
+    await this.dataManager.update(fullId, this.currentTimeframe, exch);
   }
 
   private initDrawingToolbar() {

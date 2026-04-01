@@ -85,6 +85,24 @@ export class DataManager {
     return refCandle.time + diff * this.intervalMs;
   }
 
+  public async update(instId: string, bar: string, source: string): Promise<void> {
+    const formattedBar = bar
+      .replace('h', 'H').replace('d', 'D').replace('w', 'W').replace('y', 'Y').replace('M', 'M');
+    
+    // 如果全部沒變，不執行
+    if (this.instId === instId && this.bar === formattedBar && this.currentSource === source) return;
+
+    console.log(`[DataManager] Full update: ${instId} (${formattedBar}) from ${source || 'Auto'}`);
+    
+    this.instId = instId;
+    this.bar = formattedBar;
+    this.currentSource = source;
+    this.intervalMs = this.parseBarToMs(formattedBar);
+    this.candles = [];
+
+    await this.reload();
+  }
+
   public async setTimeframe(bar: string): Promise<void> {
     // 🚨 格式化為 OKX 規格：h->H, d->D, w->W, M->M, y->Y, 只有 s 和 m 維持小寫
     const formattedBar = bar
