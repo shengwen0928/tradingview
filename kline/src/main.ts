@@ -400,13 +400,31 @@ class ChartEngine {
     const last = candles[candles.length - 1];
     if (last) this.renderEngine.drawLastPriceLine(last.close, last.close >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
     
-    // 補回十字線邏輯 (如果是滑鼠移動中)
+    // 🚨 補回十字線邏輯 (如果是滑鼠移動中)
+    const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
+    const time = this.dataManager.getTimeAtIndex(this.lastMousePos.x / (this.viewport.getCandleWidth() + 2) + startIndex);
+    this.renderEngine.drawCrosshair(this.lastMousePos.x, this.lastMousePos.y, formatPrice(price), formatFullTime(time));
+
     this.updateStatusUI();
-  }
+    }
 
-  private lastMousePos = { x: 0, y: 0 }; // 紀錄滑鼠位置方便重繪十字線
+    private updateStatusUI() {
+    const dot = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    if (!dot || !text) return;
 
-  private updateCrosshair(mouseX: number, mouseY: number) {
+    if (this.connectionStatus === 'connected') {
+      dot.style.background = '#26a69a';
+      text.innerText = `${this.currentSymbol} Live`;
+    } else {
+      dot.style.background = '#ef5350';
+      text.innerText = `${this.currentSymbol} Disconnected`;
+    }
+    }
+
+    private lastMousePos = { x: 0, y: 0 }; // 紀錄滑鼠位置方便重繪十字線
+
+    private updateCrosshair(mouseX: number, mouseY: number) {
     this.lastMousePos = { x: mouseX, y: mouseY };
     
     // 先執行偵測與繪圖

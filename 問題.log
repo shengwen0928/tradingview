@@ -1,9 +1,13 @@
-index-2bafb7c4.js:1 Uncaught TypeError: Cannot read properties of undefined (reading 'setSnapProvider')
-    at V.initMagnetLogic (index-2bafb7c4.js:1:31575)
-    at new V (index-2bafb7c4.js:1:30367)
-    at window.onload (index-2bafb7c4.js:1:41050)
-index-2bafb7c4.js:1 Uncaught TypeError: Cannot read properties of undefined (reading 'getDrawingMode')
-    at HTMLCanvasElement.<anonymous> (index-2bafb7c4.js:1:35117)
-index-2bafb7c4.js:1 Uncaught TypeError: Cannot read properties of undefined (reading 'getDrawingMode')
-    at HTMLCanvasElement.<anonymous> (index-2bafb7c4.js:1:35117)
-tradingview/:1  Failed to load resource: the server responded with a status of 404 ()
+
+build-and-deploy
+Process completed with exit code 2.
+build-and-deploy
+'lastMousePos' is declared but its value is never read.
+build-and-deploy
+Property 'updateStatusUI' does not exist on type 'ChartEngine'.
+build-and-deploy
+Property 'updateStatusUI' does not exist on type 'ChartEngine'.
+build-and-deploy
+'currentSymbol' is declared but its value is never read.
+build-and-deploy
+'connectionStatus' is declared but its value is never read.
