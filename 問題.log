@@ -1,20 +1,11 @@
+
 build-and-deploy
-Property 'updateModalList' does not exist on type 'ChartEngine'.
+Process completed with exit code 2.
 build-and-deploy
-Property 'updateModalList' does not exist on type 'ChartEngine'.
+Property 'loadSymbol' does not exist on type 'ChartEngine'.
 build-and-deploy
-Property 'injectCustomStyles' does not exist on type 'ChartEngine'.
+Property 'loadSymbol' does not exist on type 'ChartEngine'.
 build-and-deploy
-Property 'initDrawingToolbar' does not exist on type 'ChartEngine'.
-build-and-deploy
-'allSymbols' is declared but its value is never read.
-build-and-deploy
-'activeCategory' is declared but its value is never read.
-build-and-deploy
-'currentTimeframe' is declared but its value is never read.
+Property 'loadSymbol' does not exist on type 'ChartEngine'.
 build-and-deploy
 'stockManager' is declared but its value is never read.
-build-and-deploy
-'DrawingPoint' is declared but its value is never read.
-build-and-deploy
-'DrawingObject' is declared but its value is never read.

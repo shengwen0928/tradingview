@@ -284,6 +284,29 @@ class ChartEngine {
     });
   }
 
+  private async loadSymbol(symbol: string) {
+    let s = symbol.toUpperCase();
+    let isStock = this.activeCategory.includes('STOCK') || s.includes('.TW') || s.includes('.TWO');
+    if (/^\d{4,6}$/.test(s)) {
+        isStock = true;
+        const otcPrefixes = ['31', '80', '54', '61', '62'];
+        const isOTC = otcPrefixes.some(p => s.startsWith(p));
+        s += isOTC ? '.TWO' : '.TW';
+    }
+    this.currentSymbol = s;
+    document.getElementById('symbol-search-btn')!.innerText = `${s} ▾`;
+    const exch = isStock ? 'Yahoo' : 'Binance';
+    document.getElementById('exchange-display')!.innerText = exch;
+    const fullId = s + (isStock ? ':STOCK' : ':SPOT');
+    console.log(`[ChartEngine] Switching to ${isStock ? 'Stock' : 'Crypto'} mode...`);
+    await this.activeManager.update('', '', ''); 
+    this.activeManager = isStock ? this.stockManager : this.cryptoManager;
+    this.loader = new LoaderController(this.activeManager, this.viewport);
+    this.scaleEngine.resetAutoScale();
+    await this.activeManager.update(fullId, this.currentTimeframe, exch);
+    this.requestRedraw();
+  }
+
   private initDrawingToolbar() {
     const tools = ['cursor', 'move', 'trendline', 'ray', 'arrow', 'horizontal', 'vertical', 'rect', 'fibonacci', 'text', 'priceRange', 'brush', 'parallelChannel', 'triangle', 'ellipse'];
     tools.forEach(tool => {
