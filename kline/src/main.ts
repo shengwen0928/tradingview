@@ -425,7 +425,7 @@ class ChartEngine {
     private updateCrosshair(mouseX: number, mouseY: number) {
     this.lastMousePos = { x: mouseX, y: mouseY };
     
-    // 先執行偵測與繪圖
+    // 1. 偵測懸停物件
     const { startIndex } = this.viewport.getRawRange();
     this.hoveredDrawingId = this.drawingEngine.hitTest(
       mouseX, mouseY, 
@@ -435,12 +435,8 @@ class ChartEngine {
       (t) => this.dataManager.getIndexAtTime(t)
     )?.id || null;
 
-    this.draw();
-
-    // 🚨 關鍵：在 draw() 結束後，最後畫上十字線
-    const price = this.scaleEngine.yToPrice(mouseY);
-    const time = this.dataManager.getTimeAtIndex(mouseX / (this.viewport.getCandleWidth() + 2) + startIndex);
-    this.renderEngine.drawCrosshair(mouseX, mouseY, formatPrice(price), formatFullTime(time));
+    // 2. 統一使用非同步重繪
+    this.requestRedraw();
   }
 
   private handleResize() { const w = window.innerWidth, h = window.innerHeight; this.renderEngine.resize(w, h); this.scaleEngine.updateDimensions(w, h); this.requestRedraw(); }
