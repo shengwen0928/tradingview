@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http'; 
-import axios from 'axios'; // 🚨 改用 axios 以支援 https
-import { DataManager } from '../core/DataManager';
+import { CryptoDataManager } from '../core/CryptoDataManager';
+import { StockDataManager } from '../core/StockDataManager';
 import { RealtimeGateway } from './RealtimeGateway';
 
 /**
@@ -10,7 +10,9 @@ import { RealtimeGateway } from './RealtimeGateway';
 const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 3001;
-const dataManager = DataManager.getInstance();
+
+const cryptoManager = CryptoDataManager.getInstance();
+const stockManager = StockDataManager.getInstance();
 
 // 啟動實時網關 (共用 HTTP Server)
 new RealtimeGateway(server);
@@ -31,45 +33,32 @@ app.use((req, res, next) => {
 });
 
 /**
- * 查詢所有支援的標的
+ * --- 加密貨幣 API 組 ---
  */
-app.get('/symbols', (req, res) => {
+app.get('/crypto/klines', async (req, res) => {
+    const { id, interval, endTime, source } = req.query;
+    if (!id || !interval) return res.status(400).json({ success: false, message: 'Missing parameters' });
     try {
-        const symbols = dataManager.getSymbols();
-        res.json({ success: true, data: symbols });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error' });
-    }
+        const klines = await cryptoManager.getKlines(id as string, interval as string, 500, endTime ? parseInt(endTime as string) : undefined, source as string);
+        res.json({ success: true, data: klines });
+    } catch (e: any) { res.status(500).json({ success: false, message: e.message }); }
 });
 
 /**
- * 查詢標的的 K 線數據
+ * --- 股票 API 組 ---
  */
-app.get('/klines', async (req, res) => {
-    const { id, interval, endTime, source } = req.query;
-
-    if (!id || !interval) {
-        return res.status(400).json({ success: false, message: 'Missing parameters' });
-    }
-
+app.get('/stock/klines', async (req, res) => {
+    const { id, interval, endTime } = req.query;
+    if (!id || !interval) return res.status(400).json({ success: false, message: 'Missing parameters' });
     try {
-        const endTs = endTime ? parseInt(endTime as string) : undefined;
-        const klines = await dataManager.getKlines(id as string, interval as string, 500, endTs, source as string);
+        const klines = await stockManager.getKlines(id as string, interval as string, 500, endTime ? parseInt(endTime as string) : undefined);
         res.json({ success: true, data: klines });
-    } catch (error: any) {
-        console.error(`[DataServer] Kline query error:`, error.message);
-        res.status(500).json({ success: false, message: error.message });
-    }
-});
-
-// 🚨 簡化：只保留健康檢查端點，不主動發送請求以防止啟動崩潰
-app.get('/health', (req, res) => {
-    res.status(200).send('OK');
+    } catch (e: any) { res.status(500).json({ success: false, message: e.message }); }
 });
 
 // 🏠 根目錄路由，防止 404 並確認伺服器運作中
 app.get('/', (req, res) => {
-    res.status(200).send('Market Data Server is running ✅');
+    res.status(200).send('Market Separation Server is running ✅');
 });
 
 // 🖼️ 防止 Favicon 404

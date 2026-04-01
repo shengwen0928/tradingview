@@ -199,13 +199,15 @@ export class DataManager {
   public async loadInitialData(): Promise<void> {
     try {
       this.onStatusChange?.('connecting');
-      // 🚨 修正：參數必須進行 URL 編碼
+      const isStock = this.instId.includes(':STOCK');
+      const apiPath = isStock ? '/stock/klines' : '/crypto/klines';
+      
       const encodedId = encodeURIComponent(this.instId);
       const encodedBar = encodeURIComponent(this.bar);
-      let url = `${this.apiUrl}/klines?id=${encodedId}&interval=${encodedBar}`;
-      if (this.currentSource) url += `&source=${encodeURIComponent(this.currentSource)}`;
+      let url = `${this.apiUrl}${apiPath}?id=${encodedId}&interval=${encodedBar}`;
+      if (!isStock && this.currentSource) url += `&source=${encodeURIComponent(this.currentSource)}`;
 
-      console.log(`[DataManager] Fetching initial data from backend: ${url}`);
+      console.log(`[DataManager] Fetching from ${isStock ? 'Stock' : 'Crypto'} API: ${url}`);
       const response = await fetch(url);
       const result = await response.json();
 
