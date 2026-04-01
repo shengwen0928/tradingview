@@ -278,7 +278,7 @@ export class DataManager {
             }
         } else {
             const candle = data as Candle;
-            const incomingTs = this.alignTimestamp(candle.timestamp || candle.time, tag);
+            const incomingTs = this.alignTimestamp(candle.timestamp, tag);
             
             if (currentCache.length > 0) {
                 const last = currentCache[currentCache.length - 1];

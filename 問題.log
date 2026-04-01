@@ -1,13 +1,3 @@
-
-build-and-deploy
-Process completed with exit code 2.
-build-and-deploy
-'lastMousePos' is declared but its value is never read.
-build-and-deploy
-Property 'updateStatusUI' does not exist on type 'ChartEngine'.
-build-and-deploy
-Property 'updateStatusUI' does not exist on type 'ChartEngine'.
-build-and-deploy
-'currentSymbol' is declared but its value is never read.
-build-and-deploy
-'connectionStatus' is declared but its value is never read.
+src/core/DataManager.ts(281,79): error TS2339: Property 'time' does not exist on type 'Candle'.
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
