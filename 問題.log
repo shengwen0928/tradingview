@@ -1,7 +1,6 @@
-index-25031f0c.js:1  GET https://tradingviewer-gtr2.onrender.com/crypto/klines?id=&interval= 400 (Bad Request)
-loadInitialData @ index-25031f0c.js:1
-reload @ index-25031f0c.js:1
-update @ index-25031f0c.js:1
-loadSymbol @ index-25031f0c.js:1
-a.onclick @ index-25031f0c.js:1瞭解這個錯誤
-installHook.js:1 [DataManager] Backend API Error: Missing parameters
+index-360214bc.js:1  GET https://tradingviewer-gtr2.onrender.com/klines?id=2455.TW:STOCK&interval=15m&endTime=1770775200000&source=Yahoo 404 (Not Found)
+loadMoreHistory @ index-360214bc.js:1
+checkLoadMore @ index-360214bc.js:1
+(匿名) @ index-360214bc.js:1
+(匿名) @ index-360214bc.js:1瞭解這個錯誤
+installHook.js:1 Failed to load more history from backend: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON

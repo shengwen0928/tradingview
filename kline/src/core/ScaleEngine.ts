@@ -98,6 +98,13 @@ export class ScaleEngine {
     return (index - startIndex) * (candleWidth + spacing);
   }
 
+  /**
+   * 🚀 新增：將螢幕 X 座標轉為數據索引
+   */
+  public xToIndex(x: number, startIndex: number, candleWidth: number, spacing: number): number {
+    return x / (candleWidth + spacing) + startIndex;
+  }
+
   public getMinMax(): { min: number; max: number } {
     return { min: this.minPrice, max: this.maxPrice };
   }
