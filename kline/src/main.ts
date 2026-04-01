@@ -257,23 +257,44 @@ class ChartEngine {
   private startDrawing(type: string) {
     let cur: DrawingObject | null = null;
     let clickCount = 0;
-    let lastX = 0, lastY = 0; // 🚀 新增：用於記錄移動偏移
+    let lastX = 0, lastY = 0;
+    let startPointsSnapshot: DrawingPoint[] = []; // 🚀 新增：原始點位快照
 
     this.interactionEngine.setDrawingMode(type, (x, y, ev) => {
       const price = this.scaleEngine.yToPrice(y);
       const time = this.activeManager.getTimeAtIndex(x / (this.viewport.getCandleWidth() + 2) + this.viewport.getRawRange().startIndex);
       
-      // 🚀 新增：移動模式邏輯
+      // 🚀 優化後的移動模式邏輯
       if (type === 'move') {
         if (ev === 'start') {
             const hit = this.drawingEngine.hitTest(x, y, this.scaleEngine, this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2, (t) => this.activeManager.getIndexAtTime(t));
-            if (hit) { cur = hit; lastX = x; lastY = y; }
-        } else if (ev === 'move' && cur) {
+            if (hit) { 
+                cur = hit; 
+                lastX = x; 
+                lastY = y; 
+                // 📸 拍下原始點位快照，避免累加誤差
+                startPointsSnapshot = JSON.parse(JSON.stringify(hit.points));
+            }
+        } else if (ev === 'move' && cur && startPointsSnapshot.length > 0) {
             const dx = x - lastX;
             const dy = y - lastY;
-            this.drawingEngine.moveDrawing(cur.id, dx, dy, this.scaleEngine, this.viewport, 2, (t) => this.activeManager.getIndexAtTime(t), (i) => this.activeManager.getTimeAtIndex(i));
-            lastX = x; lastY = y;
-        } else if (ev === 'end') { cur = null; }
+            
+            // 🔄 基於原始快照進行絕對位移更新
+            cur.points.forEach((p, i) => {
+                const snapP = startPointsSnapshot[i];
+                const snapX = this.scaleEngine.indexToX(this.activeManager.getIndexAtTime(snapP.time), this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2);
+                const snapY = this.scaleEngine.priceToY(snapP.price);
+                
+                const nextX = snapX + dx;
+                const nextY = snapY + dy;
+                
+                p.time = this.activeManager.getTimeAtIndex(this.scaleEngine.xToIndex(nextX, this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2));
+                p.price = this.scaleEngine.yToPrice(nextY);
+            });
+        } else if (ev === 'end') { 
+            cur = null; 
+            startPointsSnapshot = [];
+        }
         this.requestRedraw();
         return;
       }

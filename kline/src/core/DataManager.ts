@@ -317,10 +317,15 @@ export class DataManager {
 
   public async loadMoreHistory(beforeTime: number): Promise<Candle[]> {
     try {
-      let url = `${this.apiUrl}/klines?id=${this.instId}&interval=${this.bar}&endTime=${beforeTime}`;
-      if (this.currentSource) url += `&source=${this.currentSource}`;
+      const isStock = this.instId.includes(':STOCK');
+      const apiPath = isStock ? '/stock/klines' : '/crypto/klines';
       
-      console.log(`[DataManager] Fetching history from backend: ${url}`);
+      const encodedId = encodeURIComponent(this.instId);
+      const encodedBar = encodeURIComponent(this.bar);
+      let url = `${this.apiUrl}${apiPath}?id=${encodedId}&interval=${encodedBar}&endTime=${beforeTime}`;
+      if (!isStock && this.currentSource) url += `&source=${encodeURIComponent(this.currentSource)}`;
+      
+      console.log(`[DataManager] Fetching history from ${isStock ? 'Stock' : 'Crypto'} API: ${url}`);
       const response = await fetch(url);
       const result = await response.json();
 
