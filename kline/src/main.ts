@@ -79,7 +79,6 @@ class ChartEngine {
     this.renderEngine = new RenderEngine(document.getElementById('grid-canvas') as HTMLCanvasElement, document.getElementById('candle-canvas') as HTMLCanvasElement, this.overlayCanvas);
     this.scaleEngine = new ScaleEngine();
     this.viewport = new ViewportEngine(() => this.requestRedraw());
-    this.indicatorEngine = new IndicatorEngine();
     this.pineEngine = new PineEngine(); // 🚀 補回初始化
     this.drawingEngine = new DrawingEngine();
     
