@@ -1,6 +1,22 @@
-index-360214bc.js:1  GET https://tradingviewer-gtr2.onrender.com/klines?id=2455.TW:STOCK&interval=15m&endTime=1770775200000&source=Yahoo 404 (Not Found)
-loadMoreHistory @ index-360214bc.js:1
-checkLoadMore @ index-360214bc.js:1
-(匿名) @ index-360214bc.js:1
-(匿名) @ index-360214bc.js:1瞭解這個錯誤
-installHook.js:1 Failed to load more history from backend: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+[plugin:vite:esbuild] Transform failed with 1 error:
+C:/Users/admin/Desktop/tradingviewer/kline/src/main.ts:252:0: ERROR: Expected identifier but found end of file
+C:/Users/admin/Desktop/tradingviewer/kline/src/main.ts:252:0
+Expected identifier but found end of file
+249|        btn.appendChild(label); btn.appendChild(star); grid.appendChild(btn);
+250|      });
+251|    }
+   |      ^
+252|  
+   |  ^
+    at failureErrorWithLog (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:1649:15)
+    at C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:847:29
+    at responseCallbacks.<computed> (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:703:9)
+    at handleIncomingPacket (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:762:9)
+    at Socket.readFromStdout (C:\Users\admin\Desktop\tradingviewer\kline\node_modules\esbuild\lib\main.js:679:7)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:191:23
+Click outside, press Esc key, or fix the code to dismiss.
+You can also disable this overlay by setting server.hmr.overlay to false in vite.config.js.

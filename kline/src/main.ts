@@ -249,3 +249,64 @@ class ChartEngine {
       btn.appendChild(label); btn.appendChild(star); grid.appendChild(btn);
     });
   }
+
+  private switchTimeframe(tf: string) { this.currentTimeframe = tf; this.activeManager.setTimeframe(tf); this.scaleEngine.resetAutoScale(); this.renderTfFavorites(); }
+  private requestRedraw() { requestAnimationFrame(() => this.draw()); }
+
+  private draw() {
+    const candles = this.activeManager.getCandles();
+    const { start, end } = this.viewport.getVisibleRange();
+    const { startIndex } = this.viewport.getRawRange();
+    const visible = candles.slice(start, end);
+    const cw = this.viewport.getCandleWidth();
+    this.scaleEngine.updateScale(visible);
+    this.renderEngine.drawGrid(this.scaleEngine);
+    this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx) => this.activeManager.getTimeAtIndex(idx), this.scaleEngine);
+    this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine);
+    const ma20 = this.indicatorEngine.calculateMA(candles, 20);
+    this.renderEngine.drawIndicator(ma20.slice(start, end), start, startIndex, cw, 2, '#ffeb3b', this.scaleEngine);
+    const oCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
+    this.drawingEngine.render(oCtx, this.scaleEngine, startIndex, cw, 2, (t) => this.activeManager.getIndexAtTime(t), this.hoveredDrawingId);
+    if (this.lastMousePos.x > 0 || this.lastMousePos.y > 0) {
+        const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
+        const time = this.activeManager.getTimeAtIndex(this.lastMousePos.x / (this.viewport.getCandleWidth() + 2) + startIndex);
+        this.renderEngine.drawCrosshair(this.lastMousePos.x, this.lastMousePos.y, formatPrice(price), formatFullTime(time));
+    }
+    const last = candles[candles.length - 1];
+    if (last) this.renderEngine.drawLastPriceLine(last.close, last.close >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
+    this.updateStatusUI();
+  }
+
+  private updateStatusUI() {
+    const dot = document.getElementById('status-dot'), text = document.getElementById('status-text');
+    if (!dot || !text) return;
+    if (this.connectionStatus === 'connected') { dot.style.background = '#26a69a'; text.innerText = `${this.currentSymbol} Live`; }
+    else { dot.style.background = '#ef5350'; text.innerText = `${this.currentSymbol} Disconnected`; }
+  }
+
+  private lastMousePos = { x: 0, y: 0 };
+  private updateCrosshair(mouseX: number, mouseY: number) {
+    this.lastMousePos = { x: mouseX, y: mouseY };
+    const { startIndex } = this.viewport.getRawRange();
+    const candleWidth = this.viewport.getCandleWidth();
+    this.hoveredDrawingId = this.drawingEngine.hitTest(mouseX, mouseY, this.scaleEngine, startIndex, candleWidth, 2, (t) => this.activeManager.getIndexAtTime(t))?.id || null;
+    const index = Math.round(mouseX / (candleWidth + 2) + startIndex);
+    const candles = this.activeManager.getCandles();
+    this.updateOHLCUI(candles[index]);
+    this.requestRedraw();
+  }
+
+  private updateOHLCUI(candle: any) {
+    const o = document.getElementById('ohlc-o'), h = document.getElementById('ohlc-h'), l = document.getElementById('ohlc-l'), c = document.getElementById('ohlc-c'), chg = document.getElementById('ohlc-chg');
+    if (!o || !h || !l || !c || !chg) return;
+    if (!candle || typeof candle.open === 'undefined') { o.innerText = h.innerText = l.innerText = c.innerText = chg.innerText = '--'; chg.style.color = '#929498'; return; }
+    const diff = candle.close - candle.open, pct = ((diff / candle.open) * 100).toFixed(2), color = diff >= 0 ? '#26a69a' : '#ef5350';
+    o.innerText = candle.open.toFixed(2); h.innerText = candle.high.toFixed(2); l.innerText = candle.low.toFixed(2); c.innerText = candle.close.toFixed(2);
+    chg.innerText = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)} (${pct}%)`; chg.style.color = color;
+  }
+
+  private handleResize() { const w = window.innerWidth, h = window.innerHeight; this.renderEngine.resize(w, h); this.scaleEngine.updateDimensions(w, h); this.requestRedraw(); }
+  private async init() { await this.activeManager.loadInitialData(); }
+}
+
+window.onload = () => { new ChartEngine(); };
