@@ -132,27 +132,70 @@ export class CryptoDataManager {
         const tag = this.getStrictTag(interval);
         const symbolInfo = SymbolManager.getSymbolById(id);
         const effectiveSource = source || 'Binance';
+        const cacheKey = `${id}_${tag}`;
         const subKey = `${id}_${tag}_${effectiveSource}`;
 
-        if (!this.subscribers.has(subKey)) this.subscribers.set(subKey, []);
-        this.subscribers.get(subKey)?.push(onUpdate);
+        if (!this.subscribers.has(cacheKey)) this.subscribers.set(cacheKey, []);
+        this.subscribers.get(cacheKey)?.push(onUpdate);
 
         if (!this.activeSubscriptions.has(subKey)) {
             const connector = this.connectors.get(effectiveSource);
             if (connector && symbolInfo) {
                 connector.subscribeKlines(symbolInfo.sourceMap[effectiveSource], tag, (c) => {
-                    const subs = this.subscribers.get(subKey);
-                    if (subs) subs.forEach(cb => cb(c));
+                    this.onNewUpdate(id, tag, c, cacheKey);
                 });
                 this.activeSubscriptions.add(subKey);
             }
         }
     }
 
+    private onNewUpdate(id: string, tag: string, data: any, cacheKey: string) {
+        const ts = data.timestamp || data.time;
+        const alignedTs = this.alignTimestamp(ts, tag);
+        
+        let currentCache = this.caches.get(cacheKey) || [];
+        let candleToPush: Candle | null = null;
+
+        if (currentCache.length > 0) {
+            const last = currentCache[currentCache.length - 1];
+            if (alignedTs === last.timestamp) {
+                // 更新最後一根
+                last.high = Math.max(last.high, data.high || data.close);
+                last.low = Math.min(last.low, data.low || data.close);
+                last.close = data.close;
+                last.volume = Math.max(last.volume, data.volume || 0);
+                candleToPush = last;
+            } else if (alignedTs > last.timestamp) {
+                // 新的一根
+                const newC = {
+                    timestamp: alignedTs,
+                    open: data.open || data.close,
+                    high: data.high || data.close,
+                    low: data.low || data.close,
+                    close: data.close,
+                    volume: data.volume || 0
+                };
+                currentCache.push(newC);
+                candleToPush = newC;
+            }
+        } else {
+            const newC = { timestamp: alignedTs, open: data.open || data.close, high: data.high || data.close, low: data.low || data.close, close: data.close, volume: data.volume || 0 };
+            currentCache.push(newC);
+            candleToPush = newC;
+        }
+
+        if (candleToPush) {
+            if (currentCache.length > 5000) currentCache.shift();
+            this.caches.set(cacheKey, currentCache);
+            const subs = this.subscribers.get(cacheKey);
+            if (subs) subs.forEach(cb => cb(candleToPush!));
+        }
+    }
+
     public unsubscribe(id: string, interval: string, onUpdate: (candle: Candle) => void) {
         const tag = this.getStrictTag(interval);
-        const subKey = `${id}_${tag}_Binance`; // 簡化處理
-        const subs = this.subscribers.get(subKey);
+        const cacheKey = `${id}_${tag}`;
+        const subs = this.subscribers.get(cacheKey);
         if (subs) {
             const idx = subs.indexOf(onUpdate);
             if (idx !== -1) subs.splice(idx, 1);
