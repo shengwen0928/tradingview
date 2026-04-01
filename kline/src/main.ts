@@ -6,7 +6,7 @@ import { RenderEngine } from './core/RenderEngine';
 import { InteractionEngine } from './core/InteractionEngine';
 import { LoaderController } from './core/LoaderController';
 import { IndicatorEngine } from './core/IndicatorEngine';
-import { DrawingEngine, DrawingObject } from './core/DrawingEngine';
+import { DrawingEngine, DrawingObject, DrawingPoint } from './core/DrawingEngine';
 import { formatPrice, formatFullTime } from './utils/math';
 
 class ChartEngine {
