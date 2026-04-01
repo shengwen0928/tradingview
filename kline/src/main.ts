@@ -390,25 +390,27 @@ class ChartEngine {
     this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine);
     const ma20 = this.indicatorEngine.calculateMA(candles, 20);
     this.renderEngine.drawIndicator(ma20.slice(start, end), start, startIndex, cw, 2, '#ffeb3b', this.scaleEngine);
+    
     const oCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
+    
+    // 🚨 先畫繪圖物件 (這會執行 clearRect)
     this.drawingEngine.render(oCtx, this.scaleEngine, startIndex, cw, 2, (t) => this.dataManager.getIndexAtTime(t), this.hoveredDrawingId);
+    
+    // 🚨 最後再畫現價線與十字線 (這樣才不會被擦掉)
     const last = candles[candles.length - 1];
     if (last) this.renderEngine.drawLastPriceLine(last.close, last.close >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
+    
+    // 補回十字線邏輯 (如果是滑鼠移動中)
     this.updateStatusUI();
   }
 
-  private updateStatusUI() {
-    const dot = document.getElementById('status-dot'), text = document.getElementById('status-text');
-    if (dot && text) { dot.style.background = this.connectionStatus === 'connected' ? '#26a69a' : '#ef5350'; text.innerText = this.currentSymbol; }
-  }
+  private lastMousePos = { x: 0, y: 0 }; // 紀錄滑鼠位置方便重繪十字線
 
   private updateCrosshair(mouseX: number, mouseY: number) {
-    const price = this.scaleEngine.yToPrice(mouseY);
-    const { startIndex } = this.viewport.getRawRange();
-    const time = this.dataManager.getTimeAtIndex(mouseX / (this.viewport.getCandleWidth() + 2) + startIndex);
-    this.renderEngine.drawCrosshair(mouseX, mouseY, formatPrice(price), formatFullTime(time));
+    this.lastMousePos = { x: mouseX, y: mouseY };
     
-    // 🚨 實作：偵測目前滑鼠指著哪個物件
+    // 先執行偵測與繪圖
+    const { startIndex } = this.viewport.getRawRange();
     this.hoveredDrawingId = this.drawingEngine.hitTest(
       mouseX, mouseY, 
       this.scaleEngine, 
@@ -418,6 +420,11 @@ class ChartEngine {
     )?.id || null;
 
     this.draw();
+
+    // 🚨 關鍵：在 draw() 結束後，最後畫上十字線
+    const price = this.scaleEngine.yToPrice(mouseY);
+    const time = this.dataManager.getTimeAtIndex(mouseX / (this.viewport.getCandleWidth() + 2) + startIndex);
+    this.renderEngine.drawCrosshair(mouseX, mouseY, formatPrice(price), formatFullTime(time));
   }
 
   private handleResize() { const w = window.innerWidth, h = window.innerHeight; this.renderEngine.resize(w, h); this.scaleEngine.updateDimensions(w, h); this.requestRedraw(); }
