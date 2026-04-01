@@ -62,7 +62,16 @@ export class YahooConnector implements IConnector {
             const timestamps = result.timestamp;
 
             return timestamps.map((ts: number, i: number) => {
-                const timestamp = ts * 1000;
+                let timestamp = ts * 1000;
+
+                // 🚨 修正：針對月線進行源頭強制對齊 (1號)
+                if (interval === '1M' || yahooInterval === '1mo') {
+                    const d = new Date(timestamp);
+                    d.setUTCDate(1);
+                    d.setUTCHours(0, 0, 0, 0);
+                    timestamp = d.getTime();
+                }
+
                 // 🚨 修正：針對台股進行正規盤時間過濾 (09:00 - 13:30)
                 if (symbol.endsWith('.TW') || symbol.endsWith('.TWO')) {
                     const d = new Date(timestamp);
