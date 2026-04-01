@@ -1,18 +1,4 @@
-index-1a399a04.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=BTC/USDT&interval=1m
-tradingview/:1 Access to fetch at 'https://tradingviewer-gtr2.onrender.com/klines?id=BTC/USDT&interval=1m' from origin 'https://shengwen0928.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-index-1a399a04.js:1  GET https://tradingviewer-gtr2.onrender.com/klines?id=BTC/USDT&interval=1m net::ERR_FAILED 502 (Bad Gateway)
-loadInitialData @ index-1a399a04.js:1
-init @ index-1a399a04.js:1
-V @ index-1a399a04.js:1
-window.onload @ index-1a399a04.js:1
-installHook.js:1 [DataManager] Failed to load initial data from backend: TypeError: Failed to fetch
-    at B.loadInitialData (index-1a399a04.js:1:4292)
-    at V.init (index-1a399a04.js:1:43159)
-    at new V (index-1a399a04.js:1:32059)
-    at window.onload (index-1a399a04.js:1:43197)
-overrideMethod @ installHook.js:1
-loadInitialData @ index-1a399a04.js:1
-await in loadInitialData
-init @ index-1a399a04.js:1
-V @ index-1a399a04.js:1
-window.onload @ index-1a399a04.js:1
+installHook.js:1 [DataManager] WebSocket Error: 
+Event {isTrusted: true, type: 'error', target: WebSocket, currentTarget: WebSocket, eventPhase: 2, …}
+overrideMethod	@	installHook.js:1
+ws.onerror	@	index-1a399a04.js:1

@@ -87,8 +87,10 @@ export class SymbolManager {
         }
 
         // 2. 🚨 關鍵升級：動態解析 (Dynamic Resolution)
-        if (!symbol && id.includes(':')) {
+        if (!symbol && id && id.includes(':')) {
             const parts = id.split(':');
+            if (parts.length < 2) return undefined;
+
             const ticker = parts[0].toUpperCase();
             const typeStr = parts[1].toUpperCase();
             

@@ -198,8 +198,12 @@ export class DataManager {
 
   public async loadInitialData(): Promise<void> {
     try {
-      let url = `${this.apiUrl}/klines?id=${this.instId}&interval=${this.bar}`;
-      if (this.currentSource) url += `&source=${this.currentSource}`;
+      this.onStatusChange?.('connecting');
+      // 🚨 修正：參數必須進行 URL 編碼
+      const encodedId = encodeURIComponent(this.instId);
+      const encodedBar = encodeURIComponent(this.bar);
+      let url = `${this.apiUrl}/klines?id=${encodedId}&interval=${encodedBar}`;
+      if (this.currentSource) url += `&source=${encodeURIComponent(this.currentSource)}`;
 
       console.log(`[DataManager] Fetching initial data from backend: ${url}`);
       const response = await fetch(url);
