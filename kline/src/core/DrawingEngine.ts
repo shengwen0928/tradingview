@@ -54,6 +54,41 @@ export class DrawingEngine {
     }
 
     /**
+     * 🚀 新增：移動物件
+     */
+    public moveDrawing(
+        id: string, 
+        deltaX: number, 
+        deltaY: number, 
+        scaleEngine: ScaleEngine, 
+        viewport: any, 
+        spacing: number,
+        timeToIndex: (t: number) => number,
+        indexToTime: (i: number) => number
+    ) {
+        const draw = this.drawings.find(d => d.id === id);
+        if (!draw) return;
+
+        const candleWidth = viewport.getCandleWidth();
+        const { startIndex } = viewport.getRawRange();
+
+        draw.points.forEach(p => {
+            // 1. 計算目前的 X, Y 座標
+            const currentX = scaleEngine.indexToX(timeToIndex(p.time), startIndex, candleWidth, spacing);
+            const currentY = scaleEngine.priceToY(p.price);
+
+            // 2. 加上偏移量
+            const nextX = currentX + deltaX;
+            const nextY = currentY + deltaY;
+
+            // 3. 轉換回時間與價格
+            const nextIndex = scaleEngine.xToIndex(nextX, startIndex, candleWidth, spacing);
+            p.time = indexToTime(nextIndex);
+            p.price = scaleEngine.yToPrice(nextY);
+        });
+    }
+
+    /**
      * 判斷滑鼠是否點擊在某個物件上
      */
     public hitTest(

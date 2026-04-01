@@ -27,7 +27,12 @@ export class InteractionEngine {
   public setDrawingMode(type: string | null, onClick?: (x: number, y: number, t: 'start' | 'move' | 'end') => void) {
     this.drawingMode = type;
     this.onDrawingClick = onClick;
-    this.canvas.style.cursor = type ? 'crosshair' : 'default';
+    
+    if (type === 'move') {
+        this.canvas.style.cursor = 'move';
+    } else {
+        this.canvas.style.cursor = type ? 'crosshair' : 'default';
+    }
   }
 
   public getDrawingMode() {
