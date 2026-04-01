@@ -115,6 +115,7 @@ class ChartEngine {
 
     this.initDrawingToolbar();
     this.initMagnetLogic();
+    this.injectCustomStyles();
     this.handleResize();
     window.addEventListener('resize', () => this.handleResize());
     this.init();
@@ -172,7 +173,61 @@ class ChartEngine {
     const tfBtn = document.getElementById('tf-main-btn')!;
     const tfPopup = document.getElementById('tf-popup')!;
     tfBtn.onclick = (e) => { e.stopPropagation(); tfPopup.classList.toggle('show'); };
+    
+    // 🚀 新增：自訂週期單位按鈕邏輯
+    let selectedUnit = 'm';
+    const unitBtns = document.querySelectorAll('.unit-btn');
+    unitBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            unitBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedUnit = (btn as HTMLElement).dataset.unit || 'm';
+        });
+    });
+
+    // 🚀 新增：自訂週期「新增」按鈕
+    const customAddBtn = document.getElementById('tf-custom-add')!;
+    const customValInput = document.getElementById('tf-custom-val') as HTMLInputElement;
+    customAddBtn.onclick = () => {
+        const val = customValInput.value;
+        if (val && parseInt(val) > 0) {
+            const newTf = `${val}${selectedUnit}`;
+            this.switchTimeframe(newTf);
+            tfPopup.classList.remove('show');
+        }
+    };
+
+    // 🚀 新增：時區切換監聽
+    const tzSelect = document.getElementById('timezone-select') as HTMLSelectElement;
+    tzSelect.onchange = () => {
+        console.log(`[ChartEngine] Timezone changed to: ${tzSelect.value}`);
+        // 這裡可以串接底層的時間格式化邏輯
+        this.requestRedraw();
+    };
+
     this.renderTfFavorites(); this.renderTfPopup();
+  }
+
+  // ... (updateModalList 方法後)
+  
+  // 🚨 補回：為單位按鈕加入 CSS
+  private injectCustomStyles() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .unit-btn {
+            background: #1e222d;
+            border: 1px solid #363c4e;
+            color: #d1d4dc;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .unit-btn:hover { background: #2a2e39; }
+        .unit-btn.active { background: #2962ff; color: #fff; border-color: #2962ff; }
+    `;
+    document.head.appendChild(style);
   }
 
   private updateModalList(search: string) {

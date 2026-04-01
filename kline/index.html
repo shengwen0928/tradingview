@@ -113,15 +113,41 @@
             <!-- 我的最愛快捷區 -->
             <div id="tf-favorites" style="display: flex; gap: 4px;"></div>
 
-            <!-- 主週期按鈕與彈窗 -->
+            <!-- 🚀 專業時間週期彈窗 -->
             <div style="position: relative;">
                 <button id="tf-main-btn" class="menu-btn">時間週期 ▾</button>
-                <div id="tf-popup" class="menu-popup" style="width: 220px;">
-                    <div style="padding: 4px 8px; color: #787b86; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">選擇時間週期</div>
-                    <div id="tf-list"></div>
-                    <div style="height: 1px; background: #363c4e; margin: 4px 0;"></div>
-                    <div style="padding: 8px;">
-                        <input id="tf-custom-input" type="text" placeholder="自訂 (如 3m)" style="width: 100%; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 8px; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                <div id="tf-popup" class="menu-popup" style="width: 280px; padding: 12px;">
+                    <!-- 1. 時區選擇 -->
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #787b86; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;">顯示時區</div>
+                        <select id="timezone-select" style="width: 100%; background: #1e222d; border: 1px solid #363c4e; color: #d1d4dc; padding: 6px; border-radius: 4px; font-size: 12px;">
+                            <option value="Asia/Taipei">台北 (UTC+8)</option>
+                            <option value="UTC">UTC (世界標準時間)</option>
+                            <option value="America/New_York">紐約 (EST/EDT)</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. 週期列表 (含星星) -->
+                    <div style="color: #787b86; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;">常用週期</div>
+                    <div id="tf-list" style="max-height: 200px; overflow-y: auto;"></div>
+
+                    <div style="height: 1px; background: #363c4e; margin: 12px 0;"></div>
+
+                    <!-- 3. 自訂週期 (按鈕式) -->
+                    <div style="color: #787b86; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;">自訂週期</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
+                            <button class="unit-btn" data-unit="s">秒</button>
+                            <button class="unit-btn active" data-unit="m">分</button>
+                            <button class="unit-btn" data-unit="H">時</button>
+                            <button class="unit-btn" data-unit="D">天</button>
+                            <button class="unit-btn" data-unit="W">週</button>
+                            <button class="unit-btn" data-unit="M">月</button>
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <input id="tf-custom-val" type="number" value="1" min="1" style="flex: 1; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 8px; border-radius: 4px; font-size: 12px;">
+                            <button id="tf-custom-add" style="background: #2962ff; color: #fff; border: none; padding: 0 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">新增</button>
+                        </div>
                     </div>
                 </div>
             </div>
