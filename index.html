@@ -46,7 +46,7 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/tradingview/assets/index-d8d71e53.js"></script>
+  <script type="module" crossorigin src="/tradingview/assets/index-00130185.js"></script>
 </head>
 <body>
     <div id="chart-container">
@@ -109,6 +109,15 @@
             <div id="exchange-display" style="color: #929498; font-size: 12px; padding: 0 4px;">Binance</div>
             
             <div style="width: 1px; height: 20px; background: #363c4e;"></div>
+
+            <!-- 🚨 新增：OHLC 資訊顯示區 -->
+            <div id="ohlc-info" style="display: flex; gap: 12px; font-family: monospace; font-size: 13px; color: #d1d4dc;">
+                <div style="display: flex; gap: 4px;"><span>開</span><span id="ohlc-o" style="color: #fff;">--</span></div>
+                <div style="display: flex; gap: 4px;"><span>高</span><span id="ohlc-h" style="color: #fff;">--</span></div>
+                <div style="display: flex; gap: 4px;"><span>低</span><span id="ohlc-l" style="color: #fff;">--</span></div>
+                <div style="display: flex; gap: 4px;"><span>收</span><span id="ohlc-c" style="color: #fff;">--</span></div>
+                <div style="display: flex; gap: 4px;"><span>跌幅</span><span id="ohlc-chg" style="color: #fff;">--</span></div>
+            </div>
 
             <!-- 我的最愛快捷區 -->
             <div id="tf-favorites" style="display: flex; gap: 4px;"></div>
