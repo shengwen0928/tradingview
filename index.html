@@ -46,7 +46,7 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/tradingview/assets/index-885bbf3b.js"></script>
+  <script type="module" crossorigin src="/tradingview/assets/index-2a6c8342.js"></script>
 </head>
 <body>
     <div id="chart-container">
@@ -118,6 +118,8 @@
             <div style="position: relative;">
                 <button id="tf-main-btn" class="menu-btn">時間週期 ▾</button>
             </div>
+            <!-- 🚀 新增：技術指標按鈕 -->
+            <button id="pine-editor-btn" class="menu-btn">技術指標</button>
         </div>
 
         <!-- 🚨 時間週期全螢幕彈窗 -->
@@ -299,6 +301,19 @@
         <canvas id="candle-canvas" width="1200" height="800"></canvas>
         <canvas id="overlay-canvas" width="1200" height="800"></canvas>
     </div>
+    <!-- 🚀 腳本編輯器區域 (預設隱藏) -->
+    <div id="pine-editor" style="position: fixed; bottom: 0; left: 0; right: 0; height: 300px; background: #131722; border-top: 1px solid #363c4e; z-index: 2000; display: none; flex-direction: column; backdrop-filter: blur(8px);">
+        <div style="padding: 8px 16px; background: rgba(30, 34, 45, 0.9); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #363c4e;">
+            <span style="color: #d1d4dc; font-size: 12px; font-weight: bold;">Pine Script 編輯器</span>
+            <div style="display: flex; gap: 8px;">
+                <button id="pine-save" style="background: #2a2e39; color: #d1d4dc; border: 1px solid #363c4e; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">儲存</button>
+                <button id="pine-apply" style="background: #2962ff; color: #fff; border: none; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold;">套用指標</button>
+                <button id="pine-close" style="background: transparent; border: none; color: #787b86; cursor: pointer; font-size: 18px; margin-left: 8px;">&times;</button>
+            </div>
+        </div>
+        <textarea id="pine-code" style="flex: 1; background: transparent; color: #d1d4dc; border: none; padding: 16px; font-family: 'Consolas', monospace; font-size: 14px; resize: none; outline: none;" placeholder="// 在此輸入您的 Pine Script 程式碼..."></textarea>
+    </div>
+
     <!-- 引入編譯後的 JS -->
     
 </body>
