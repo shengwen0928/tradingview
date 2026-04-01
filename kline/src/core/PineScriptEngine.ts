@@ -35,8 +35,8 @@ export class Series {
 // --- 2. 內建函式庫 (ta.* / math.*) ---
 class PineLibrary {
     // 簡單移動平均 (逐根計算版)
-    public static sma(src: Series, len: number, barIndex: number): number {
-        if (barIndex < len - 1) return NaN;
+    public static sma(src: Series, len: number): number {
+        if (src.length < len) return NaN;
         let sum = 0;
         for (let i = 0; i < len; i++) {
             sum += src.get(i);
@@ -45,7 +45,7 @@ class PineLibrary {
     }
 
     // 指數移動平均
-    public static ema(src: Series, len: number, barIndex: number, prevEMA: number): number {
+    public static ema(src: Series, len: number, prevEMA: number): number {
         const alpha = 2 / (len + 1);
         const current = src.get(0);
         if (isNaN(prevEMA)) return current;
@@ -53,12 +53,10 @@ class PineLibrary {
     }
 
     // 相對強弱指標 (RSI)
-    public static rsi(src: Series, len: number, barIndex: number, context: any): number {
+    public static rsi(src: Series, len: number, context: any): number {
         const diff = src.get(0) - src.get(1);
         let up = diff > 0 ? diff : 0;
         let down = diff < 0 ? -diff : 0;
-
-        if (barIndex < len) return NaN;
 
         context.rsi_up = (context.rsi_up * (len - 1) + up) / len;
         context.rsi_down = (context.rsi_down * (len - 1) + down) / len;
@@ -90,9 +88,10 @@ export class PineScriptEngine {
             // 1. 處理 [] -> .get()
             let processed = trimmed.replace(/(\w+)\[(\d+)\]/g, '$1.get($2)');
             
-            // 2. 處理 ta.sma(close, 20) -> Lib.sma(ctx.close, 20, ctx.bar_index)
-            processed = processed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, 'Lib.sma($1, $2, ctx.bar_index)');
-            processed = processed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, 'Lib.ema($1, $2, ctx.bar_index, ctx.prev_val)');
+            // 2. 處理 ta.sma(close, 20) -> Lib.sma(ctx.close, 20)
+            processed = processed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, 'Lib.sma($1, $2)');
+            processed = processed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, 'Lib.ema($1, $2, ctx.prev_val)');
+            processed = processed.replace(/ta\.rsi\(([^,]+),\s*([^)]+)\)/g, 'Lib.rsi($1, $2, ctx)');
             
             // 3. 處理 plot(src, title, color) -> ctx.plot(src, title, color)
             processed = processed.replace(/plot\(/g, 'ctx.plot(');
@@ -124,7 +123,7 @@ export class PineScriptEngine {
             volume: new Series(candles.map(c => c.volume))
         };
 
-        const plotBuffers: Map<string, number[]> = new Map();
+        const plotBuffers: Map<string, { data: number[], color: string }> = new Map();
 
         // 建立執行上下文
         const ctx = {
@@ -137,10 +136,10 @@ export class PineScriptEngine {
             prev_val: NaN, // 用於遞迴指標
             plot: (val: any, title: string = 'Plot', color: string = '#2962ff') => {
                 if (!plotBuffers.has(title)) {
-                    plotBuffers.set(title, new Array(size).fill(NaN));
+                    plotBuffers.set(title, { data: new Array(size).fill(NaN), color });
                 }
                 const v = (val instanceof Series) ? val.get(0) : val;
-                plotBuffers.get(title)![ctx.bar_index] = v;
+                plotBuffers.get(title)!.data[ctx.bar_index] = v;
             }
         };
 
@@ -167,8 +166,8 @@ export class PineScriptEngine {
 
         // 整理繪圖結果
         const finalPlots: any[] = [];
-        plotBuffers.forEach((data, title) => {
-            finalPlots.push({ data, title, color: '#2962ff' }); // 顏色可擴充
+        plotBuffers.forEach((info, title) => {
+            finalPlots.push({ data: info.data, title, color: info.color });
         });
 
         return finalPlots;

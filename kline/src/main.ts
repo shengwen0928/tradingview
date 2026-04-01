@@ -81,7 +81,14 @@ class ChartEngine {
     this.pineEngine = new PineScriptEngine(); // 🚀 初始化專業引擎
     this.drawingEngine = new DrawingEngine();
     
-    // ... (onDataUpdate, cryptoManager 初始化)
+    const onDataUpdate = (candles: any[], isHistory: boolean) => {
+        this.viewport.setDataCount(candles.length, isHistory);
+        this.requestRedraw();
+    };
+    const onStatusChange = (status: any) => {
+        this.connectionStatus = status;
+        this.updateStatusUI();
+    };
 
     this.cryptoManager = new DataManager(onDataUpdate, onStatusChange);
     this.stockManager = new DataManager(onDataUpdate, onStatusChange);
@@ -91,7 +98,21 @@ class ChartEngine {
     this.initModalLogic();
     this.loader = new LoaderController(this.activeManager, this.viewport);
 
-    // ... (interactionEngine, drawingToolbar 初始化)
+    this.interactionEngine = new InteractionEngine(
+      this.overlayCanvas,
+      (deltaX, deltaY, zone) => {
+        if (zone === 'price') this.scaleEngine.handleVerticalPan(deltaY);
+        else { this.viewport.handleScroll(deltaX); this.scaleEngine.handleVerticalPan(deltaY); }
+        this.loader.checkLoadMore(); this.requestRedraw();
+      },
+      (mouseX, _mouseY, scale, zone) => {
+        if (zone === 'price') this.scaleEngine.handleVerticalZoom(scale);
+        else if (zone === 'time') this.viewport.handleZoom(this.renderEngine.getLogicalWidth() / 2, scale, this.renderEngine.getLogicalWidth());
+        else this.viewport.handleZoom(mouseX, scale, this.renderEngine.getLogicalWidth());
+        this.loader.checkLoadMore(); this.requestRedraw();
+      },
+      (mouseX, mouseY) => { this.updateCrosshair(mouseX, mouseY); }
+    );
 
     this.initDrawingToolbar();
     this.initMagnetLogic();
@@ -101,7 +122,179 @@ class ChartEngine {
     this.init();
   }
 
-  // ... (方法保持)
+  private initMagnetLogic() {
+    const btn = document.getElementById('tool-magnet')!;
+    const icon = document.getElementById('magnet-icon')!;
+    btn.onclick = () => {
+      const current = this.interactionEngine.getMagnetMode();
+      let next: 'off' | 'weak' | 'strong' = 'off';
+      if (current === 'off') next = 'weak';
+      else if (current === 'weak') next = 'strong';
+      else next = 'off';
+      this.interactionEngine.setMagnetMode(next);
+      if (next === 'off') { icon.style.stroke = '#787b86'; btn.title = '磁鐵模式 (關閉)'; }
+      else if (next === 'weak') { icon.style.stroke = '#2962ff'; btn.title = '磁鐵模式 (弱磁鐵)'; }
+      else { icon.style.stroke = '#f0b90b'; btn.title = '磁鐵模式 (強磁鐵)'; }
+    };
+    this.interactionEngine.setSnapProvider((mouseX, mouseY, mode) => {
+      const candles = this.activeManager.getCandles();
+      const candleWidth = this.viewport.getCandleWidth();
+      const { startIndex } = this.viewport.getRawRange();
+      const index = Math.round(mouseX / (candleWidth + 2) + startIndex);
+      const candle = candles[index];
+      if (!candle) return null;
+      const centerX = (index - startIndex) * (candleWidth + 2) + candleWidth / 2;
+      const prices = [candle.open, candle.high, candle.low, candle.close];
+      const points = prices.map(p => ({ x: centerX, y: this.scaleEngine.priceToY(p) }));
+      let closest = points[0];
+      let minDist = Infinity;
+      points.forEach(pt => { const d = Math.abs(pt.y - mouseY); if (d < minDist) { minDist = d; closest = pt; } });
+      if (mode === 'weak' && minDist > 30) return null;
+      return closest;
+    });
+  }
+
+  private initModalLogic() {
+    const btn = document.getElementById('symbol-search-btn') as HTMLButtonElement;
+    const modal = document.getElementById('symbol-modal') as HTMLDivElement;
+    const input = document.getElementById('modal-search-input') as HTMLInputElement;
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    btn.onclick = () => { modal.classList.add('show'); input.value = ''; this.updateModalList(''); setTimeout(() => input.focus(), 50); };
+    window.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+    input.oninput = () => this.updateModalList(input.value.trim());
+    input.onkeydown = (e) => { if (e.key === 'Enter' && input.value.trim()) { this.loadSymbol(input.value.trim()); modal.classList.remove('show'); } };
+    tabBtns.forEach(t => {
+      t.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        t.classList.add('active');
+        this.activeCategory = (t as HTMLElement).dataset.cat || 'CRYPTO';
+        this.updateModalList(input.value.trim());
+      });
+    });
+    // 🚀 專業時間週期 Modal 邏輯
+    const tfBtn = document.getElementById('tf-main-btn')!;
+    const tfModal = document.getElementById('tf-modal')!;
+    const tfModalClose = document.getElementById('tf-modal-close')!;
+    
+    tfBtn.onclick = () => { tfModal.classList.add('show'); this.renderTfPopup(); };
+    tfModalClose.onclick = () => tfModal.classList.remove('show');
+    window.addEventListener('click', (e) => { if (e.target === tfModal) tfModal.classList.remove('show'); });
+
+    // 🚀 時區按鈕邏輯
+    const tzBtns = document.querySelectorAll('#tz-btn-group .unit-btn');
+    tzBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tzBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tz = (btn as HTMLElement).dataset.tz;
+            console.log(`[ChartEngine] Timezone set to: ${tz}`);
+            this.requestRedraw();
+        });
+    });
+
+    // 🚀 自訂週期單位邏輯
+    let selectedUnit = 'm';
+    const unitBtns = document.querySelectorAll('[data-unit]');
+    unitBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            unitBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedUnit = (btn as HTMLElement).dataset.unit || 'm';
+        });
+    });
+
+    const customAddBtn = document.getElementById('tf-custom-add')!;
+    const customValInput = document.getElementById('tf-custom-val') as HTMLInputElement;
+    customAddBtn.onclick = () => {
+        const val = customValInput.value;
+        if (val && parseInt(val) > 0) {
+            this.switchTimeframe(`${val}${selectedUnit}`);
+            tfModal.classList.remove('show');
+        }
+    };
+
+    // 🚀 新增：Pine Script 編輯器邏輯
+    const editorBtn = document.getElementById('pine-editor-btn')!;
+    const editorPanel = document.getElementById('pine-editor')!;
+    const editorClose = document.getElementById('pine-close')!;
+    const editorApply = document.getElementById('pine-apply')!;
+    const editorSave = document.getElementById('pine-save')!;
+    const editorCode = document.getElementById('pine-code') as HTMLTextAreaElement;
+
+    editorBtn.onclick = () => editorPanel.style.display = (editorPanel.style.display === 'flex' ? 'none' : 'flex');
+    editorClose.onclick = () => editorPanel.style.display = 'none';
+
+    // 載入儲存的腳本
+    const savedScript = localStorage.getItem('pine-script-default');
+    if (savedScript) editorCode.value = savedScript;
+    else editorCode.value = `// 範例：SMA 20\\nplot(ta.sma(close, 20), "MA20", "#ffeb3b")`;
+
+    editorApply.onclick = () => {
+        const code = editorCode.value;
+        console.log('[ChartEngine] Applying script...');
+        try {
+            // 立即執行一次計算測試
+            const fn = this.pineEngine.compile(code);
+            this.pineEngine.execute(this.activeManager.getCandles(), fn);
+            this.requestRedraw();
+        } catch (e) {
+            alert('腳本錯誤，請檢查語法');
+        }
+    };
+
+    editorSave.onclick = () => {
+        localStorage.setItem('pine-script-default', editorCode.value);
+        alert('指標已儲存 ✅');
+    };
+
+    this.renderTfFavorites(); this.renderTfPopup();
+  }
+
+  private async loadSymbol(symbol: string) {
+    let s = symbol.toUpperCase();
+    let isStock = this.activeCategory.includes('STOCK') || s.includes('.TW') || s.includes('.TWO');
+    if (/^\d{4,6}$/.test(s)) {
+        isStock = true;
+        const otcPrefixes = ['31', '80', '54', '61', '62'];
+        const isOTC = otcPrefixes.some(p => s.startsWith(p));
+        s += isOTC ? '.TWO' : '.TW';
+    }
+    this.currentSymbol = s;
+    document.getElementById('symbol-search-btn')!.innerText = `${s} ▾`;
+    const exch = isStock ? 'Yahoo' : 'Binance';
+    document.getElementById('exchange-display')!.innerText = exch;
+    const fullId = s + (isStock ? ':STOCK' : ':SPOT');
+    console.log(`[ChartEngine] Switching to ${isStock ? 'Stock' : 'Crypto'} mode...`);
+    await this.activeManager.update('', '', ''); 
+    this.activeManager = isStock ? this.stockManager : this.cryptoManager;
+    this.loader = new LoaderController(this.activeManager, this.viewport);
+    this.scaleEngine.resetAutoScale();
+    await this.activeManager.update(fullId, this.currentTimeframe, exch);
+    this.requestRedraw();
+  }
+
+  private initDrawingToolbar() {
+    const tools = ['cursor', 'move', 'trendline', 'ray', 'arrow', 'horizontal', 'vertical', 'rect', 'fibonacci', 'text', 'priceRange', 'brush', 'parallelChannel', 'triangle', 'ellipse'];
+    tools.forEach(tool => {
+      const btn = document.getElementById(`tool-${tool}`);
+      if (btn) btn.onclick = () => {
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (tool === 'cursor') this.interactionEngine.setDrawingMode(null);
+        else this.startDrawing(tool);
+      };
+    });
+    const clear = document.getElementById('tool-clear');
+    if (clear) clear.onclick = () => { if (confirm('清除所有繪圖？')) { this.drawingEngine.getDrawings().forEach(d => this.drawingEngine.deleteDrawing(d.id)); this.requestRedraw(); } };
+    this.overlayCanvas.addEventListener('click', (e: MouseEvent) => {
+      if (this.interactionEngine.getDrawingMode()) return;
+      const rect = this.overlayCanvas.getBoundingClientRect();
+      const hit = this.drawingEngine.hitTest(e.clientX - rect.left, e.clientY - rect.top, this.scaleEngine, this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2, (t) => this.activeManager.getIndexAtTime(t));
+      if (hit) this.showEditToolbar(e.clientX, e.clientY, hit); else this.hideEditToolbar();
+    });
+  }
+
+  private requestRedraw() { requestAnimationFrame(() => this.draw()); }
 
   private draw() {
     const candles = this.activeManager.getCandles();
@@ -165,6 +358,89 @@ class ChartEngine {
 
   private handleResize() { const w = window.innerWidth, h = window.innerHeight; this.renderEngine.resize(w, h); this.scaleEngine.updateDimensions(w, h); this.requestRedraw(); }
   private async init() { await this.activeManager.loadInitialData(); }
+
+  private injectCustomStyles() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .unit-btn { background: #1e222d; border: 1px solid #363c4e; color: #d1d4dc; padding: 6px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .unit-btn:hover { background: #2a2e39; color: #fff; }
+        .unit-btn.active { background: #2962ff; color: #fff; border-color: #2962ff; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  private updateModalList(search: string) {
+    const listDiv = document.getElementById('modal-list')!;
+    const query = search.toUpperCase();
+    listDiv.innerHTML = '';
+    if (query) {
+        const isNum = /^\d{4}$/.test(query);
+        const div = document.createElement('div');
+        div.className = 'symbol-item';
+        div.style.borderLeft = '4px solid #2962ff';
+        const exch = (isNum || this.activeCategory === 'TW_STOCK') ? 'Yahoo' : 'Binance';
+        div.innerHTML = `<div><div class="symbol-name">🔍 搜尋 "${query}${isNum ? '.TW' : ''}"</div><div class="symbol-desc">按 Enter 載入</div></div><div class="symbol-exch">${exch}</div>`;
+        div.onclick = () => { this.loadSymbol(query); document.getElementById('symbol-modal')?.classList.remove('show'); };
+        listDiv.appendChild(div);
+    }
+    const items = this.allSymbols[this.activeCategory] || [];
+    items.filter(i => i.s.includes(query) || i.d.toUpperCase().includes(query)).forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'symbol-item';
+        div.innerHTML = `<div><div class="symbol-name">${item.s}</div><div class="symbol-desc">${item.d}</div></div><div class="symbol-exch">${this.activeCategory === 'CRYPTO' ? 'Binance' : 'Yahoo'}</div>`;
+        div.onclick = () => { this.loadSymbol(item.s); document.getElementById('symbol-modal')?.classList.remove('show'); };
+        listDiv.appendChild(div);
+    });
+  }
+
+  private renderTfFavorites() {
+    const c = document.getElementById('tf-favorites')!; c.innerHTML = '';
+    this.favorites.forEach(tf => {
+      const b = document.createElement('button'); b.className = `fav-btn ${this.currentTimeframe === tf ? 'active' : ''}`;
+      b.innerText = tf; b.onclick = () => this.switchTimeframe(tf); c.appendChild(b);
+    });
+  }
+
+  private renderTfPopup() {
+    const grid = document.getElementById('tf-grid')!; grid.innerHTML = '';
+    const intervals = [
+      { label: '1m', val: '1m' }, { label: '3m', val: '3m' }, { label: '5m', val: '5m' }, { label: '15m', val: '15m' },
+      { label: '30m', val: '30m' }, { label: '1H', val: '1H' }, { label: '2H', val: '2H' }, { label: '4H', val: '4H' },
+      { label: '1D', val: '1D' }, { label: '1W', val: '1W' }, { label: '1M', val: '1M' }
+    ];
+
+    intervals.forEach(item => {
+      const btn = document.createElement('div');
+      btn.style.cssText = 'background:#1e222d; border:1px solid #363c4e; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-size:13px;';
+      
+      const label = document.createElement('span'); 
+      label.innerText = item.label;
+      label.style.flex = '1';
+      label.onclick = () => { this.switchTimeframe(item.val); document.getElementById('tf-modal')?.classList.remove('show'); };
+
+      const star = document.createElement('span');
+      const isFav = this.favorites.includes(item.val);
+      star.innerText = isFav ? '★' : '☆';
+      star.style.color = isFav ? '#ffb100' : '#787b86';
+      star.style.fontSize = '16px';
+      star.onclick = (e) => {
+        e.stopPropagation();
+        if (this.favorites.includes(item.val)) this.favorites = this.favorites.filter(f => f !== item.val);
+        else this.favorites.push(item.val);
+        this.renderTfPopup(); this.renderTfFavorites();
+      };
+
+      btn.appendChild(label); btn.appendChild(star); grid.appendChild(btn);
+    });
+  }
+
+  private switchTimeframe(tf: string) {
+    this.currentTimeframe = tf;
+    this.activeManager.setTimeframe(tf);
+    this.scaleEngine.resetAutoScale();
+    this.renderTfFavorites();
+    localStorage.setItem('tf-favorites', JSON.stringify(this.favorites));
+  }
 }
 
 window.onload = () => { new ChartEngine(); };
