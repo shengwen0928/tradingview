@@ -109,15 +109,6 @@
             
             <div style="width: 1px; height: 20px; background: #363c4e;"></div>
 
-            <!-- 🚨 新增：OHLC 資訊顯示區 -->
-            <div id="ohlc-info" style="display: flex; gap: 12px; font-family: monospace; font-size: 13px; color: #d1d4dc;">
-                <div style="display: flex; gap: 4px;"><span>開</span><span id="ohlc-o" style="color: #fff;">--</span></div>
-                <div style="display: flex; gap: 4px;"><span>高</span><span id="ohlc-h" style="color: #fff;">--</span></div>
-                <div style="display: flex; gap: 4px;"><span>低</span><span id="ohlc-l" style="color: #fff;">--</span></div>
-                <div style="display: flex; gap: 4px;"><span>收</span><span id="ohlc-c" style="color: #fff;">--</span></div>
-                <div style="display: flex; gap: 4px;"><span>跌幅</span><span id="ohlc-chg" style="color: #fff;">--</span></div>
-            </div>
-
             <!-- 我的最愛快捷區 -->
             <div id="tf-favorites" style="display: flex; gap: 4px;"></div>
 
@@ -130,6 +121,15 @@
                     <input id="tf-custom-input" type="text" placeholder="自訂 (如 3m)" style="width: 100%; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 6px; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
                 </div>
             </div>
+        </div>
+
+        <!-- 🚨 專業版 OHLC 顯示 (純文字 Overlay) -->
+        <div id="ohlc-info" style="position: absolute; top: 50px; left: 15px; z-index: 10; display: flex; gap: 15px; font-family: 'Trebuchet MS', sans-serif; font-size: 13px; color: #929498; pointer-events: none;">
+            <div style="display: flex; gap: 4px;">O<span id="ohlc-o" style="color: #d1d4dc;">--</span></div>
+            <div style="display: flex; gap: 4px;">H<span id="ohlc-h" style="color: #d1d4dc;">--</span></div>
+            <div style="display: flex; gap: 4px;">L<span id="ohlc-l" style="color: #d1d4dc;">--</span></div>
+            <div style="display: flex; gap: 4px;">C<span id="ohlc-c" style="color: #d1d4dc;">--</span></div>
+            <div id="ohlc-chg" style="margin-left: 5px;">--</div>
         </div>
 
         <!-- 🚨 搜尋標的彈窗 (Symbol Search Modal) -->

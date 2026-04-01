@@ -1,3 +1,41 @@
-src/core/DataManager.ts(281,79): error TS2339: Property 'time' does not exist on type 'Candle'.
-==> Build failed 😞
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+index-00130185.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=BTC/USDT&interval=1m
+index-00130185.js:1 [DataManager] Received 500 initial candles
+index-00130185.js:1 [DataManager] Latest Candle: 2026/4/1 下午12:59:00
+index-00130185.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-00130185.js:1 [DataManager] Backend WebSocket Connected ✅
+index-00130185.js:1 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
+index-00130185.js:1 [DataManager] Switching exchange to: Yahoo
+index-00130185.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=BTC/USDT&interval=1m&source=Yahoo
+index-00130185.js:1 [DataManager] Switching symbol to: 2330.TW:STOCK
+index-00130185.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=2330.TW:STOCK&interval=1m&source=Yahoo
+index-00130185.js:1 [DataManager] Received 500 initial candles
+index-00130185.js:1 [DataManager] Latest Candle: 2026/4/1 下午12:59:00
+index-00130185.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-00130185.js:1 [DataManager] Received 0 initial candles
+index-00130185.js:1 WebSocket connection to 'wss://tradingviewer-gtr2.onrender.com/' failed: WebSocket is closed before the connection is established.
+setupWebSocket @ index-00130185.js:1
+loadInitialData @ index-00130185.js:1
+await in loadInitialData
+reload @ index-00130185.js:1
+setSymbol @ index-00130185.js:1
+loadSymbol @ index-00130185.js:1
+r.onclick @ index-00130185.js:1
+index-00130185.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+installHook.js:1 [DataManager] WebSocket Error: Event {isTrusted: true, type: 'error', target: WebSocket, currentTarget: WebSocket, eventPhase: 2, …}
+overrideMethod @ installHook.js:1
+ws.onerror @ index-00130185.js:1
+index-00130185.js:1 WebSocket connection to 'wss://tradingviewer-gtr2.onrender.com/' failed: WebSocket is closed before the connection is established.
+ws.onerror @ index-00130185.js:1
+installHook.js:1 [DataManager] WebSocket Closed: 1006 
+overrideMethod @ installHook.js:1
+ws.onclose @ index-00130185.js:1
+index-00130185.js:1 [DataManager] Attempting to reconnect in 5s...
+installHook.js:1 [DataManager] WebSocket Error: Event {isTrusted: true, type: 'error', target: WebSocket, currentTarget: WebSocket, eventPhase: 2, …}
+overrideMethod @ installHook.js:1
+ws.onerror @ index-00130185.js:1
+installHook.js:1 [DataManager] WebSocket Closed: 1006 
+overrideMethod @ installHook.js:1
+ws.onclose @ index-00130185.js:1
+index-00130185.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-00130185.js:1 [DataManager] Backend WebSocket Connected ✅
+index-00130185.js:1 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"2330.TW:STOCK","interval":"1m","source":"Yahoo"}
