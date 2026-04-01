@@ -390,22 +390,22 @@ class ChartEngine {
     this.renderEngine.drawIndicator(ma20.slice(start, end), start, startIndex, cw, 2, '#ffeb3b', this.scaleEngine);
     
     const oCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
-    
-    // 🚨 先畫繪圖物件 (這會執行 clearRect)
+
+    // 🚨 順序 1：先讓繪圖引擎 render (內部會執行唯一的 clearRect)
     this.drawingEngine.render(oCtx, this.scaleEngine, startIndex, cw, 2, (t) => this.dataManager.getIndexAtTime(t), this.hoveredDrawingId);
-    
-    // 🚨 最後再畫現價線與十字線 (這樣才不會被擦掉)
+
+    // 🚨 順序 2：最後才疊加十字線與價格線 (不會被擦掉了)
+    if (this.lastMousePos.x > 0 || this.lastMousePos.y > 0) {
+        const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
+        const time = this.dataManager.getTimeAtIndex(this.lastMousePos.x / (this.viewport.getCandleWidth() + 2) + startIndex);
+        this.renderEngine.drawCrosshair(this.lastMousePos.x, this.lastMousePos.y, formatPrice(price), formatFullTime(time));
+    }
+
     const last = candles[candles.length - 1];
     if (last) this.renderEngine.drawLastPriceLine(last.close, last.close >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
-    
-    // 🚨 補回十字線邏輯 (如果是滑鼠移動中)
-    const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
-    const time = this.dataManager.getTimeAtIndex(this.lastMousePos.x / (this.viewport.getCandleWidth() + 2) + startIndex);
-    this.renderEngine.drawCrosshair(this.lastMousePos.x, this.lastMousePos.y, formatPrice(price), formatFullTime(time));
 
     this.updateStatusUI();
     }
-
     private updateStatusUI() {
     const dot = document.getElementById('status-dot');
     const text = document.getElementById('status-text');

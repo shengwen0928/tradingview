@@ -295,7 +295,7 @@ export class RenderEngine {
 
   public drawCrosshair(mouseX: number, mouseY: number, price: string, time: string): void {
     const ctx = this.overlayCtx;
-    ctx.clearRect(0, 0, this.width, this.height);
+    // ctx.clearRect(0, 0, this.width, this.height); // 🚨 移除此行，防止擦除繪圖
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = '#758696';
     ctx.lineWidth = 1;
