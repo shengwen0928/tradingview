@@ -92,13 +92,20 @@ export class DataManager {
     // 如果全部沒變，不執行
     if (this.instId === instId && this.bar === formattedBar && this.currentSource === source) return;
 
-    console.log(`[DataManager] Full update: ${instId} (${formattedBar}) from ${source || 'Auto'}`);
+    console.log(`[DataManager] Update: ${instId || 'STOP'} (${formattedBar})`);
     
     this.instId = instId;
     this.bar = formattedBar;
     this.currentSource = source;
     this.intervalMs = this.parseBarToMs(formattedBar);
     this.candles = [];
+
+    // 🚨 關鍵修復：如果 instId 為空，代表僅執行停止動作
+    if (!instId) {
+        if (this.ws) { this.ws.onclose = null; this.ws.close(); this.ws = null; }
+        if (this.pingInterval) clearInterval(this.pingInterval);
+        return;
+    }
 
     await this.reload();
   }
