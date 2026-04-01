@@ -1,4 +1,5 @@
 import { DataManager } from './core/DataManager';
+// 🚀 Deployment Trigger: 2026-03-31 20:45
 import { ViewportEngine } from './core/ViewportEngine';
 import { ScaleEngine } from './core/ScaleEngine';
 import { RenderEngine } from './core/RenderEngine';
@@ -79,14 +80,15 @@ class ChartEngine {
     this.drawingEngine = new DrawingEngine();
     
     this.dataManager = new DataManager(
-      (candles, isHistory) => { this.viewport.setDataCount(candles.length, isHistory); },
+      (candles, isHistory) => { 
+        this.viewport.setDataCount(candles.length, isHistory); 
+        this.requestRedraw(); // 🚨 關鍵：收到數據後必須觸發繪圖
+      },
       (status) => { this.connectionStatus = status; this.updateStatusUI(); }
     );
 
     this.favorites = JSON.parse(localStorage.getItem('tf-favorites') || '["1m", "1H", "1D"]');
     this.initModalLogic();
-    this.initDrawingToolbar();
-    this.initMagnetLogic(); // 🚨 初始化磁鐵
     this.loader = new LoaderController(this.dataManager, this.viewport);
 
     this.interactionEngine = new InteractionEngine(
@@ -104,6 +106,9 @@ class ChartEngine {
       },
       (mouseX, mouseY) => { this.updateCrosshair(mouseX, mouseY); }
     );
+
+    this.initDrawingToolbar();
+    this.initMagnetLogic(); // 🚨 現在 interactionEngine 已經定義好了
 
     this.handleResize();
     window.addEventListener('resize', () => this.handleResize());
