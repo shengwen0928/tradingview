@@ -432,16 +432,47 @@ class ChartEngine {
     
     // 1. 偵測懸停物件
     const { startIndex } = this.viewport.getRawRange();
+    const candleWidth = this.viewport.getCandleWidth();
     this.hoveredDrawingId = this.drawingEngine.hitTest(
       mouseX, mouseY, 
       this.scaleEngine, 
       startIndex, 
-      this.viewport.getCandleWidth(), 2, 
+      candleWidth, 2, 
       (t) => this.dataManager.getIndexAtTime(t)
     )?.id || null;
 
-    // 2. 統一使用非同步重繪
+    // 2. 🚨 更新 OHLC 資訊
+    const index = Math.round(mouseX / (candleWidth + 2) + startIndex);
+    const candles = this.dataManager.getCandles();
+    const candle = candles[index];
+    this.updateOHLCUI(candle);
+
+    // 3. 統一使用非同步重繪
     this.requestRedraw();
+  }
+
+  private updateOHLCUI(candle: any) {
+    const o = document.getElementById('ohlc-o')!;
+    const h = document.getElementById('ohlc-h')!;
+    const l = document.getElementById('ohlc-l')!;
+    const c = document.getElementById('ohlc-c')!;
+    const chg = document.getElementById('ohlc-chg')!;
+
+    if (!candle) {
+      o.innerText = h.innerText = l.innerText = c.innerText = chg.innerText = '--';
+      return;
+    }
+
+    const diff = candle.close - candle.open;
+    const pct = ((diff / candle.open) * 100).toFixed(2);
+    const color = diff >= 0 ? '#26a69a' : '#ef5350';
+
+    o.innerText = candle.open.toFixed(2);
+    h.innerText = candle.high.toFixed(2);
+    l.innerText = candle.low.toFixed(2);
+    c.innerText = candle.close.toFixed(2);
+    chg.innerText = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)} (${pct}%)`;
+    chg.style.color = color;
   }
 
   private handleResize() { const w = window.innerWidth, h = window.innerHeight; this.renderEngine.resize(w, h); this.scaleEngine.updateDimensions(w, h); this.requestRedraw(); }

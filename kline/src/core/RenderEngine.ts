@@ -236,12 +236,24 @@ export class RenderEngine {
       } else {
         const rectW = Math.max(1, Math.floor(bodyWidth));
         const rectX = Math.floor(centerX - rectW / 2);
-        ctx.beginPath();
-        ctx.moveTo(centerX, Math.floor(yHigh));
-        ctx.lineTo(centerX, Math.floor(yLow));
-        ctx.stroke();
+        
         const rectY = Math.floor(Math.min(yOpen, yClose));
         const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
+
+        // 🚨 修正：只有當 High/Low 真的超出實體範圍時，才畫影線
+        ctx.beginPath();
+        // 上影線
+        if (Math.floor(yHigh) < rectY) {
+            ctx.moveTo(centerX, Math.floor(yHigh));
+            ctx.lineTo(centerX, rectY);
+        }
+        // 下影線
+        if (Math.floor(yLow) > rectY + rectH) {
+            ctx.moveTo(centerX, rectY + rectH);
+            ctx.lineTo(centerX, Math.floor(yLow));
+        }
+        ctx.stroke();
+        
         ctx.fillRect(rectX, rectY, rectW, rectH);
       }
     }
