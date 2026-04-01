@@ -17,6 +17,7 @@ export class DataManager {
     private storage: StorageManager;
     private subscribers: Map<string, Array<(candle: Candle) => void>> = new Map();
     private activeSubscriptions: Set<string> = new Set();
+    private serverTimeOffset: number = 0; // 🚨 紀錄與交易所的時間差
 
     // 嚴格定義的原生週期 (交易所官方支援)
     private readonly nativeIntervals = [
@@ -33,6 +34,28 @@ export class DataManager {
         this.connectors.set(binance.name, binance);
         this.connectors.set(okx.name, okx);
         this.connectors.set(yahoo.name, yahoo);
+        this.syncClock(); // 🚨 啟動時校正時鐘
+    }
+
+    /**
+     * 向幣安同步伺服器時間
+     */
+    private async syncClock() {
+        try {
+            const start = Date.now();
+            const response = await fetch('https://api.binance.com/api/v3/time');
+            const data = await response.json();
+            const end = Date.now();
+            const rtt = (end - start) / 2; // 估算網路延遲
+            this.serverTimeOffset = data.serverTime - (end - rtt);
+            console.log(`[DataManager] Server Time Synced. Offset: ${this.serverTimeOffset}ms`);
+        } catch (e) {
+            console.warn('[DataManager] Clock sync failed, using system time.');
+        }
+    }
+
+    private getCorrectedNow(): number {
+        return Date.now() + this.serverTimeOffset;
     }
 
     public static getInstance(): DataManager {
@@ -121,10 +144,15 @@ export class DataManager {
             if (cached.length > 0) this.caches.set(cacheKey, cached);
         }
 
+        // 🚨 修正：更激進的過期判定
         let forceFetch = false;
         if (!endTime && cached.length > 0) {
-            if (Date.now() - cached[cached.length - 1].timestamp > intervalMs * 1.1) forceFetch = true;
+            const lastTs = cached[cached.length - 1].timestamp;
+            const now = this.getCorrectedNow();
+            // 如果最後一根數據超過「一個週期 + 10 秒」沒更新，立刻抓取
+            if (now - lastTs > intervalMs + 10000) forceFetch = true;
         }
+        
         const needsMore = !endTime && cached.length < limit;
 
         if (!endTime && !forceFetch && !needsMore && cached.length >= limit) {
@@ -258,6 +286,7 @@ export class DataManager {
         let candleToPush: Candle | null = null;
 
         if (data.isTrade) {
+            // 🚨 實時成交模式：最敏銳的更新
             if (currentCache.length === 0) {
                 const initCandle = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
                 currentCache.push(initCandle);
@@ -271,22 +300,23 @@ export class DataManager {
                     last.volume += (data.volume || 0);
                     candleToPush = last;
                 } else if (alignedTs > last.timestamp) {
-                    const newC = { timestamp: alignedTs, open: data.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
+                    // 🚨 修正：如果是新的一根 K 線，開盤價應該延續上一根的收盤價或使用當前成交價
+                    const newC = { timestamp: alignedTs, open: last.close, high: data.close, low: data.close, close: data.close, volume: data.volume || 0 };
                     currentCache.push(newC);
                     candleToPush = newC;
                 }
             }
         } else {
-            const candle = data as any; // 🚨 改為 any 以便檢查不同命名的欄位
+            // 🚨 K 線流模式：確保不丟失最新一根
+            const candle = data as any;
             const ts = candle.timestamp || candle.time;
-            if (!ts) return; // 無效數據直接跳過
+            if (!ts) return;
 
             const incomingTs = this.alignTimestamp(ts, tag);
             
             if (currentCache.length > 0) {
                 const last = currentCache[currentCache.length - 1];
                 if (incomingTs === last.timestamp) {
-                    // 合併邏輯
                     last.high = Math.max(last.high, candle.high || candle.close);
                     last.low = Math.min(last.low, candle.low || candle.close);
                     last.close = candle.close;
