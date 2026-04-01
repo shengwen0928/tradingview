@@ -17,5 +17,5 @@ Run `npm audit` for details.
 > high-performance-kline-engine@1.0.0 build
 > tsc && vite build
 
-Error: src/main.ts(351,10): error TS2339: Property 'hoveredDrawingId' does not exist on type 'ChartEngine'.
+Error: src/main.ts(26,11): error TS6133: 'hoveredDrawingId' is declared but its value is never read.
 Error: Process completed with exit code 2.

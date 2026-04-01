@@ -386,7 +386,7 @@ class ChartEngine {
     const ma20 = this.indicatorEngine.calculateMA(candles, 20);
     this.renderEngine.drawIndicator(ma20.slice(start, end), start, startIndex, cw, 2, '#ffeb3b', this.scaleEngine);
     const oCtx = (document.getElementById('overlay-canvas') as HTMLCanvasElement).getContext('2d')!;
-    this.drawingEngine.render(oCtx, this.scaleEngine, startIndex, cw, 2, (t) => this.dataManager.getIndexAtTime(t));
+    this.drawingEngine.render(oCtx, this.scaleEngine, startIndex, cw, 2, (t) => this.dataManager.getIndexAtTime(t), this.hoveredDrawingId);
     const last = candles[candles.length - 1];
     if (last) this.renderEngine.drawLastPriceLine(last.close, last.close >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
     this.updateStatusUI();
