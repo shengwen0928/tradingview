@@ -312,6 +312,11 @@ class ChartEngine {
             const c = prompt('內容:');
             if (c) this.drawingEngine.addDrawing({ id: Date.now().toString(), type: 'text', points: [{ time, price }], color: '#fff', lineWidth: 2, text: c });
             this.finishDrawing();
+          } else if (type === 'horizontal' || type === 'vertical') {
+            // 🚨 修正：單點工具，點第一下就直接存檔並結束
+            const obj: DrawingObject = { id: Date.now().toString(), type: type as any, points: [{ time, price }], color: '#2962ff', lineWidth: 2 };
+            this.drawingEngine.addDrawing(obj);
+            this.finishDrawing();
           } else if (type === 'parallelChannel' || type === 'triangle') {
             cur = { id: Date.now().toString(), type: type as any, points: [{ time, price }, { time, price }, { time, price }], color: '#2962ff', lineWidth: 2 };
             this.drawingEngine.setActiveDrawing(cur);
