@@ -117,6 +117,7 @@ class ChartEngine {
 
   private initMagnetLogic() {
     const btn = document.getElementById('tool-magnet')!;
+    const icon = document.getElementById('magnet-icon')!; // 🚨 取得圖示物件
     
     btn.onclick = () => {
       const current = this.interactionEngine.getMagnetMode();
@@ -128,19 +129,16 @@ class ChartEngine {
 
       this.interactionEngine.setMagnetMode(next);
       
-      // 更新 UI 樣式
+      // 更新 UI 樣式：只改圖示顏色，不動底色
       if (next === 'off') {
-        btn.style.color = '#787b86';
+        icon.style.stroke = '#787b86'; // 灰色
         btn.title = '磁鐵模式 (關閉)';
-        btn.classList.remove('active');
       } else if (next === 'weak') {
-        btn.style.color = '#2962ff';
+        icon.style.stroke = '#2962ff'; // 藍色 (弱磁鐵)
         btn.title = '磁鐵模式 (弱磁鐵)';
-        btn.classList.add('active');
       } else {
-        btn.style.color = '#f0b90b'; // 強磁鐵用金色
+        icon.style.stroke = '#f0b90b'; // 金色 (強磁鐵)
         btn.title = '磁鐵模式 (強磁鐵)';
-        btn.classList.add('active');
       }
     };
 
