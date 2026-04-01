@@ -305,6 +305,24 @@ export class RenderEngine {
     ctx.restore();
   }
 
+  /**
+   * 🚀 新增：繪製多組動態指標 (來自 PineEngine)
+   */
+  public drawIndicators(
+    plots: any[],
+    start: number,
+    end: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    plots.forEach(plot => {
+        const visibleData = plot.data.slice(start, end);
+        this.drawIndicator(visibleData, start, exactStartIndex, candleWidth, spacing, plot.color, scaleEngine);
+    });
+  }
+
   public drawCrosshair(mouseX: number, mouseY: number, price: string, time: string): void {
     const ctx = this.overlayCtx;
     // ctx.clearRect(0, 0, this.width, this.height); // 🚨 移除此行，防止擦除繪圖
