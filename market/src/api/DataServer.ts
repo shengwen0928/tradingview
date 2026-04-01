@@ -1,15 +1,15 @@
 import express from 'express';
-import http from 'http'; // 🚨 新增：用於 WebSocket 共用連接埠
+import http from 'http'; 
+import axios from 'axios'; // 🚨 改用 axios 以支援 https
 import { DataManager } from '../core/DataManager';
 import { RealtimeGateway } from './RealtimeGateway';
 
 /**
  * API 伺服器 (Aggregation API)
- * 提供外部查詢 K 線、標的清單等介面
  */
 const app = express();
-const server = http.createServer(app); // 🚨 新增：HTTP Server
-const port = process.env.PORT || 3001; // 🚨 修正：由環境變數決定
+const server = http.createServer(app);
+const port = process.env.PORT || 3001;
 const dataManager = DataManager.getInstance();
 
 // 啟動實時網關 (共用 HTTP Server)
@@ -25,7 +25,6 @@ app.use((req, res, next) => {
 
 /**
  * 查詢所有支援的標的
- * GET /symbols
  */
 app.get('/symbols', (req, res) => {
     try {
@@ -38,7 +37,6 @@ app.get('/symbols', (req, res) => {
 
 /**
  * 查詢標的的 K 線數據
- * GET /klines?id=BTC/USDT&interval=1m&endTime=1774859640000
  */
 app.get('/klines', async (req, res) => {
     const { id, interval, endTime, source } = req.query;
@@ -57,14 +55,15 @@ app.get('/klines', async (req, res) => {
     }
 });
 
-// 🚨 新增：自我喚醒機制，防止 Render.com 休眠
+// 🚨 修正：自我喚醒機制
 const SELF_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}`;
-setInterval(() => {
-    http.get(`${SELF_URL}/health`, (res) => {
-        console.log(`[Self-Ping] Status: ${res.statusCode}`);
-    }).on('error', (err) => {
+setInterval(async () => {
+    try {
+        const res = await axios.get(`${SELF_URL}/health`);
+        console.log(`[Self-Ping] Status: ${res.status}`);
+    } catch (err: any) {
         console.error('[Self-Ping] Error:', err.message);
-    });
+    }
 }, 10 * 60 * 1000); // 每 10 分鐘一次
 
 app.get('/health', (req, res) => {
