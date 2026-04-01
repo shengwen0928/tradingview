@@ -14,13 +14,12 @@ class ChartEngine {
   private cryptoManager: DataManager;
   private stockManager: DataManager;
   private activeManager: DataManager;
-  private pineEngine: PineEngine; // 🚀 新增
-  private indicatorPlots: any[] = []; // 🚀 新增
+  private pineEngine: PineEngine; 
+  private indicatorPlots: any[] = []; 
   private viewport: ViewportEngine;
   private scaleEngine: ScaleEngine;
   private renderEngine: RenderEngine;
   private loader: LoaderController;
-  private indicatorEngine: IndicatorEngine;
   private drawingEngine: DrawingEngine;
   private interactionEngine: InteractionEngine;
   private overlayCanvas: HTMLCanvasElement;
