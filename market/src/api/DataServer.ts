@@ -57,6 +57,20 @@ app.get('/klines', async (req, res) => {
     }
 });
 
+// 🚨 新增：自我喚醒機制，防止 Render.com 休眠
+const SELF_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}`;
+setInterval(() => {
+    http.get(`${SELF_URL}/health`, (res) => {
+        console.log(`[Self-Ping] Status: ${res.statusCode}`);
+    }).on('error', (err) => {
+        console.error('[Self-Ping] Error:', err.message);
+    });
+}, 10 * 60 * 1000); // 每 10 分鐘一次
+
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
 server.listen(port, () => {
     console.log(`[Market Data Platform] Server running on port ${port}`);
 });

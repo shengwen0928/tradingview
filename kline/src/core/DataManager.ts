@@ -12,12 +12,13 @@ export class DataManager {
   private bar = '1m'; 
   private intervalMs = 60000; 
   private ws: WebSocket | null = null;
-  private pingInterval: number | null = null;
+  private pingInterval: any = null;
+  private reconnectTimeout: any = null; // 🚨 新增：重連定時器
 
   // Backend URLs
-  private apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  private apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5173')
     ? 'http://localhost:3001' 
-    : 'https://tradingviewer-gtr2.onrender.com'; // 🚨 這裡改為你 Render 的網址
+    : 'https://tradingviewer-gtr2.onrender.com';
     
   private wsUrl = this.apiUrl.replace('http', 'ws');
 
@@ -232,6 +233,7 @@ export class DataManager {
     this.ws.onopen = () => {
       console.log('[DataManager] Backend WebSocket Connected ✅');
       this.onStatusChange?.('connected');
+      if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout); // 成功連線，取消重連定時器
       
       const subMsg: any = {
         type: 'subscribe',
@@ -242,10 +244,18 @@ export class DataManager {
 
       console.log(`[DataManager] Subscribing via Backend:`, JSON.stringify(subMsg));
       this.ws?.send(JSON.stringify(subMsg));
+
+      // 🚨 啟動心跳機制 (Ping)
+      this.pingInterval = setInterval(() => {
+        if (this.ws?.readyState === WebSocket.OPEN) {
+          this.ws.send(JSON.stringify({ type: 'ping' }));
+        }
+      }, 30000); // 每 30 秒 Ping 一次
     };
 
     this.ws.onmessage = (event) => {
       const res = JSON.parse(event.data);
+      if (res.type === 'pong') return; // 忽略 Pong 回應
       
       // 🚨 關鍵修復：嚴格檢查 res.interval
       // 只有當前訂閱的標的且週期完全一致時才接受數據
@@ -265,10 +275,24 @@ export class DataManager {
       }
     };
 
-    this.ws.onclose = () => {
+    this.ws.onclose = (event) => {
+      console.warn(`[DataManager] WebSocket Closed: ${event.code} ${event.reason}`);
       this.onStatusChange?.('disconnected');
-      // 如果不是因為切換而關閉，才嘗試重連
-      // 這裡是個簡化判斷
+      if (this.pingInterval) clearInterval(this.pingInterval);
+
+      // 🚨 自動重連邏輯
+      if (!this.reconnectTimeout) {
+        console.log('[DataManager] Attempting to reconnect in 5s...');
+        this.reconnectTimeout = setTimeout(() => {
+          this.reconnectTimeout = null;
+          this.setupWebSocket();
+        }, 5000);
+      }
+    };
+
+    this.ws.onerror = (err) => {
+      console.error('[DataManager] WebSocket Error:', err);
+      this.ws?.close();
     };
   }
 

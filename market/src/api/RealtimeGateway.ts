@@ -55,6 +55,12 @@ export class RealtimeGateway {
     private handleRequest(ws: WebSocket, payload: any) {
         const { type, id, interval, source } = payload;
 
+        // 🚨 新增：心跳處理
+        if (type === 'ping') {
+            ws.send(JSON.stringify({ type: 'pong' }));
+            return;
+        }
+
         if (type === 'subscribe') {
             if (!id || !interval) {
                 return ws.send(JSON.stringify({ type: 'error', message: 'Missing id or interval' }));
