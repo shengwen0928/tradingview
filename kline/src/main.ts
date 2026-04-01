@@ -5,7 +5,6 @@ import { ScaleEngine } from './core/ScaleEngine';
 import { RenderEngine } from './core/RenderEngine';
 import { InteractionEngine } from './core/InteractionEngine';
 import { LoaderController } from './core/LoaderController';
-import { IndicatorEngine } from './core/IndicatorEngine';
 import { PineEngine } from './core/PineEngine'; // 🚀 新增
 import { DrawingEngine, DrawingObject, DrawingPoint } from './core/DrawingEngine';
 import { formatPrice, formatFullTime } from './utils/math';
