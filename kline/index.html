@@ -114,11 +114,14 @@
 
             <!-- 主週期按鈕與彈窗 -->
             <div style="position: relative;">
-                <button id="tf-main-btn" class="menu-btn">1m ▾</button>
-                <div id="tf-popup" class="menu-popup">
+                <button id="tf-main-btn" class="menu-btn">時間週期 ▾</button>
+                <div id="tf-popup" class="menu-popup" style="width: 220px;">
+                    <div style="padding: 4px 8px; color: #787b86; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">選擇時間週期</div>
                     <div id="tf-list"></div>
                     <div style="height: 1px; background: #363c4e; margin: 4px 0;"></div>
-                    <input id="tf-custom-input" type="text" placeholder="自訂 (如 3m)" style="width: 100%; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 6px; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                    <div style="padding: 8px;">
+                        <input id="tf-custom-input" type="text" placeholder="自訂 (如 3m)" style="width: 100%; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 8px; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                    </div>
                 </div>
             </div>
         </div>

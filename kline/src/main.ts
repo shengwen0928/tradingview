@@ -390,10 +390,39 @@ class ChartEngine {
 
   private renderTfPopup() {
     const l = document.getElementById('tf-list')!; l.innerHTML = '';
-    ['1m', '5m', '15m', '1H', '1D', '1W'].forEach(tf => {
-      const i = document.createElement('div'); i.className = 'tf-item'; i.innerText = tf;
-      i.onclick = () => { this.switchTimeframe(tf); document.getElementById('tf-popup')?.classList.remove('show'); };
-      l.appendChild(i);
+    const intervals = [
+      { label: '1 分鐘', val: '1m' }, { label: '3 分鐘', val: '3m' }, { label: '5 分鐘', val: '5m' },
+      { label: '15 分鐘', val: '15m' }, { label: '30 分鐘', val: '30m' }, { label: '1 小時', val: '1H' },
+      { label: '2 小時', val: '2H' }, { label: '4 小時', val: '4H' }, { label: '1 天', val: '1D' },
+      { label: '1 週', val: '1W' }, { label: '1 月', val: '1M' }
+    ];
+
+    intervals.forEach(item => {
+      const i = document.createElement('div'); i.className = 'tf-item';
+      i.style.display = 'flex'; i.style.justifyContent = 'space-between'; i.style.alignItems = 'center';
+      
+      const label = document.createElement('span'); label.innerText = item.label;
+      label.style.flex = '1';
+      label.onclick = () => { this.switchTimeframe(item.val); document.getElementById('tf-popup')?.classList.remove('show'); };
+
+      const star = document.createElement('span');
+      const isFav = this.favorites.includes(item.val);
+      star.innerText = isFav ? '★' : '☆';
+      star.style.color = isFav ? '#ffb100' : '#787b86';
+      star.style.padding = '0 8px';
+      star.style.cursor = 'pointer';
+      star.onclick = (e) => {
+        e.stopPropagation();
+        if (this.favorites.includes(item.val)) {
+          this.favorites = this.favorites.filter(f => f !== item.val);
+        } else {
+          this.favorites.push(item.val);
+        }
+        this.renderTfPopup();
+        this.renderTfFavorites();
+      };
+
+      i.appendChild(label); i.appendChild(star); l.appendChild(i);
     });
   }
 
