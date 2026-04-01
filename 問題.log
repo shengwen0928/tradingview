@@ -1,9 +1,19 @@
-index-53bb9150.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=BTC/USDT&interval=1m
-index-53bb9150.js:1 [DataManager] Received 500 initial candles
-index-53bb9150.js:1 [DataManager] Latest Candle: 2026/4/1 下午1:15:00
-index-53bb9150.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
-index-53bb9150.js:1 [DataManager] Backend WebSocket Connected ✅
-index-53bb9150.js:1 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
-index-53bb9150.js:1 [Backend New Candle] 1m Time: 下午1:16:00
-tradingview/:1  Failed to load resource: the server responded with a status of 404 ()
-index-53bb9150.js:1 [Backend New Candle] 1m Time: 下午1:17:00
+index-0a6e4582.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=BTC/USDT&interval=1m
+index-0a6e4582.js:1 [DataManager] Received 500 initial candles
+index-0a6e4582.js:1 [DataManager] Latest Candle: 2026/4/1 下午1:22:00
+index-0a6e4582.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-0a6e4582.js:1 [DataManager] Backend WebSocket Connected ✅
+index-0a6e4582.js:1 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
+index-0a6e4582.js:1 [Backend New Candle] 1m Time: 下午1:23:00
+index-0a6e4582.js:1 [DataManager] Full update: 2330.TW:STOCK (1m) from Yahoo
+index-0a6e4582.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=2330.TW:STOCK&interval=1m&source=Yahoo
+index-0a6e4582.js:1 [DataManager] Received 0 initial candles
+index-0a6e4582.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-0a6e4582.js:1 [DataManager] Backend WebSocket Connected ✅
+index-0a6e4582.js:1 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"2330.TW:STOCK","interval":"1m","source":"Yahoo"}
+index-0a6e4582.js:1 [DataManager] Full update: 3105.TWO:STOCK (1m) from Yahoo
+index-0a6e4582.js:1 [DataManager] Fetching initial data from backend: https://tradingviewer-gtr2.onrender.com/klines?id=3105.TWO:STOCK&interval=1m&source=Yahoo
+index-0a6e4582.js:1 [DataManager] Received 0 initial candles
+index-0a6e4582.js:1 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-0a6e4582.js:1 [DataManager] Backend WebSocket Connected ✅
+index-0a6e4582.js:1 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"3105.TWO:STOCK","interval":"1m","source":"Yahoo"}

@@ -235,9 +235,19 @@ class ChartEngine {
 
   private async loadSymbol(symbol: string) {
     let s = symbol.toUpperCase();
+    
+    // 智慧補全邏輯
     let isStock = this.activeCategory.includes('STOCK') || s.includes('.TW') || s.includes('.TWO');
-
-    if (/^\d{4}$/.test(s)) { s += '.TW'; isStock = true; }
+    
+    // 如果是純數字代號
+    if (/^\d{4,6}$/.test(s)) {
+        isStock = true;
+        // 🚨 關鍵：根據常見代號判定上櫃 (.TWO) 或上市 (.TW)
+        // 3105, 8069 等常見上櫃代號建議補 .TWO
+        const otcPrefixes = ['31', '80', '54', '61', '62'];
+        const isOTC = otcPrefixes.some(p => s.startsWith(p));
+        s += isOTC ? '.TWO' : '.TW';
+    }
 
     this.currentSymbol = s;
     document.getElementById('symbol-search-btn')!.innerText = `${s} ▾`;
@@ -247,7 +257,7 @@ class ChartEngine {
     
     const fullId = s + (isStock ? ':STOCK' : ':SPOT');
     
-    // 🚨 修正：一次性更新所有參數，防止競爭條件
+    console.log(`[ChartEngine] Loading symbol: ${fullId} from ${exch}`);
     await this.dataManager.update(fullId, this.currentTimeframe, exch);
   }
 

@@ -87,20 +87,16 @@ export class SymbolManager {
         }
 
         // 2. 🚨 關鍵升級：動態解析 (Dynamic Resolution)
-        // 如果還是找不到，但格式符合 TICKER:TYPE，則動態生成定義
         if (!symbol && id.includes(':')) {
             const parts = id.split(':');
             const ticker = parts[0].toUpperCase();
-            const type = parts[1].toUpperCase(); // 🚨 改為大寫匹配
+            const typeStr = parts[1].toUpperCase();
             
-            if (type === 'STOCK') {
-                // 已經有後綴 (.TW 或 .TWO) 則直接使用，否則針對純數字補全
+            if (typeStr === 'STOCK') {
                 let yahooTicker = ticker;
                 if (/^\d{4,6}$/.test(ticker)) {
-                    // 這裡預設補 .TW，但如果是上櫃股票，前端應傳入 .TWO
                     yahooTicker = `${ticker}.TW`;
                 }
-
                 return {
                     id: id,
                     sourceMap: { 'Yahoo': yahooTicker },
@@ -108,16 +104,16 @@ export class SymbolManager {
                     assetClass: AssetClass.STOCK,
                     precision: 2
                 };
-            } else if (type === 'SPOT' || type === 'PERP') {
-                // 自動生成 Binance/OKX 的加密貨幣定義 (假設符號一致)
+            } else if (typeStr === 'SPOT' || typeStr === 'PERP') {
                 const cryptoSymbol = ticker.replace('/', '');
+                const mType = typeStr === 'SPOT' ? MarketType.SPOT : MarketType.PERP;
                 return {
                     id: id,
                     sourceMap: { 
                         'Binance': cryptoSymbol, 
-                        'OKX': marketType === MarketType.PERP ? `${ticker.replace('/', '-')}-SWAP` : ticker.replace('/', '-')
+                        'OKX': mType === MarketType.PERP ? `${ticker.replace('/', '-')}-SWAP` : ticker.replace('/', '-')
                     },
-                    market: marketType,
+                    market: mType,
                     assetClass: AssetClass.CRYPTO,
                     precision: 2
                 };
