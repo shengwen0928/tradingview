@@ -67,6 +67,14 @@ app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
 
+// 🏠 根目錄路由，防止 404 並確認伺服器運作中
+app.get('/', (req, res) => {
+    res.status(200).send('Market Data Server is running ✅');
+});
+
+// 🖼️ 防止 Favicon 404
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 server.listen(port, () => {
     console.log(`[Market Data Platform] Server running on port ${port}`);
 });

@@ -1,4 +1,1 @@
-installHook.js:1 [DataManager] WebSocket Error: 
-Event {isTrusted: true, type: 'error', target: WebSocket, currentTarget: WebSocket, eventPhase: 2, …}
-overrideMethod	@	installHook.js:1
-ws.onerror	@	index-1a399a04.js:1
+tradingviewer-gtr2.onrender.com/:1  GET https://tradingviewer-gtr2.onrender.com/ 404 (Not Found)
