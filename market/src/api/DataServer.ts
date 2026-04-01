@@ -75,6 +75,6 @@ app.get('/', (req, res) => {
 // 🖼️ 防止 Favicon 404
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
-server.listen(port, () => {
-    console.log(`[Market Data Platform] Server running on port ${port}`);
+server.listen(Number(port), '0.0.0.0', () => {
+    console.log(`[Market Data Platform] Server running on port ${port} (0.0.0.0)`);
 });
