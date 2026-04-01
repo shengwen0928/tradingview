@@ -1,4 +1,5 @@
 import { YahooConnector } from '../connectors/YahooConnector';
+import { AlpacaConnector } from '../connectors/AlpacaConnector';
 import { IConnector } from '../connectors/ConnectorInterface';
 import { SymbolManager } from './SymbolManager';
 import { Candle } from '../types/Candle';
@@ -22,7 +23,9 @@ export class StockDataManager {
     private constructor() {
         this.storage = StorageManager.getInstance();
         const yahoo = new YahooConnector();
+        const alpaca = new AlpacaConnector();
         this.connectors.set(yahoo.name, yahoo);
+        this.connectors.set(alpaca.name, alpaca);
     }
 
     public static getInstance(): StockDataManager {
@@ -50,9 +53,9 @@ export class StockDataManager {
         let finalResult: Candle[] = [];
 
         if (isNative) {
+            // 🚨 所有股票的歷史數據依然優先從 Yahoo 抓取，因為 Yahoo 的 API 限制最少
             finalResult = await this.fetchFromYahoo(id, tag, limit, endTime);
         } else {
-            // 股票聚合通常基於 1d 或 1h
             const baseInterval = '1d';
             const batch = await this.getKlines(id, baseInterval, limit * 2);
             finalResult = AggregationUtils.aggregate(batch, this.parseIntervalToMs(tag));
@@ -95,30 +98,72 @@ export class StockDataManager {
     public async subscribe(id: string, interval: string, onUpdate: (candle: Candle) => void) {
         const tag = this.getStrictTag(interval);
         const symbolInfo = SymbolManager.getSymbolById(id);
-        const subKey = `${id}_${tag}`;
+        if (!symbolInfo) return;
 
-        if (!this.subscribers.has(subKey)) this.subscribers.set(subKey, []);
-        this.subscribers.get(subKey)?.push(onUpdate);
+        const subKey = `${id}_${tag}`;
+        const cacheKey = subKey;
+
+        if (!this.subscribers.has(cacheKey)) this.subscribers.set(cacheKey, []);
+        this.subscribers.get(cacheKey)?.push(onUpdate);
 
         if (!this.activeSubscriptions.has(subKey)) {
-            const connector = this.connectors.get('Yahoo');
-            if (connector && symbolInfo && symbolInfo.sourceMap['Yahoo']) {
-                connector.subscribeKlines(symbolInfo.sourceMap['Yahoo'], tag, (c) => {
-                    const subs = this.subscribers.get(subKey);
-                    if (subs) subs.forEach(cb => cb(c));
+            // 🚨 智慧路由：如果是台股用 Yahoo，如果是美股用 Alpaca (WebSocket)
+            const isTW = id.includes('.TW') || id.includes('.TWO');
+            const sourceName = isTW ? 'Yahoo' : 'Alpaca';
+            const connector = this.connectors.get(sourceName);
+            const sourceSymbol = symbolInfo.sourceMap[sourceName] || symbolInfo.sourceMap['Yahoo'];
+
+            if (connector && sourceSymbol) {
+                console.log(`[StockDataManager] Subscribing ${id} via ${sourceName}`);
+                connector.subscribeKlines(sourceSymbol, tag, (c) => {
+                    this.onNewUpdate(id, tag, c, cacheKey);
                 });
                 this.activeSubscriptions.add(subKey);
             }
         }
     }
 
+    private onNewUpdate(id: string, tag: string, data: any, cacheKey: string) {
+        const ts = data.timestamp;
+        const alignedTs = Math.floor(ts / this.parseIntervalToMs(tag)) * this.parseIntervalToMs(tag);
+        
+        let currentCache = this.caches.get(cacheKey) || [];
+        let candleToPush: Candle | null = null;
+
+        if (currentCache.length > 0) {
+            const last = currentCache[currentCache.length - 1];
+            if (alignedTs === last.timestamp) {
+                last.high = Math.max(last.high, data.high);
+                last.low = Math.min(last.low, data.low);
+                last.close = data.close;
+                last.volume = data.volume;
+                candleToPush = last;
+            } else if (alignedTs > last.timestamp) {
+                const newC = { ...data, timestamp: alignedTs };
+                currentCache.push(newC);
+                candleToPush = newC;
+            }
+        } else {
+            const newC = { ...data, timestamp: alignedTs };
+            currentCache.push(newC);
+            candleToPush = newC;
+        }
+
+        if (candleToPush) {
+            this.caches.set(cacheKey, currentCache.slice(-2000));
+            const subs = this.subscribers.get(cacheKey);
+            if (subs) subs.forEach(cb => cb(candleToPush!));
+        }
+    }
+
     public unsubscribe(id: string, interval: string, onUpdate: (candle: Candle) => void) {
         const tag = this.getStrictTag(interval);
-        const subKey = `${id}_${tag}`;
-        const subs = this.subscribers.get(subKey);
+        const cacheKey = `${id}_${tag}`;
+        const subs = this.subscribers.get(cacheKey);
         if (subs) {
             const idx = subs.indexOf(onUpdate);
             if (idx !== -1) subs.splice(idx, 1);
         }
     }
 }
+
