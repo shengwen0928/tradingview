@@ -46,7 +46,7 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/tradingview/assets/index-900f06f5.js"></script>
+  <script type="module" crossorigin src="/tradingview/assets/index-724831cd.js"></script>
 </head>
 <body>
     <div id="chart-container">
@@ -114,40 +114,57 @@
             <!-- 我的最愛快捷區 -->
             <div id="tf-favorites" style="display: flex; gap: 4px;"></div>
 
-            <!-- 🚀 專業時間週期彈窗 -->
+            <!-- 🚀 專業時間週期彈窗 (Modal 版) -->
             <div style="position: relative;">
                 <button id="tf-main-btn" class="menu-btn">時間週期 ▾</button>
-                <div id="tf-popup" class="menu-popup" style="width: 280px; padding: 12px;">
-                    <!-- 1. 時區選擇 -->
-                    <div style="margin-bottom: 12px;">
-                        <div style="color: #787b86; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;">顯示時區</div>
-                        <select id="timezone-select" style="width: 100%; background: #1e222d; border: 1px solid #363c4e; color: #d1d4dc; padding: 6px; border-radius: 4px; font-size: 12px;">
-                            <option value="Asia/Taipei">台北 (UTC+8)</option>
-                            <option value="UTC">UTC (世界標準時間)</option>
-                            <option value="America/New_York">紐約 (EST/EDT)</option>
-                        </select>
+            </div>
+        </div>
+
+        <!-- 🚨 時間週期全螢幕彈窗 -->
+        <div id="tf-modal" class="modal-overlay">
+            <div class="modal-content" style="width: 400px;">
+                <div style="padding: 16px; border-bottom: 1px solid #363c4e; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: bold; color: #fff;">選擇時間週期</span>
+                    <button id="tf-modal-close" style="background: transparent; border: none; color: #787b86; cursor: pointer; font-size: 20px;">&times;</button>
+                </div>
+                
+                <div style="padding: 16px;">
+                    <!-- 1. 時區按鈕組 -->
+                    <div style="margin-bottom: 20px;">
+                        <div style="color: #787b86; font-size: 11px; margin-bottom: 10px; text-transform: uppercase;">顯示時區</div>
+                        <div id="tz-btn-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                            <button class="unit-btn active" data-tz="Asia/Taipei">台北</button>
+                            <button class="unit-btn" data-tz="UTC">UTC</button>
+                            <button class="unit-btn" data-tz="America/New_York">紐約</button>
+                        </div>
                     </div>
 
-                    <!-- 2. 週期列表 (含星星) -->
-                    <div style="color: #787b86; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;">常用週期</div>
-                    <div id="tf-list" style="max-height: 200px; overflow-y: auto;"></div>
-
-                    <div style="height: 1px; background: #363c4e; margin: 12px 0;"></div>
-
-                    <!-- 3. 自訂週期 (按鈕式) -->
-                    <div style="color: #787b86; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;">自訂週期</div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
-                            <button class="unit-btn" data-unit="s">秒</button>
-                            <button class="unit-btn active" data-unit="m">分</button>
-                            <button class="unit-btn" data-unit="H">時</button>
-                            <button class="unit-btn" data-unit="D">天</button>
-                            <button class="unit-btn" data-unit="W">週</button>
-                            <button class="unit-btn" data-unit="M">月</button>
+                    <!-- 2. 常用週期按鈕網格 -->
+                    <div style="margin-bottom: 20px;">
+                        <div style="color: #787b86; font-size: 11px; margin-bottom: 10px; text-transform: uppercase;">常用週期</div>
+                        <div id="tf-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                            <!-- 由 JS 動態生成按鈕 -->
                         </div>
-                        <div style="display: flex; gap: 4px;">
-                            <input id="tf-custom-val" type="number" value="1" min="1" style="flex: 1; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 8px; border-radius: 4px; font-size: 12px;">
-                            <button id="tf-custom-add" style="background: #2962ff; color: #fff; border: none; padding: 0 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">新增</button>
+                    </div>
+
+                    <div style="height: 1px; background: #363c4e; margin: 20px 0;"></div>
+
+                    <!-- 3. 自訂週期 (按鈕式佈局) -->
+                    <div>
+                        <div style="color: #787b86; font-size: 11px; margin-bottom: 10px; text-transform: uppercase;">自訂週期</div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                                <button class="unit-btn" data-unit="s">秒</button>
+                                <button class="unit-btn active" data-unit="m">分</button>
+                                <button class="unit-btn" data-unit="H">小時</button>
+                                <button class="unit-btn" data-unit="D">天</button>
+                                <button class="unit-btn" data-unit="W">週</button>
+                                <button class="unit-btn" data-unit="M">月</button>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <input id="tf-custom-val" type="number" value="1" min="1" style="flex: 1; background: #131722; border: 1px solid #363c4e; color: #fff; padding: 10px; border-radius: 4px; font-size: 14px;">
+                                <button id="tf-custom-add" style="background: #2962ff; color: #fff; border: none; padding: 0 20px; border-radius: 4px; font-size: 14px; cursor: pointer; font-weight: bold;">新增</button>
+                            </div>
                         </div>
                     </div>
                 </div>
