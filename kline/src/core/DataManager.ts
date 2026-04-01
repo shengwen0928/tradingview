@@ -299,7 +299,9 @@ export class DataManager {
     };
 
     this.ws.onerror = (err) => {
-      console.error('[DataManager] WebSocket Error:', err);
+      console.error('[DataManager] WebSocket Error Details:', err);
+      // 🚨 提示使用者確認後端網址
+      console.warn(`[DataManager] Check if backend is alive: ${this.apiUrl}/health`);
       this.ws?.close();
     };
   }
