@@ -62,17 +62,7 @@ app.get('/klines', async (req, res) => {
     }
 });
 
-// 🚨 修正：自我喚醒機制
-const SELF_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}`;
-setInterval(async () => {
-    try {
-        const res = await axios.get(`${SELF_URL}/health`);
-        console.log(`[Self-Ping] Status: ${res.status}`);
-    } catch (err: any) {
-        console.error('[Self-Ping] Error:', err.message);
-    }
-}, 10 * 60 * 1000); // 每 10 分鐘一次
-
+// 🚨 簡化：只保留健康檢查端點，不主動發送請求以防止啟動崩潰
 app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
