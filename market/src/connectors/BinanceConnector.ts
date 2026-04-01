@@ -77,14 +77,23 @@ export class BinanceConnector implements IConnector {
 
             const response = await axios.get(url, { params });
 
-            return response.data.map((item: any[]) => ({
-                timestamp: item[0],
-                open: parseFloat(item[1]),
-                high: parseFloat(item[2]),
-                low: parseFloat(item[3]),
-                close: parseFloat(item[4]),
-                volume: parseFloat(item[5])
-            }));
+            return response.data.map((item: any[]) => {
+                let timestamp = item[0];
+                if (binanceInterval === '1M') {
+                    const d = new Date(timestamp);
+                    d.setUTCDate(1);
+                    d.setUTCHours(0, 0, 0, 0);
+                    timestamp = d.getTime();
+                }
+                return {
+                    timestamp,
+                    open: parseFloat(item[1]),
+                    high: parseFloat(item[2]),
+                    low: parseFloat(item[3]),
+                    close: parseFloat(item[4]),
+                    volume: parseFloat(item[5])
+                };
+            });
         } catch (error) {
             console.error(`[BinanceConnector] Fetch error for ${symbol} (${useFutures ? 'Futures' : 'Spot'}):`, error);
             throw error;
