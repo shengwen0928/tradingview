@@ -1,7 +1,5 @@
 import { InteractionEngine } from '../core/InteractionEngine';
 import { DrawingEngine } from '../core/DrawingEngine';
-import { ScaleEngine } from '../core/ScaleEngine';
-import { DataManager } from '../core/DataManager';
 
 export class DrawingToolbar {
   constructor(
