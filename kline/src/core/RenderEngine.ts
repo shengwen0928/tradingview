@@ -194,7 +194,8 @@ export class RenderEngine {
     exactStartIndex: number,
     candleWidth: number,
     spacing: number,
-    scaleEngine: ScaleEngine
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number // 🚀 新增：可選的視覺價格
   ): void {
     const ctx = this.candleCtx;
     const drawWidth = scaleEngine.getDrawWidth();
@@ -211,6 +212,7 @@ export class RenderEngine {
 
     for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
+      const isLast = i === candles.length - 1;
       const actualIndex = sliceStartIndex + i;
       const x = scaleEngine.indexToX(actualIndex, exactStartIndex, candleWidth, spacing);
       
@@ -220,11 +222,14 @@ export class RenderEngine {
       const centerX = Math.floor(trueCenter) + 0.5;
 
       const yOpen = scaleEngine.priceToY(candle.open);
-      const yClose = scaleEngine.priceToY(candle.close);
+      // 🚀 如果是最後一根且有視覺價格，使用視覺價格繪製
+      const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candle.close;
+      const yClose = scaleEngine.priceToY(displayClose);
+      
       const yHigh = scaleEngine.priceToY(candle.high);
       const yLow = scaleEngine.priceToY(candle.low);
 
-      const color = candle.close >= candle.open ? '#26a69a' : '#ef5350';
+      const color = displayClose >= candle.open ? '#26a69a' : '#ef5350';
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
 

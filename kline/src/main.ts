@@ -39,6 +39,7 @@ class ChartEngine {
   private currentSymbol: string = 'BTC/USDT'; 
   private lastMousePos = { x: 0, y: 0 };
   private hoveredDrawingId: string | null = null;
+  private visualLastPrice: number | null = null; // 🚀 新增：平滑視覺價格
 
   constructor() {
     this.overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
@@ -260,15 +261,36 @@ class ChartEngine {
 
   private draw() {
     const candles = this.activeManager.getCandles();
+    if (candles.length === 0) return;
+
     const { start, end } = this.viewport.getVisibleRange();
     const { startIndex } = this.viewport.getRawRange();
     const visible = candles.slice(start, end);
     const cw = this.viewport.getCandleWidth();
+    const lastCandle = candles[candles.length - 1];
+    const actualPrice = lastCandle.close;
+
+    // 🚀 平滑視覺價格邏輯 (Lerp)
+    if (this.visualLastPrice === null) {
+        this.visualLastPrice = actualPrice;
+    } else {
+        const diff = actualPrice - this.visualLastPrice;
+        if (Math.abs(diff) > 0.0001) {
+            // 每幀移動 20% 的差距，達到絲滑效果
+            this.visualLastPrice += diff * 0.2;
+            // 如果還在移動中，請求下一幀繼續渲染
+            this.requestRedraw();
+        } else {
+            this.visualLastPrice = actualPrice;
+        }
+    }
     
     this.scaleEngine.updateScale(visible);
     this.renderEngine.drawGrid(this.scaleEngine);
     this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx) => this.activeManager.getTimeAtIndex(idx), this.scaleEngine);
-    this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine);
+    
+    // 🚀 傳入視覺價格進行繪製
+    this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, this.visualLastPrice);
 
     const script = localStorage.getItem('pine-script-default') || 'plot(close, "Close", "#2962ff")';
     const compiledJs = this.pineEngine.compile(script);
@@ -284,8 +306,10 @@ class ChartEngine {
         const time = this.activeManager.getTimeAtIndex(this.lastMousePos.x / (this.viewport.getCandleWidth() + 2) + startIndex);
         this.renderEngine.drawCrosshair(this.lastMousePos.x, this.lastMousePos.y, formatPrice(price), formatFullTime(time));
     }
-    const last = candles[candles.length - 1];
-    if (last) this.renderEngine.drawLastPriceLine(last.close, last.close >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
+
+    // 🚀 最新價格線也使用視覺價格
+    const color = this.visualLastPrice >= lastCandle.open ? '#26a69a' : '#ef5350';
+    this.renderEngine.drawLastPriceLine(this.visualLastPrice, color, this.scaleEngine);
   }
 
   private updateCrosshair(mouseX: number, mouseY: number) {
