@@ -12,6 +12,7 @@ export interface DrawingObject {
     color: string;
     lineWidth: number;
     text?: string;
+    isDash?: boolean;
 }
 
 /**
@@ -122,7 +123,7 @@ export class DrawingEngine {
 
     public updateDrawingDash(id: string, isDash: boolean) {
         const draw = this.drawings.find(d => d.id === id);
-        if (draw) (draw as any).isDash = isDash;
+        if (draw) draw.isDash = isDash;
     }
 
     public updateDrawingText(id: string, text: string) {
@@ -261,7 +262,7 @@ export class DrawingEngine {
             ctx.lineWidth = draw.lineWidth || 2;
             
             // 🚀 支援虛線樣式
-            if ((draw as any).isDash) {
+            if (draw.isDash) {
                 ctx.setLineDash([5, 5]);
             } else {
                 ctx.setLineDash([]);

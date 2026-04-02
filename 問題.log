@@ -1,6 +1,27 @@
-Uncaught TypeError: Cannot read properties of undefined (reading 'getMagnetMode')
-    at K.initMagnetLogic (index-22e3d7c2.js:3:19010)
-    at new K (index-22e3d7c2.js:3:18240)
-    at Q.initControllers (index-22e3d7c2.js:4:3206)
-    at new Q (index-22e3d7c2.js:4:2809)
-    at window.onload (index-22e3d7c2.js:8:56)
+Run cd kline
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 51 packages, and audited 52 packages in 1s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+2 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+> high-performance-kline-engine@1.0.0 build
+> tsc && vite build
+
+Error: src/core/ChartApp.ts(19,1): error TS6133: 'InteractionBridge' is declared but its value is never read.
+Error: src/core/ChartApp.ts(62,40): error TS6133: 'mY' is declared but its value is never read.
+Error: src/core/DataManagerService.ts(25,71): error TS2551: Property 'getSymbol' does not exist on type 'DataManager'. Did you mean 'setSymbol'?
+Error: src/core/InteractionBridge.ts(17,34): error TS6133: 'mY' is declared but its value is never read.
+Error: src/core/SymbolController.ts(4,1): error TS6133: 'LoaderController' is declared but its value is never read.
+Error: src/core/SymbolController.ts(14,17): error TS6138: Property 'viewport' is declared but its value is never read.
+Error: src/ui/ColorPicker.ts(10,17): error TS6138: Property 'initialColor' is declared but its value is never read.
+Error: Process completed with exit code 2.

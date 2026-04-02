@@ -34,14 +34,14 @@ export class RenderPipeline {
         // 2. 更新與渲染背景層 (Grid, Axes)
         this.scaleEngine.updateScale(visible);
         this.renderEngine.drawGrid(this.scaleEngine);
-        this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx) => activeManager.getTimeAtIndex(idx), this.scaleEngine);
+        this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx: number) => activeManager.getTimeAtIndex(idx), this.scaleEngine);
         
         // 3. 渲染數據層 (Candles, Indicators)
         this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
         this.renderEngine.drawIndicators(this.indicatorController.run(candles), start, end, startIndex, cw, 2, this.scaleEngine);
         
         // 4. 渲染互動層 (Drawings, Crosshair)
-        this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t) => activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
+        this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t: number) => activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
         this.crosshairController.draw(activeManager);
 
         // 5. 渲染價格線
