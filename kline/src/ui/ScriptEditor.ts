@@ -39,8 +39,8 @@ export class ScriptEditor {
       console.log('[ScriptEditor] Applying script...');
       try {
         // 立即執行一次計算測試
-        const fn = this.pineEngine.compile(code);
-        this.pineEngine.execute(this.activeManagerProvider().getCandles(), fn);
+        const compiledJs = this.pineEngine.compile(code);
+        this.pineEngine.run(this.activeManagerProvider().getCandles(), compiledJs);
         this.onRequestRedraw();
       } catch (e) {
         alert('腳本錯誤，請檢查語法');

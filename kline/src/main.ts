@@ -104,6 +104,13 @@ class ChartEngine {
 
     // Initial status UI
     this.infoDisplay.updateStatus(this.connectionStatus, this.currentSymbol);
+
+    // Keep references to suppress unused variable warnings if not immediately used elsewhere
+    console.log('[ChartEngine] UI Controllers initialized', {
+      symbolModal: !!this.symbolModal,
+      drawingToolbar: !!this.drawingToolbar,
+      scriptEditor: !!this.scriptEditor
+    });
   }
 
   private initInteraction() {
@@ -226,13 +233,14 @@ class ChartEngine {
     this.requestRedraw();
   }
 
-  private showEditToolbar(_x: number, _y: number, _hit: any) {
-    // Placeholder for drawing edit toolbar logic if needed
-    console.log('[ChartEngine] Show drawing edit toolbar', _hit);
+  private showEditToolbar(x: number, y: number, hit: any) {
+    console.log('[ChartEngine] Show drawing edit toolbar at', { x, y, hit });
+    // TODO: Implement actual floating toolbar for drawing objects
   }
 
   private hideEditToolbar() {
-    // Placeholder for hiding drawing edit toolbar
+    // console.log('[ChartEngine] Hide drawing edit toolbar');
+    // TODO: Implement actual floating toolbar hiding
   }
 
   private handleResize() { 
