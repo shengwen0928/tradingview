@@ -132,12 +132,13 @@ export class DrawingEngine {
     }
 
     /**
-     * 🚀 新增：移動物件
+     * 🚀 新增：絕對位移移動 (防止分離與累積誤差)
      */
-    public moveDrawing(
+    public moveDrawingAbsolute(
         id: string, 
-        deltaX: number, 
-        deltaY: number, 
+        initialPoints: DrawingPoint[],
+        totalDeltaX: number, 
+        totalDeltaY: number, 
         scaleEngine: ScaleEngine, 
         viewport: any, 
         spacing: number,
@@ -150,16 +151,19 @@ export class DrawingEngine {
         const candleWidth = viewport.getCandleWidth();
         const { startIndex } = viewport.getRawRange();
 
-        draw.points.forEach(p => {
-            // 1. 計算目前的 X, Y 座標
-            const currentX = scaleEngine.indexToX(timeToIndex(p.time), startIndex, candleWidth, spacing);
-            const currentY = scaleEngine.priceToY(p.price);
+        draw.points.forEach((p, i) => {
+            const initialP = initialPoints[i];
+            if (!initialP) return;
 
-            // 2. 加上偏移量
-            const nextX = currentX + deltaX;
-            const nextY = currentY + deltaY;
+            // 1. 計算原始座標
+            const startX = scaleEngine.indexToX(timeToIndex(initialP.time), startIndex, candleWidth, spacing);
+            const startY = scaleEngine.priceToY(initialP.price);
 
-            // 3. 轉換回時間與價格
+            // 2. 加上總位移量 (絕對位移，不累積誤差)
+            const nextX = startX + totalDeltaX;
+            const nextY = startY + totalDeltaY;
+
+            // 3. 轉回時間與價格
             const nextIndex = scaleEngine.xToIndex(nextX, startIndex, candleWidth, spacing);
             p.time = indexToTime(nextIndex);
             p.price = scaleEngine.yToPrice(nextY);
