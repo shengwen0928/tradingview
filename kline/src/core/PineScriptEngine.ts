@@ -250,6 +250,21 @@ export class PineScriptEngine {
         let idCounter = 0;
         let indentLevel = 0;
 
+        // 🚀 輔助函式：提取的第一個參數 (保留字串引號，處理嵌套)
+        const getFirstArgRaw = (inner: string) => {
+            let depth = 0, quote = null, result = '';
+            for (let i = 0; i < inner.length; i++) {
+                const c = inner[i];
+                if (quote) { if (c === quote) quote = null; result += c; }
+                else if (c === "'" || c === '"') { quote = c; result += c; }
+                else if (c === '(') { depth++; result += c; }
+                else if (c === ')') { depth--; if (depth < 0) break; result += c; }
+                else if (c === ',' && depth === 0) break;
+                else result += c;
+            }
+            return result.trim();
+        };
+
         lines.forEach(line => {
             let trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//')) return;
