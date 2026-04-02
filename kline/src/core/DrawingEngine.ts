@@ -43,6 +43,16 @@ export class DrawingEngine {
         this.drawings = this.drawings.filter(d => d.id !== id);
     }
 
+    public isPlacing() {
+        return !!this.activeDrawing;
+    }
+
+    public getPointsNeeded(type: DrawingObject['type']): number {
+        if (type === 'triangle' || type === 'parallelChannel') return 3;
+        if (type === 'brush') return 999; // 筆刷特殊處理
+        return 2;
+    }
+
     /**
      * 🚀 新增：開始繪圖
      */
@@ -50,19 +60,41 @@ export class DrawingEngine {
         this.activeDrawing = {
             id: 'draw_' + Date.now(),
             type,
-            points: [point, { ...point }], // 初始化兩個點
+            points: [point, { ...point }], 
             color: '#2962ff',
             lineWidth: 2
         };
     }
 
+    public addPoint(point: DrawingPoint) {
+        if (!this.activeDrawing) return;
+        this.activeDrawing.points.push(point);
+    }
+
     /**
-     * 🚀 新增：更新繪圖點 (通常是第二個點)
+     * 🚀 新增：更新繪圖點
      */
     public updateDrawing(point: DrawingPoint) {
         if (!this.activeDrawing) return;
+        
         if (this.activeDrawing.type === 'brush') {
             this.activeDrawing.points.push(point);
+        } else if (this.activeDrawing.type === 'parallelChannel' || this.activeDrawing.type === 'triangle') {
+            // 對於需要 3 個點的圖案，在拖動時初始化/更新第 2 與 第 3 個點
+            if (this.activeDrawing.points.length === 2) {
+                const p1 = this.activeDrawing.points[0];
+                // 初始化第 3 個點，位置稍微偏離以利觀察
+                this.activeDrawing.points[1] = point;
+                this.activeDrawing.points[2] = { time: point.time, price: p1.price }; 
+            } else {
+                this.activeDrawing.points[1] = point;
+                // 第三點跟隨第二點的 X，但保持第一點的 Y (產生寬度)
+                if (this.activeDrawing.type === 'parallelChannel') {
+                    this.activeDrawing.points[2] = { time: this.activeDrawing.points[0].time, price: point.price };
+                } else {
+                    this.activeDrawing.points[2] = { ...point };
+                }
+            }
         } else {
             this.activeDrawing.points[1] = point;
         }

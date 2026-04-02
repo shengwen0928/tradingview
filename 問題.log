@@ -1,6 +1,8 @@
 build-and-deploy
 Process completed with exit code 2.
 build-and-deploy
-'DataManager' is declared but its value is never read.
+Property 'endDrawing' does not exist on type 'DrawingEngine'. Did you mean 'addDrawing'?
 build-and-deploy
-'ScaleEngine' is declared but its value is never read.
+Property 'updateDrawing' does not exist on type 'DrawingEngine'. Did you mean 'updateDrawingText'?
+build-and-deploy
+Property 'startDrawing' does not exist on type 'DrawingEngine'.

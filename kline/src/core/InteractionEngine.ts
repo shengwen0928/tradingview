@@ -72,20 +72,19 @@ export class InteractionEngine {
       const { mouseX, mouseY } = this.getMousePos(e);
       const zone = getZone(mouseX, mouseY);
 
-      // 🚨 修正：如果是繪圖模式且在圖表區，觸發繪圖點
+      // 🚨 點擊式繪圖邏輯：不再 return，而是交給新的點擊判定
       if (this.drawingMode && zone === 'chart') {
         const { x, y } = handleDrawingPos(mouseX, mouseY);
-        this.onDrawingClick?.(x, y, 'start');
+        // 我們將 'start' 改為 'click'，讓後端決定是開始還是結束
+        this.onDrawingClick?.(x, y, 'start'); 
         return;
       }
 
       this.isDragging = true;
       this.dragZone = zone;
-      
       this.velocityX = 0;
       this.velocityY = 0;
       this.stopInertia();
-      
       this.canvas.setPointerCapture(e.pointerId);
       this.onMouseMove(mouseX, mouseY);
     });
@@ -95,13 +94,13 @@ export class InteractionEngine {
 
       if (this.drawingMode) {
         const { x, y } = handleDrawingPos(mouseX, mouseY);
+        // 移動時始終觸發 move，即使沒按著滑鼠
         this.onDrawingClick?.(x, y, 'move');
       }
 
       if (this.isDragging) {
         const deltaX = -e.movementX;
         const deltaY = e.movementY;
-        
         this.onScroll(deltaX, deltaY, this.dragZone);
 
         const now = performance.now();
@@ -117,17 +116,14 @@ export class InteractionEngine {
     });
 
     this.canvas.addEventListener('pointerup', (e) => {
+      // 🚨 繪圖模式下 pointerup 不再結束繪圖，必須等下次 pointerdown
       if (this.drawingMode) {
-        const { mouseX, mouseY } = this.getMousePos(e);
-        const { x, y } = handleDrawingPos(mouseX, mouseY);
-        this.onDrawingClick?.(x, y, 'end');
         return;
       }
 
       if (this.isDragging) {
         this.isDragging = false;
         this.canvas.releasePointerCapture(e.pointerId);
-        
         if (Math.abs(this.velocityX) > 0.5 || Math.abs(this.velocityY) > 0.5) {
           this.startInertia();
         }

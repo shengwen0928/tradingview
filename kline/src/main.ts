@@ -119,11 +119,29 @@ class ChartEngine {
         const point = { time, price };
 
         if (type === 'start') {
-            this.drawingEngine.startDrawing(tool as any, point);
+            if (!this.drawingEngine.isPlacing()) {
+                // 第一下點擊：開始繪圖
+                this.drawingEngine.startDrawing(tool as any, point);
+            } else {
+                // 之後的點擊：
+                const needed = this.drawingEngine.getPointsNeeded(tool as any);
+                const current = this.drawingEngine.getActiveDrawing()?.points.length || 0;
+                
+                if (current < needed) {
+                    // 還沒達到所需點數，新增一個點
+                    this.drawingEngine.addPoint(point);
+                }
+                
+                // 再次檢查，如果點數夠了就結束
+                if (this.drawingEngine.getActiveDrawing()?.points.length === needed) {
+                    this.drawingEngine.endDrawing();
+                    this.interactionEngine.setDrawingMode(null); // 完成後退出繪圖模式
+                }
+            }
         } else if (type === 'move') {
-            this.drawingEngine.updateDrawing(point);
-        } else if (type === 'end') {
-            this.drawingEngine.endDrawing();
+            if (this.drawingEngine.isPlacing()) {
+                this.drawingEngine.updateDrawing(point);
+            }
         }
         this.requestRedraw();
     });
@@ -151,17 +169,28 @@ class ChartEngine {
     this.interactionEngine.setSnapProvider((mouseX, mouseY, mode) => {
       const candles = this.activeManager.getCandles();
       const candleWidth = this.viewport.getCandleWidth();
+      const spacing = 2;
       const { startIndex } = this.viewport.getRawRange();
-      const index = Math.round(mouseX / (candleWidth + 2) + startIndex);
+      
+      // 🚨 修正索引計算邏輯
+      const index = Math.round((mouseX) / (candleWidth + spacing) + startIndex);
       const candle = candles[index];
       if (!candle) return null;
-      const centerX = (index - startIndex) * (candleWidth + 2) + candleWidth / 2;
-      const prices = [candle.open, candle.high, candle.low, candle.close];
+
+      const centerX = (index - startIndex) * (candleWidth + spacing) + candleWidth / 2;
+      
+      // 磁鐵吸附點：高、低、開、收
+      const prices = [candle.high, candle.low, candle.open, candle.close];
       const points = prices.map(p => ({ x: centerX, y: this.scaleEngine.priceToY(p) }));
+      
       let closest = points[0];
       let minDist = Infinity;
-      points.forEach(pt => { const d = Math.abs(pt.y - mouseY); if (d < minDist) { minDist = d; closest = pt; } });
-      if (mode === 'weak' && minDist > 30) return null;
+      points.forEach(pt => {
+        const d = Math.abs(pt.y - mouseY);
+        if (d < minDist) { minDist = d; closest = pt; }
+      });
+
+      if (mode === 'weak' && (minDist > 30 || Math.abs(centerX - mouseX) > 20)) return null;
       return closest;
     });
 
