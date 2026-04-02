@@ -1,5 +1,4 @@
 import { DataManager } from './DataManager';
-import { ViewportEngine } from './ViewportEngine';
 import { ScaleEngine } from './ScaleEngine';
 import { TimeframeController } from '../ui/TimeframeController';
 import { InfoDisplay } from '../ui/InfoDisplay';
