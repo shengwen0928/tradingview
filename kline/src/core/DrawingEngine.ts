@@ -74,7 +74,7 @@ export class DrawingEngine {
         this.activeDrawing = {
             id: 'draw_' + Date.now(),
             type,
-            points: [point, { ...point }], 
+            points: [{ ...point }, { ...point }], // 初始化時放兩個點，第二個點隨滑鼠移動
             color: '#2962ff',
             lineWidth: 2
         };
@@ -82,7 +82,7 @@ export class DrawingEngine {
 
     public addPoint(point: DrawingPoint) {
         if (!this.activeDrawing) return;
-        this.activeDrawing.points.push(point);
+        this.activeDrawing.points.push({ ...point });
     }
 
     /**
@@ -93,24 +93,10 @@ export class DrawingEngine {
         
         if (this.activeDrawing.type === 'brush') {
             this.activeDrawing.points.push(point);
-        } else if (this.activeDrawing.type === 'parallelChannel' || this.activeDrawing.type === 'triangle') {
-            // 對於需要 3 個點的圖案，在拖動時初始化/更新第 2 與 第 3 個點
-            if (this.activeDrawing.points.length === 2) {
-                const p1 = this.activeDrawing.points[0];
-                // 初始化第 3 個點，位置稍微偏離以利觀察
-                this.activeDrawing.points[1] = point;
-                this.activeDrawing.points[2] = { time: point.time, price: p1.price }; 
-            } else {
-                this.activeDrawing.points[1] = point;
-                // 第三點跟隨第二點的 X，但保持第一點的 Y (產生寬度)
-                if (this.activeDrawing.type === 'parallelChannel') {
-                    this.activeDrawing.points[2] = { time: this.activeDrawing.points[0].time, price: point.price };
-                } else {
-                    this.activeDrawing.points[2] = { ...point };
-                }
-            }
         } else {
-            this.activeDrawing.points[1] = point;
+            // 讓最後一個點跟隨滑鼠
+            const lastIdx = this.activeDrawing.points.length - 1;
+            this.activeDrawing.points[lastIdx] = { ...point };
         }
     }
 
