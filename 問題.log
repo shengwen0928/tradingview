@@ -1,16 +1,8 @@
 build-and-deploy
 Process completed with exit code 2.
 build-and-deploy
-Property 'execute' does not exist on type 'PineScriptEngine'.
-build-and-deploy
 'hit' is declared but its value is never read.
 build-and-deploy
 Property 'hideEditToolbar' is declared but its value is never read.
 build-and-deploy
 Property 'showEditToolbar' is declared but its value is never read.
-build-and-deploy
-'scriptEditor' is declared but its value is never read.
-build-and-deploy
-'drawingToolbar' is declared but its value is never read.
-build-and-deploy
-'symbolModal' is declared but its value is never read.

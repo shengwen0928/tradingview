@@ -7,11 +7,7 @@ export class DrawingToolbar {
   constructor(
     private interactionEngine: InteractionEngine,
     private drawingEngine: DrawingEngine,
-    private scaleEngine: ScaleEngine,
-    private activeManagerProvider: () => DataManager,
-    private onRequestRedraw: () => void,
-    private showEditToolbar: (x: number, y: number, hit: any) => void,
-    private hideEditToolbar: () => void
+    private onRequestRedraw: () => void
   ) {
     this.init();
     this.initMagnetLogic();
@@ -43,23 +39,6 @@ export class DrawingToolbar {
         }
       };
     }
-
-    const overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
-    overlayCanvas.addEventListener('click', (e: MouseEvent) => {
-      if (this.interactionEngine.getDrawingMode()) return;
-      const rect = overlayCanvas.getBoundingClientRect();
-      const hit = this.drawingEngine.hitTest(
-        e.clientX - rect.left,
-        e.clientY - rect.top,
-        this.scaleEngine,
-        0, // Will be updated by caller if needed or we could pass viewport
-        0, // candleWidth
-        2, // spacing
-        (t) => this.activeManagerProvider().getIndexAtTime(t)
-      );
-      // Note: hitTest parameters need to be consistent with main draw loop
-      // This is a simplified version, the actual hit test might need more context
-    });
   }
 
   private initMagnetLogic() {

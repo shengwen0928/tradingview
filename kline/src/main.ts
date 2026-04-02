@@ -90,11 +90,7 @@ class ChartEngine {
     this.drawingToolbar = new DrawingToolbar(
       this.interactionEngine,
       this.drawingEngine,
-      this.scaleEngine,
-      () => this.activeManager,
-      () => this.requestRedraw(),
-      (x, y, hit) => this.showEditToolbar(x, y, hit),
-      () => this.hideEditToolbar()
+      () => this.requestRedraw()
     );
     this.scriptEditor = new ScriptEditor(
       this.pineEngine,
