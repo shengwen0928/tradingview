@@ -273,9 +273,9 @@ export class DrawingEngine {
                 this.drawPriceRange(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex, isHovered);
             } else if (draw.type === 'brush') {
                 this.drawBrush(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex);
-            } else if (draw.type === 'parallelChannel' && draw.points.length >= 3) {
+            } else if (draw.type === 'parallelChannel' && draw.points.length >= 2) {
                 this.drawParallelChannel(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex, isHovered);
-            } else if (draw.type === 'triangle' && draw.points.length >= 3) {
+            } else if (draw.type === 'triangle' && draw.points.length >= 2) {
                 this.drawTriangle(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex, isHovered);
             } else if (draw.type === 'ellipse' && draw.points.length >= 2) {
                 this.drawEllipse(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex, isHovered);
