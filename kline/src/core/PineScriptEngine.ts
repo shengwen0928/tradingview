@@ -271,7 +271,6 @@ export class PineScriptEngine {
                 jsLines.push(`${head} => { return ${body || 'null'} };`);
                 return;
             }
-            }
 
             // 2. 徹底攔截 input 系統 (強效清理)
             // 匹配 input.xxx(...) 並精確提取第一個數字、布林或字串
