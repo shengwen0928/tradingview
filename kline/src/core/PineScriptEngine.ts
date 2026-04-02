@@ -259,20 +259,19 @@ export class PineScriptEngine {
                 jsLines.push('// ' + trimmed);
                 return;
             }
+// 1. 處理函數定義 (f_name() => body)
+if (trimmed.includes('=>')) {
+    const parts = trimmed.split('=>');
+    let head = parts[0].trim();
+    const body = parts[1].trim();
+    // 🚀 修正：正確的 JS 箭頭函式格式
+    if (!head.includes('(')) head = `const ${head} = ()`;
+    else head = `const ${head.replace('(', ' = (')}`;
+    jsLines.push(`${head} => { return ${body || 'null'} };`);
+    return;
+}
 
-            // 1. 處理函數定義 (f_name() => body)
-            if (trimmed.includes('=>')) {
-                const parts = trimmed.split('=>');
-                let head = parts[0].trim();
-                const body = parts[1].trim();
-                // 🚀 修正：正確的 JS 箭頭函式格式
-                if (!head.includes('(')) head = `const ${head} = ()`;
-                else head = `const ${head.replace('(', ' = (')}`;
-                jsLines.push(`${head} => { return ${body || 'null'} };`);
-                return;
-            }
-
-            // 2. 徹底攔截 input 系統 (強效清理)
+// 2. 徹底攔截 input 系統 (強效清理)
             // 匹配 input.xxx(...) 並精確提取第一個數字、布林或字串
             trimmed = trimmed.replace(/input\.(?:\w+)\s*\(\s*([^,)]+)[^)]*\)/g, (_match, p1) => {
                 return p1.split(',')[0].replace(/['"]/g, '').trim();
