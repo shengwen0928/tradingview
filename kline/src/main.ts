@@ -6,7 +6,7 @@ import { InteractionEngine } from './core/InteractionEngine';
 import { LoaderController } from './core/LoaderController';
 import { PineScriptEngine } from './core/PineScriptEngine';
 import { DrawingEngine } from './core/DrawingEngine';
-import { formatPrice, formatFullTime, hsvToHex, hexToHsv, clamp } from './utils/math';
+import { formatPrice, formatFullTime } from './utils/math';
 
 // UI Components
 import { SymbolModal } from './ui/SymbolModal';
@@ -14,6 +14,7 @@ import { TimeframeController } from './ui/TimeframeController';
 import { DrawingToolbar } from './ui/DrawingToolbar';
 import { ScriptEditor } from './ui/ScriptEditor';
 import { InfoDisplay } from './ui/InfoDisplay';
+import { DrawingEditToolbar } from './ui/DrawingEditToolbar';
 
 class ChartEngine {
   private cryptoManager!: DataManager;
@@ -34,13 +35,13 @@ class ChartEngine {
   private drawingToolbar!: DrawingToolbar;
   private scriptEditor!: ScriptEditor;
   private infoDisplay!: InfoDisplay;
+  private editToolbar!: DrawingEditToolbar; // 🚀 使用組件
 
   private connectionStatus: string = 'connecting';
   private currentSymbol: string = 'BTC/USDT'; 
   private lastMousePos = { x: 0, y: 0 };
   private hoveredDrawingId: string | null = null;
   private visualLastPrice: number | null = null; 
-  private editToolbar: HTMLElement | null = null; // 🚀 新增：浮動工具列
 
   constructor() {
     this.overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
@@ -53,6 +54,7 @@ class ChartEngine {
     this.viewport = new ViewportEngine(() => this.requestRedraw());
     this.pineEngine = new PineScriptEngine();
     this.drawingEngine = new DrawingEngine();
+    this.editToolbar = new DrawingEditToolbar(this.drawingEngine, () => this.requestRedraw());
     
     const onDataUpdate = (candles: any[], isHistory: boolean) => {
         this.viewport.setDataCount(candles.length, isHistory);
@@ -230,7 +232,7 @@ class ChartEngine {
         2, 
         (t) => this.activeManager.getIndexAtTime(t)
       );
-      if (hit) this.showEditToolbar(e.clientX, e.clientY, hit); else this.hideEditToolbar();
+      if (hit) this.editToolbar.show(e.clientX, e.clientY, hit); else this.editToolbar.hide();
     });
   }
 
