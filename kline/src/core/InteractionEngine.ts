@@ -8,8 +8,8 @@ export class InteractionEngine {
   private velocityY: number = 0;
   private animationId: number | null = null;
   private lastMoveTime: number = 0;
-  private lastDragX: number = 0; // 🚀 新增：精確追蹤拖曳 X 座標
-  private lastDragY: number = 0; // 🚀 新增：精確追蹤拖曳 Y 座標
+  private lastDragX: number = 0; // 🚀 優化：精確追蹤拖曳 X 座標
+  private lastDragY: number = 0; // 🚀 優化：精確追蹤拖曳 Y 座標
   private cachedRect: DOMRect | null = null;
   private cachedDrawWidth: number = 0;
 
@@ -41,7 +41,7 @@ export class InteractionEngine {
   public setDrawingMode(type: string | null, onClick?: (x: number, y: number, t: 'start' | 'move' | 'end') => void) {
     this.drawingMode = type;
     this.onDrawingClick = onClick;
-    
+
     if (type === 'move') {
         this.canvas.style.cursor = 'move';
     } else {
@@ -97,6 +97,22 @@ export class InteractionEngine {
       const { mouseX, mouseY } = this.getMousePos(e);
       const zone = getZone(mouseX, mouseY);
 
+      // 🚀 優先處理繪圖點擊
+      if (this.drawingMode && zone === 'chart') {
+        const { x, y } = handleDrawingPos(mouseX, mouseY);
+        this.onDrawingClick?.(x, y, 'start');
+
+        // 如果是畫筆或移動工具，啟動拖曳狀態
+        if (this.drawingMode === 'brush' || this.drawingMode === 'move') {
+          this.isDragging = true;
+          this.dragZone = zone;
+          this.lastDragX = mouseX;
+          this.lastDragY = mouseY;
+          this.canvas.setPointerCapture(e.pointerId);
+        }
+        return;
+      }
+
       this.isDragging = true;
       this.dragZone = zone;
       this.lastDragX = mouseX;
@@ -105,29 +121,30 @@ export class InteractionEngine {
       this.velocityY = 0;
       this.stopInertia();
       this.canvas.setPointerCapture(e.pointerId);
-
-      if (this.drawingMode && zone === 'chart') {
-        const { x, y } = handleDrawingPos(mouseX, mouseY);
-        this.onDrawingClick?.(x, y, 'start'); 
-        return;
-      }
-
       this.onMouseMove(mouseX, mouseY);
     });
 
     this.canvas.addEventListener('pointermove', (e) => {
       const { mouseX, mouseY } = this.getMousePos(e);
 
+      // 🚀 繪圖預覽與移動 (核心恢復)
+      if (this.drawingMode) {
+        const { x, y } = handleDrawingPos(mouseX, mouseY);
+        // 非筆刷且非移動模式時，隨滑鼠移動觸發預覽；筆刷或移動模式則需正在拖曳
+        if (this.drawingMode !== 'brush' && this.drawingMode !== 'move') {
+          this.onDrawingClick?.(x, y, 'move');
+        } else if (this.isDragging) {
+          this.onDrawingClick?.(x, y, 'move');
+        }
+      }
+
       if (this.isDragging) {
+        // 🚀 使用手動追蹤的 Delta 以確保絕對對齊
         const deltaX = this.lastDragX - mouseX;
         const deltaY = mouseY - this.lastDragY;
         
-        // 如果是繪圖模式且在圖表區，觸發繪圖移動
-        if (this.drawingMode && this.dragZone === 'chart') {
-          const { x, y } = handleDrawingPos(mouseX, mouseY);
-          this.onDrawingClick?.(x, y, 'move');
-        } else {
-          // 否則觸發圖表平移 (Scroll)
+        // 只有在非繪圖模式，或在非圖表區域時，才允許平移圖表
+        if (!this.drawingMode || this.dragZone !== 'chart') {
           this.onScroll(deltaX, deltaY, this.dragZone);
         }
 
@@ -148,7 +165,7 @@ export class InteractionEngine {
 
     this.canvas.addEventListener('pointerup', (e) => {
       if (this.isDragging) {
-        if (this.drawingMode && this.dragZone === 'chart') {
+        if (this.drawingMode) {
           const { mouseX, mouseY } = this.getMousePos(e);
           const { x, y } = handleDrawingPos(mouseX, mouseY);
           this.onDrawingClick?.(x, y, 'end');
@@ -157,11 +174,9 @@ export class InteractionEngine {
         this.isDragging = false;
         this.canvas.releasePointerCapture(e.pointerId);
         
-        if (Math.abs(this.velocityX) > 0.5 || Math.abs(this.velocityY) > 0.5) {
-          // 如果剛剛是在移動繪圖物件，不啟動慣性滾動
-          if (!(this.drawingMode && this.dragZone === 'chart')) {
-            this.startInertia();
-          }
+        // 只有在非繪圖模式下放開，才觸發慣性
+        if (!this.drawingMode && (Math.abs(this.velocityX) > 0.5 || Math.abs(this.velocityY) > 0.5)) {
+          this.startInertia();
         }
       }
     });

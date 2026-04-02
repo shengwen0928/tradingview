@@ -24,10 +24,13 @@ export class DrawingController {
             const candleWidth = this.viewport.getCandleWidth();
             const spacing = 2;
             
-            // 🚀 始終使用高精度的 FloatIndex 進行計算
+            // 🚀 繪圖點位計算：筆刷與移動工具使用高精度，其餘工具預設吸附 K 棒
             const rawIndex = mouseX / (candleWidth + spacing) + startIndex;
+            const time = (tool === 'brush' || tool === 'move') 
+                ? activeManager.getTimeAtFloatIndex(rawIndex) 
+                : activeManager.getTimeAtIndex(Math.round(rawIndex));
+                
             const price = this.scaleEngine.yToPrice(mouseY);
-            const time = activeManager.getTimeAtFloatIndex(rawIndex);
             const point = { time, price };
 
             if (type === 'start') {
