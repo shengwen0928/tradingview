@@ -10,7 +10,7 @@ export const injectStyles = () => {
         
         /* 🚀 提升全域清晰度 */
         body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
-        canvas { image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
+        canvas { image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; touch-action: none; }
 
         /* 🚀 浮動編輯工具列 */
         .edit-toolbar { position: absolute; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; display: flex; align-items: center; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; gap: 8px; }

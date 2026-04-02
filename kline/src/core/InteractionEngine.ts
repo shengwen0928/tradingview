@@ -10,6 +10,8 @@ export class InteractionEngine {
   private lastMoveTime: number = 0;
   private lastDragX: number = 0; // 🚀 新增：精確追蹤拖曳 X 座標
   private lastDragY: number = 0; // 🚀 新增：精確追蹤拖曳 Y 座標
+  private cachedRect: DOMRect | null = null;
+  private cachedDrawWidth: number = 0;
 
   // 🚨 新增：繪圖相關狀態
   private drawingMode: string | null = null;
@@ -23,7 +25,17 @@ export class InteractionEngine {
     private onZoom: (mouseX: number, mouseY: number, scale: number, zone: 'chart' | 'price' | 'time') => void,
     private onMouseMove: (mouseX: number, mouseY: number) => void
   ) {
+    this.updateCache();
     this.initEvents();
+  }
+
+  private updateCache() {
+    this.cachedRect = this.canvas.getBoundingClientRect();
+    this.cachedDrawWidth = this.canvas.clientWidth - 60;
+  }
+
+  public resize() {
+    this.updateCache();
   }
 
   public setDrawingMode(type: string | null, onClick?: (x: number, y: number, t: 'start' | 'move' | 'end') => void) {
@@ -66,8 +78,8 @@ export class InteractionEngine {
 
   private initEvents(): void {
     const getZone = (x: number, y: number): 'chart' | 'price' | 'time' => {
-      const drawWidth = this.canvas.clientWidth - 60;
-      const drawHeight = this.canvas.clientHeight - 30;
+      const drawWidth = this.cachedDrawWidth;
+      const drawHeight = (this.cachedRect?.height || this.canvas.clientHeight) - 30;
       if (x > drawWidth) return 'price';
       if (y > drawHeight) return 'time';
       return 'chart';
@@ -176,7 +188,7 @@ export class InteractionEngine {
   }
 
   private getMousePos(e: PointerEvent | WheelEvent) {
-    const rect = this.canvas.getBoundingClientRect();
+    const rect = this.cachedRect || this.canvas.getBoundingClientRect();
     return {
       mouseX: e.clientX - rect.left,
       mouseY: e.clientY - rect.top

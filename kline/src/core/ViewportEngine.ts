@@ -9,9 +9,11 @@ export class ViewportEngine {
   private candleWidth: number = 10;
   private spacing: number = 2;
   private onRangeChanged: () => void;
+  private canvasWidth: number;
 
-  constructor(onRangeChanged: () => void) {
+  constructor(onRangeChanged: () => void, initialWidth: number) {
     this.onRangeChanged = onRangeChanged;
+    this.canvasWidth = initialWidth;
   }
 
   // 🚨 新增：讓外部可以設定最小索引
@@ -50,7 +52,7 @@ export class ViewportEngine {
       }
     }
     
-    this.updateCandleWidth(window.innerWidth);
+    this.updateCandleWidth(this.canvasWidth);
     this.onRangeChanged();
   }
 
@@ -98,27 +100,31 @@ export class ViewportEngine {
   }
 
   public handleZoom(mouseX: number, scaleFactor: number, canvasWidth: number): void {
+    this.canvasWidth = canvasWidth;
+    const drawWidth = canvasWidth - 60;
+
+    const relativeX = Math.min(drawWidth, mouseX);
+    const ratio = relativeX / drawWidth;
+
     const visibleCount = this.endIndex - this.startIndex;
     const newVisibleCount = Math.min(this.totalDataCount, Math.max(5, visibleCount * scaleFactor));
 
-    // 🚨 限制顯示數量上限，防止縮放過度
     if (newVisibleCount > 1000) return;
 
-    const ratio = mouseX / canvasWidth;
     const mouseIndex = this.startIndex + visibleCount * ratio;
 
     let nextStart = mouseIndex - newVisibleCount * ratio;
     const maxStartIndex = this.totalDataCount - newVisibleCount / 2;
-    
-    // 🚨 修正：縮放時也強硬鎖定 0 為下限
+
     this.startIndex = Math.max(0, Math.min(maxStartIndex, nextStart));
     this.endIndex = this.startIndex + newVisibleCount;
-    
+
     this.updateCandleWidth(canvasWidth);
     this.onRangeChanged();
   }
 
   public resize(canvasWidth: number) {
+    this.canvasWidth = canvasWidth;
     this.updateCandleWidth(canvasWidth);
   }
 }

@@ -42,11 +42,11 @@ export class ChartApp {
     const drawingEngine = new DrawingEngine();
     const infoDisplay = new InfoDisplay();
     
-    // 預先建立數據服務，用於循環依賴
-    const viewport = new ViewportEngine(() => renderLoop.requestRedraw());
-    const dataService = new DataManagerService(viewport, infoDisplay, () => renderLoop.requestRedraw());
+    // 2. 核心服務 (解決循環依賴)
+    const renderLoopProxy = { requestRedraw: () => {} };
+    const viewport = new ViewportEngine(() => renderLoopProxy.requestRedraw(), renderEngine.getLogicalWidth());
+    const dataService = new DataManagerService(viewport, infoDisplay, () => renderLoopProxy.requestRedraw());
     const magnetService = new MagnetService(viewport, scaleEngine);
-    const layoutController = new LayoutController(renderEngine, scaleEngine, () => renderLoop.requestRedraw());
     const indicatorController = new IndicatorController(new PineScriptEngine());
     const priceAnimator = new PriceAnimator();
 
@@ -54,20 +54,21 @@ export class ChartApp {
     const crosshairController = new CrosshairController(viewport, scaleEngine, renderEngine, infoDisplay, drawingEngine);
     const renderPipeline = new RenderPipeline(viewport, scaleEngine, renderEngine, priceAnimator, indicatorController, drawingEngine, crosshairController);
     const renderLoop = new RenderLoop(renderPipeline, dataService);
+    renderLoopProxy.requestRedraw = renderLoop.requestRedraw;
 
-    // 4. 互動橋接與事件
     const vpController = new ViewportController(viewport, scaleEngine, () => dataService.getLoader(), renderLoop.requestRedraw);
-    
-    // 修正橋接邏輯，將 logicalWidth 的獲取封裝在橋接器或這裡
     const bridge = new InteractionBridge(vpController, crosshairController, dataService, renderLoop.requestRedraw);
     const handlers = bridge.getHandlers();
 
+    // 4. 互動引擎
     const interactionEngine = new InteractionEngine(
         renderEngine.getOverlayCanvas(), 
         handlers.onScroll,
         (mX, _mY, s, z) => vpController.handleZoom(mX, s, z, renderEngine.getLogicalWidth()),
         handlers.onMouseMove
     );
+
+    const layoutController = new LayoutController(renderEngine, scaleEngine, viewport, interactionEngine, () => renderLoop.requestRedraw());
 
     crosshairController.interactionEngine = interactionEngine; 
 

@@ -1,10 +1,14 @@
 import { RenderEngine } from './RenderEngine';
 import { ScaleEngine } from './ScaleEngine';
+import { ViewportEngine } from './ViewportEngine';
+import { InteractionEngine } from './InteractionEngine';
 
 export class LayoutController {
     constructor(
         private renderEngine: RenderEngine,
         private scaleEngine: ScaleEngine,
+        private viewport: ViewportEngine,
+        private interactionEngine: InteractionEngine,
         private requestRedraw: () => void
     ) {}
 
@@ -18,6 +22,8 @@ export class LayoutController {
         const h = window.innerHeight;
         this.renderEngine.resize(w, h);
         this.scaleEngine.updateDimensions(w, h);
+        this.viewport.resize(w);
+        this.interactionEngine.resize();
         this.requestRedraw();
     }
 }
