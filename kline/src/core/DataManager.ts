@@ -441,6 +441,9 @@ export class DataManager {
     }));
   }
 
+  private lastNotifyTime: number = 0; // 🚀 新增：上次通知 UI 的時間
+  private readonly THROTTLE_MS = 50; // 🚀 設定節流閥為 50ms (每秒最多更新 20 次)
+
   public appendRealtimeData(candle: Candle, candleInterval: string): void {
     // 🚨 最終防護：放寬週期檢查 (不區分大小寫)
     if (!candleInterval || candleInterval.toLowerCase() !== this.bar.toLowerCase()) {
@@ -458,10 +461,12 @@ export class DataManager {
     let isChanged = false;
 
     if (last.time === candle.time) {
+      // 更新最後一根
       this.candles[this.candles.length - 1] = { ...last, ...candle };
       isChanged = true;
     } 
     else if (candle.time > last.time) {
+      // 新增一根
       this.candles.push(candle);
       if (this.candles.length > 5000) this.candles.shift();
       isChanged = true;
@@ -469,7 +474,12 @@ export class DataManager {
     }
     
     if (isChanged) {
-      this.onDataUpdated(this.candles, false);
+      // 🚀 執行節流優化：如果距離上次更新不到 50ms，則延遲更新，避免瘋狂重繪導致卡頓
+      const now = performance.now();
+      if (now - this.lastNotifyTime > this.THROTTLE_MS) {
+        this.onDataUpdated(this.candles, false);
+        this.lastNotifyTime = now;
+      }
     }
   }
 }
