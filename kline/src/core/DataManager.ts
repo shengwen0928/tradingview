@@ -219,8 +219,9 @@ export class DataManager {
       try {
         await this.loadInitialData();
       } catch (err: any) {
-        if (err.name === 'AbortError') console.log('[DataManager] Previous load aborted.');
-        else console.error('[DataManager] Load error:', err);
+        // 🚀 安靜處理中止錯誤，不再印出錯誤日誌
+        if (err.name === 'AbortError') return; 
+        console.error('[DataManager] Load error:', err);
       } finally {
         this.reloadTimeout = null;
       }
