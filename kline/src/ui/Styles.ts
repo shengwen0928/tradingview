@@ -27,22 +27,19 @@ export const injectStyles = () => {
         .color-menu-wrapper { position: relative; display: flex; align-items: center; }
         .color-main-btn { width: 20px; height: 20px; border-radius: 4px; cursor: pointer; border: 2px solid #363c4e; transition: border-color 0.2s; }
         .color-main-btn:hover { border-color: #2962ff; }
-        .color-popover { position: absolute; bottom: 30px; left: 0; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; padding: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); z-index: 1001; min-width: 130px; }
-        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; justify-items: center; }
-        .color-popover-divider { height: 1px; background: #363c4e; margin: 8px 0; }
+        .color-popover { position: absolute; bottom: 30px; left: 0; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; padding: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); z-index: 1001; width: 144px; display: flex; flex-direction: column; }
+        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; justify-items: center; }
+        .color-popover-divider { height: 1px; background: #363c4e; margin: 4px 0 12px 0; }
+        
+        /* 🚀 全自定義色盤 CSS 修復 */
+        .custom-picker-container { position: relative; width: 120px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+        #sv-canvas { width: 120px; height: 80px; background: #000; border-radius: 4px; cursor: crosshair; }
+        #hue-canvas { width: 120px; height: 12px; border-radius: 2px; cursor: ew-resize; }
+        
+        .sv-cursor { position: absolute; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; pointer-events: none; margin-left: -5px; margin-top: -5px; box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
+        .hue-cursor { position: absolute; width: 6px; height: 16px; border: 2px solid #fff; border-radius: 2px; pointer-events: none; margin-left: -3px; top: 90px; box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
         
         .width-btn.active { background: #2962ff !important; color: #fff !important; }
-
-        /* 🚀 全自定義色盤 CSS */
-        .custom-picker-container { position: relative; display: flex; flex-direction: column; gap: 8px; margin-top: 4px; padding: 4px; }
-        #sv-canvas, #hue-canvas { display: block; border-radius: 4px; }
-        #sv-canvas { cursor: crosshair; background: #000; }
-        #hue-canvas { border-radius: 2px; cursor: ew-resize; }
-        .sv-cursor { position: absolute; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; pointer-events: none; transform: translate(-7px, -7px); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
-        .hue-cursor { position: absolute; width: 6px; height: 16px; border: 2px solid #fff; border-radius: 2px; pointer-events: none; transform: translate(-5px, 88px); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
-        .custom-color-label { font-size: 11px; color: #d1d4dc; white-space: nowrap; pointer-events: none; width: 100%; text-align: center; }
-        .popover-custom-picker { display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 8px 0; border-radius: 4px; transition: background 0.2s; position: relative; width: 100%; }
-        .popover-custom-picker:hover { background: #2a2e39; }
     `;
     document.head.appendChild(style);
 };
