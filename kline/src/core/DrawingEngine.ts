@@ -186,28 +186,41 @@ export class DrawingEngine {
                 const x2 = scaleEngine.indexToX(timeToIndex(p2.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
                 const y2 = scaleEngine.priceToY(p2.price);
 
-                if (draw.type === 'trendline' || draw.type === 'fibonacci' || draw.type === 'ray' || draw.type === 'arrow' || draw.type === 'parallelChannel') {
-                    // 計算點到線段的距離
-                    const dist = this.distToSegment(mouseX, mouseY, x1, y1, x2, y2);
-                    if (dist < 10) return draw;
-                } else if (draw.type === 'rect' || draw.type === 'ellipse') {
-                    const minX = Math.min(x1, x2);
-                    const maxX = Math.max(x1, x2);
-                    const minY = Math.min(y1, y2);
-                    const maxY = Math.max(y1, y2);
+                if (draw.type === 'rect' || draw.type === 'priceRange' || draw.type === 'fibonacci') {
+                    const minX = Math.min(x1, x2), maxX = Math.max(x1, x2);
+                    const minY = Math.min(y1, y2), maxY = Math.max(y1, y2);
                     if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) return draw;
+                } else if (draw.type === 'ellipse') {
+                    // 🚀 橢圓內部判定：(x-h)^2/a^2 + (y-k)^2/b^2 <= 1
+                    const rx = Math.abs(x2 - x1), ry = Math.abs(y2 - y1);
+                    if (rx > 0 && ry > 0) {
+                        const normalizedX = (mouseX - x1) / rx;
+                        const normalizedY = (mouseY - y1) / ry;
+                        if (normalizedX * normalizedX + normalizedY * normalizedY <= 1) return draw;
+                    }
                 } else if (draw.type === 'triangle' && draw.points.length >= 3) {
                     const p3 = draw.points[2];
                     const x3 = scaleEngine.indexToX(timeToIndex(p3.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
                     const y3 = scaleEngine.priceToY(p3.price);
-                    const dist1 = this.distToSegment(mouseX, mouseY, x1, y1, x2, y2);
-                    const dist2 = this.distToSegment(mouseX, mouseY, x2, y2, x3, y3);
-                    const dist3 = this.distToSegment(mouseX, mouseY, x3, y3, x1, y1);
-                    if (dist1 < 10 || dist2 < 10 || dist3 < 10) return draw;
+                    // 🚀 三角形內部判定 (Barycentric coordinate system)
+                    if (this.isPointInTriangle(mouseX, mouseY, x1, y1, x2, y2, x3, y3)) return draw;
+                } else if (draw.type === 'trendline' || draw.type === 'ray' || draw.type === 'arrow' || draw.type === 'parallelChannel') {
+                    const dist = this.distToSegment(mouseX, mouseY, x1, y1, x2, y2);
+                    if (dist < 10) return draw;
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * 判定點是否在三角形內
+     */
+    private isPointInTriangle(px: number, py: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number) {
+        const area = 0.5 * (-y2 * x3 + y1 * (-x2 + x3) + x1 * (y2 - y3) + x2 * y3);
+        const s = 1 / (2 * area) * (y1 * x3 - x1 * y3 + (y3 - y1) * px + (x1 - x3) * py);
+        const t = 1 / (2 * area) * (x1 * y2 - y1 * x2 + (y1 - y2) * px + (x2 - x1) * py);
+        return s > 0 && t > 0 && (1 - s - t) > 0;
     }
 
     private distToSegment(px: number, py: number, x1: number, y1: number, x2: number, y2: number) {
