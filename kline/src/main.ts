@@ -346,6 +346,10 @@ class ChartEngine {
     toolbar.innerHTML = `
         <div class="toolbar-section">
             ${colors.map(c => `<div class="color-dot" style="background:${c}" data-color="${c}"></div>`).join('')}
+            <div class="color-picker-wrapper">
+                <input type="color" id="custom-color-input" value="${hit.color}">
+                <div class="custom-color-icon">🎨</div>
+            </div>
         </div>
         <div class="toolbar-divider"></div>
         <div class="toolbar-section">
@@ -387,6 +391,14 @@ class ChartEngine {
     deleteBtn.onclick = () => {
         this.drawingEngine.deleteDrawing(hit.id);
         this.hideEditToolbar();
+        this.requestRedraw();
+    };
+
+    // 🚀 自定義色盤綁定
+    const colorPicker = toolbar.querySelector('#custom-color-input') as HTMLInputElement;
+    colorPicker.oninput = (e) => {
+        const newColor = (e.target as HTMLInputElement).value;
+        this.drawingEngine.updateDrawingColor(hit.id, newColor);
         this.requestRedraw();
     };
   }
@@ -431,6 +443,11 @@ class ChartEngine {
         .width-btn:hover, .style-btn:hover { background: #2a2e39; color: #fff; }
         .delete-btn { cursor: pointer; font-size: 14px; padding: 2px 4px; filter: grayscale(1); transition: filter 0.2s; }
         .delete-btn:hover { filter: grayscale(0); transform: scale(1.1); }
+
+        /* 🚀 自定義色盤樣式 */
+        .color-picker-wrapper { position: relative; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .custom-color-icon { font-size: 14px; z-index: 1; pointer-events: none; }
+        #custom-color-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
     `;
     document.head.appendChild(style);
   }
