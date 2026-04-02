@@ -347,7 +347,11 @@ class ChartEngine {
     style.innerHTML = `
         .unit-btn { background: #1e222d; border: 1px solid #363c4e; color: #d1d4dc; padding: 6px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
         .unit-btn:hover { background: #2a2e39; color: #fff; }
-        .unit-btn.active { background: #2962ff; color: #fff; border-color: #2962ff; }
+        .unit-btn.active { background: #2a2e39; color: #fff; border-color: #2962ff; }
+        
+        /* 🚀 繪圖工具列按鈕樣式優化 */
+        .tool-btn:hover, .tool-btn.active { background: #2a2e39 !important; color: #fff !important; }
+        .tool-btn.active { border-left: 3px solid #2962ff; } /* 保留一個小藍條作為選中提示，或可根據需求移除 */
         
         /* 🚀 提升全域清晰度 */
         body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
