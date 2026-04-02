@@ -8,14 +8,14 @@ export class InteractionEngine {
   private velocityY: number = 0;
   private animationId: number | null = null;
   private lastMoveTime: number = 0;
-  private lastDragX: number = 0; // 🚀 優化：精確追蹤拖曳 X 座標
-  private lastDragY: number = 0; // 🚀 優化：精確追蹤拖曳 Y 座標
+  private lastDragX: number = 0; 
+  private lastDragY: number = 0; 
   private cachedRect: DOMRect | null = null;
   private cachedDrawWidth: number = 0;
 
-  // 🚨 新增：繪圖相關狀態
+  // 繪圖相關狀態
   private drawingMode: string | null = null;
-  private magnetMode: 'off' | 'weak' | 'strong' = 'off'; // 預設關閉
+  private magnetMode: 'off' | 'weak' | 'strong' = 'off'; 
   private onDrawingClick?: (mouseX: number, mouseY: number, type: 'start' | 'move' | 'end') => void;
   private snapProvider?: (x: number, y: number, mode: 'weak' | 'strong') => { x: number, y: number } | null;
 
@@ -41,7 +41,6 @@ export class InteractionEngine {
   public setDrawingMode(type: string | null, onClick?: (x: number, y: number, t: 'start' | 'move' | 'end') => void) {
     this.drawingMode = type;
     this.onDrawingClick = onClick;
-
     if (type === 'move') {
         this.canvas.style.cursor = 'move';
     } else {
@@ -65,9 +64,6 @@ export class InteractionEngine {
     return this.magnetMode;
   }
 
-  /**
-   * 🚀 新增：計算當前吸附後的座標 (用於預覽點)
-   */
   public getSnappedPos(mouseX: number, mouseY: number): { x: number, y: number } {
     if (this.magnetMode !== 'off' && this.snapProvider) {
       const snapped = this.snapProvider(mouseX, mouseY, this.magnetMode);
@@ -97,12 +93,12 @@ export class InteractionEngine {
       const { mouseX, mouseY } = this.getMousePos(e);
       const zone = getZone(mouseX, mouseY);
 
-      // 🚀 優先處理繪圖點擊
+      // 1. 如果在繪圖模式，優先處理繪圖起始點
       if (this.drawingMode && zone === 'chart') {
         const { x, y } = handleDrawingPos(mouseX, mouseY);
         this.onDrawingClick?.(x, y, 'start');
 
-        // 如果是畫筆或移動工具，啟動拖曳狀態
+        // 只有筆刷或移動工具需要啟動拖曳狀態
         if (this.drawingMode === 'brush' || this.drawingMode === 'move') {
           this.isDragging = true;
           this.dragZone = zone;
@@ -113,6 +109,7 @@ export class InteractionEngine {
         return;
       }
 
+      // 2. 否則進入圖表平移拖曳
       this.isDragging = true;
       this.dragZone = zone;
       this.lastDragX = mouseX;
@@ -127,10 +124,10 @@ export class InteractionEngine {
     this.canvas.addEventListener('pointermove', (e) => {
       const { mouseX, mouseY } = this.getMousePos(e);
 
-      // 🚀 繪圖預覽與移動 (核心恢復)
+      // 處理繪圖事件
       if (this.drawingMode) {
         const { x, y } = handleDrawingPos(mouseX, mouseY);
-        // 非筆刷且非移動模式時，隨滑鼠移動觸發預覽；筆刷或移動模式則需正在拖曳
+        // 非筆刷且非移動時，僅移動即預覽；其餘需拖曳
         if (this.drawingMode !== 'brush' && this.drawingMode !== 'move') {
           this.onDrawingClick?.(x, y, 'move');
         } else if (this.isDragging) {
@@ -138,12 +135,12 @@ export class InteractionEngine {
         }
       }
 
+      // 處理拖曳事件 (平移圖表)
       if (this.isDragging) {
-        // 🚀 使用手動追蹤的 Delta 以確保絕對對齊
         const deltaX = this.lastDragX - mouseX;
         const deltaY = mouseY - this.lastDragY;
-        
-        // 只有在非繪圖模式，或在非圖表區域時，才允許平移圖表
+
+        // 只有在非繪圖模式，或在側邊欄，才觸發平移
         if (!this.drawingMode || this.dragZone !== 'chart') {
           this.onScroll(deltaX, deltaY, this.dragZone);
         }
@@ -165,16 +162,14 @@ export class InteractionEngine {
 
     this.canvas.addEventListener('pointerup', (e) => {
       if (this.isDragging) {
-        if (this.drawingMode) {
-          const { mouseX, mouseY } = this.getMousePos(e);
-          const { x, y } = handleDrawingPos(mouseX, mouseY);
+        if (this.drawingMode && this.dragZone === 'chart') {
+          const { x, y } = handleDrawingPos(this.lastDragX, this.lastDragY);
           this.onDrawingClick?.(x, y, 'end');
         }
 
         this.isDragging = false;
         this.canvas.releasePointerCapture(e.pointerId);
         
-        // 只有在非繪圖模式下放開，才觸發慣性
         if (!this.drawingMode && (Math.abs(this.velocityX) > 0.5 || Math.abs(this.velocityY) > 0.5)) {
           this.startInertia();
         }

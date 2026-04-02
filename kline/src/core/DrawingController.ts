@@ -6,9 +6,9 @@ import { DataManager } from './DataManager';
 
 export class DrawingController {
     private moveTarget: DrawingObject | null = null;
-    private moveStartMouseIndex: number = 0; // 🚀 新增：記錄滑鼠起始 K 棒索引
-    private moveStartMousePrice: number = 0; // 🚀 新增：記錄滑鼠起始價格
-    private moveInitialPoints: { index: number, price: number }[] = []; // 🚀 新增：物件端點初始數據座標
+    private moveStartMouseIndex: number = 0; 
+    private moveStartMousePrice: number = 0; 
+    private moveInitialPoints: { index: number, price: number }[] = []; 
 
     constructor(
         private interactionEngine: InteractionEngine,
@@ -24,23 +24,26 @@ export class DrawingController {
             const candleWidth = this.viewport.getCandleWidth();
             const spacing = 2;
             
-            // 🚀 繪圖點位計算：筆刷與移動工具使用高精度，其餘工具預設吸附 K 棒
+            // 基礎座標計算
             const rawIndex = mouseX / (candleWidth + spacing) + startIndex;
-            const time = (tool === 'brush' || tool === 'move') 
-                ? activeManager.getTimeAtFloatIndex(rawIndex) 
-                : activeManager.getTimeAtIndex(Math.round(rawIndex));
-                
             const price = this.scaleEngine.yToPrice(mouseY);
+            
+            // 決定點位吸附：移動工具與筆刷用高精度，其餘用 K 棒整數
+            const time = (tool === 'move' || tool === 'brush')
+                ? activeManager.getTimeAtFloatIndex(rawIndex)
+                : activeManager.getTimeAtIndex(Math.round(rawIndex));
+            
             const point = { time, price };
 
             if (type === 'start') {
                 if (tool === 'move') {
+                    // 🚀 尋找被抓取的物件
                     const hit = this.drawingEngine.hitTest(mouseX, mouseY, this.scaleEngine, startIndex, candleWidth, spacing, (t: number) => activeManager.getIndexAtTime(t));
                     if (hit) {
                         this.moveTarget = hit;
                         this.moveStartMouseIndex = rawIndex;
                         this.moveStartMousePrice = price;
-                        // 🚀 關鍵：在開始移動時，記錄所有點的數據空間位置 (Index + Price)
+                        // 記錄所有點的「數據坐標」
                         this.moveInitialPoints = hit.points.map(p => ({
                             index: activeManager.getIndexAtTime(p.time),
                             price: p.price
@@ -49,6 +52,7 @@ export class DrawingController {
                     return;
                 }
 
+                // 正常繪圖起始
                 const needed = this.drawingEngine.getPointsNeeded(tool as any);
                 if (!this.drawingEngine.isPlacing()) {
                     this.drawingEngine.startDrawing(tool as any, point);
@@ -62,7 +66,7 @@ export class DrawingController {
                 }
             } else if (type === 'move') {
                 if (tool === 'move' && this.moveTarget) {
-                    // 🚀 核心改動：計算數據空間的「相對位移」
+                    // 🚀 核心移動邏輯：數據空間相對位移
                     const deltaIndex = rawIndex - this.moveStartMouseIndex;
                     const deltaPrice = price - this.moveStartMousePrice;
                     
