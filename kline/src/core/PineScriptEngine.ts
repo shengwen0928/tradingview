@@ -205,6 +205,33 @@ class PineLibrary {
         context.vars[id].sum += isNaN(val) ? 0 : val;
         return context.vars[id].sum;
     }
+
+    // --- 🚀 繪圖物件支援 ---
+    public static label_new(x: number, y: number, text: string, color: string, textcolor: string, style: string, ctx: any): any {
+        const label = { type: 'label', x, y, text, color, textcolor, style, bar_index: ctx.bar_index };
+        ctx.labels.push(label);
+        return label;
+    }
+
+    public static box_new(left: number, top: number, right: number, bottom: number, border_color: string, bgcolor: string, ctx: any): any {
+        const box = { type: 'box', left, top, right, bottom, border_color, bgcolor, bar_index: ctx.bar_index };
+        ctx.boxes.push(box);
+        return box;
+    }
+
+    public static box_set_right(box: any, right: number) {
+        if (box) box.right = right;
+    }
+
+    public static box_delete(box: any, ctx: any) {
+        if (!box) return;
+        ctx.boxes = ctx.boxes.filter((b: any) => b !== box);
+    }
+
+    public static label_delete(label: any, ctx: any) {
+        if (!label) return;
+        ctx.labels = ctx.labels.filter((l: any) => l !== label);
+    }
 }
 
 // --- 3. 引擎核心 ---
@@ -253,6 +280,13 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, 'Lib.lowest($1, $2)');
             trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `Lib.barssince($1, ctx, 'bs_${idCounter++}')`);
 
+            // 🚀 繪圖物件轉譯 (label / box)
+            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*text=([^,]+)[^)]*\)/g, 'Lib.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
+            trimmed = trimmed.replace(/label\.delete\(([^)]+)\)/g, 'Lib.label_delete($1, ctx)');
+            trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, 'Lib.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
+            trimmed = trimmed.replace(/box\.set_right\(([^,]+),\s*([^)]+)\)/g, 'Lib.box_set_right($1, $2)');
+            trimmed = trimmed.replace(/box\.delete\(([^)]+)\)/g, 'Lib.box_delete($1, ctx)');
+
             // 3. 處理 var 狀態初始化與賦值 (:=)
             if (trimmed.match(/^var\s+([a-zA-Z_]\w*)\s*=\s*(.*)/)) {
                 trimmed = trimmed.replace(/^var\s+([a-zA-Z_]\w*)\s*=\s*(.*)/, `if (ctx.vars['$1'] === undefined) ctx.vars['$1'] = $2; let $1 = ctx.vars['$1'];`);
@@ -290,6 +324,8 @@ export class PineScriptEngine {
         };
 
         const plotBuffers: Map<string, { data: number[], color: string }> = new Map();
+        const labels: any[] = []; // 🚀 捕獲所有標籤
+        const boxes: any[] = [];  // 🚀 捕獲所有盒子
 
         // 建立執行上下文
         const ctx = {
@@ -299,7 +335,9 @@ export class PineScriptEngine {
             close: seriesData.close,
             volume: seriesData.volume,
             bar_index: 0,
-            vars: {} as any, // 🚀 狀態儲存區
+            vars: {} as any,
+            labels, 
+            boxes,
             getVar: (key: string) => {
                 if (!ctx.vars[key]) ctx.vars[key] = {};
                 return ctx.vars[key];
@@ -318,7 +356,6 @@ export class PineScriptEngine {
         // 🚀 核心：Bar-by-Bar Loop (逐根掃描)
         for (let i = 0; i < size; i++) {
             ctx.bar_index = i;
-            // 更新 Series 當前指針
             ctx.open.setCurrentIndex(i);
             ctx.high.setCurrentIndex(i);
             ctx.low.setCurrentIndex(i);
@@ -328,16 +365,20 @@ export class PineScriptEngine {
             try {
                 executeBar(ctx, PineLibrary);
             } catch (e) {
-                // 忽略 Bar 級別錯誤以保持執行
+                // 忽略 Bar 級別錯誤
             }
         }
 
-        // 整理繪圖結果
+        // 整理結果 (包含線條與繪圖物件)
         const finalPlots: any[] = [];
         plotBuffers.forEach((info, title) => {
-            finalPlots.push({ data: info.data, title, color: info.color });
+            finalPlots.push({ type: 'plot', data: info.data, title, color: info.color });
         });
 
-        return finalPlots;
+        return {
+            plots: finalPlots,
+            labels: ctx.labels,
+            boxes: ctx.boxes
+        };
     }
 }

@@ -38,7 +38,11 @@ export class RenderPipeline {
         
         // 3. 渲染數據層 (Candles, Indicators)
         this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
-        this.renderEngine.drawIndicators(this.indicatorController.run(candles), start, end, startIndex, cw, 2, this.scaleEngine);
+        
+        const indicatorResult = this.indicatorController.run(candles);
+        this.renderEngine.drawIndicators(indicatorResult.plots, start, end, startIndex, cw, 2, this.scaleEngine);
+        this.renderEngine.drawIndicatorLabels(indicatorResult.labels, startIndex, cw, 2, this.scaleEngine);
+        this.renderEngine.drawIndicatorBoxes(indicatorResult.boxes, startIndex, cw, 2, this.scaleEngine);
         
         // 🚀 核心：計算畫面內最高最低點並標註 (使用精確的 rawRange 提升靈敏度)
         const { startIndex: rawStart, endIndex: rawEnd } = this.viewport.getRawRange();

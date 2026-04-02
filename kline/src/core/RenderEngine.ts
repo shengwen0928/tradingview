@@ -417,6 +417,37 @@ export class RenderEngine {
     ctx.restore();
   }
 
+  public drawIndicatorLabels(labels: any[], exactStartIndex: number, candleWidth: number, spacing: number, scaleEngine: ScaleEngine): void {
+    const ctx = this.candleCtx;
+    ctx.save();
+    labels.forEach(l => {
+        const x = (l.x - exactStartIndex) * (candleWidth + spacing) + candleWidth / 2;
+        const y = scaleEngine.priceToY(l.y);
+        ctx.fillStyle = l.textcolor || '#fff';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(l.text, x, l.style === 'down' ? y + 15 : y - 10);
+    });
+    ctx.restore();
+  }
+
+  public drawIndicatorBoxes(boxes: any[], exactStartIndex: number, candleWidth: number, spacing: number, scaleEngine: ScaleEngine): void {
+    const ctx = this.candleCtx;
+    ctx.save();
+    boxes.forEach(b => {
+        const x1 = (b.left - exactStartIndex) * (candleWidth + spacing);
+        const x2 = (b.right - exactStartIndex) * (candleWidth + spacing) + candleWidth;
+        const y1 = scaleEngine.priceToY(b.top);
+        const y2 = scaleEngine.priceToY(b.bottom);
+        
+        ctx.fillStyle = b.bgcolor || 'rgba(255,255,255,0.1)';
+        ctx.strokeStyle = b.border_color || '#fff';
+        ctx.fillRect(x1, Math.min(y1, y2), x2 - x1, Math.abs(y2 - y1));
+        ctx.strokeRect(x1, Math.min(y1, y2), x2 - x1, Math.abs(y2 - y1));
+    });
+    ctx.restore();
+  }
+
   private drawLabel(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, bgColor: string): void {
     const padding = 4;
     ctx.font = '12px sans-serif';
