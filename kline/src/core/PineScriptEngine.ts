@@ -296,6 +296,7 @@ export class PineScriptEngine {
             // 4. 基礎轉譯與 := 處理
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
+            // 處理 :=
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
 
             if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
@@ -305,13 +306,25 @@ export class PineScriptEngine {
                 return;
             }
 
-            if (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>=') && !trimmed.includes('<=') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('const') && !trimmed.startsWith('ctx.') && !trimmed.startsWith('plot')) {
+            // 🚀 修正：精確判斷賦值，排除函數呼叫 (如 label.new)
+            const isAssignment = trimmed.includes('=') && 
+                                !trimmed.includes('==') && 
+                                !trimmed.includes('>=') && 
+                                !trimmed.includes('<=') && 
+                                !trimmed.includes('!=') &&
+                                !trimmed.includes('(') && // 如果有左括號，通常是函數呼叫而非單純賦值
+                                !trimmed.startsWith('if') && 
+                                !trimmed.startsWith('let') && 
+                                !trimmed.startsWith('const') && 
+                                !trimmed.startsWith('ctx.') && 
+                                !trimmed.startsWith('_PINE_LIB_');
+
+            if (isAssignment) {
                 trimmed = 'let ' + trimmed;
             }
 
             jsLines.push(trimmed + ';');
-        });
-
+            });
         while (indentLevel > 0) {
             jsLines.push('}');
             indentLevel--;
