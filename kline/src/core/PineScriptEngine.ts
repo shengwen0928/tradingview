@@ -293,7 +293,7 @@ export class PineScriptEngine {
             }
 
             // 2. 徹底攔截 input 系統 (支援複雜字串與嵌套)
-            trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (match, rest) => {
+            trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (_match, rest) => {
                 return getFirstArgRaw(rest);
             });
 
