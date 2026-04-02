@@ -186,7 +186,7 @@ export class DrawingEngine {
                 const x2 = scaleEngine.indexToX(timeToIndex(p2.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
                 const y2 = scaleEngine.priceToY(p2.price);
 
-                if (draw.type === 'rect' || draw.type === 'priceRange' || draw.type === 'fibonacci') {
+                if (draw.type === 'rect' || (draw.type as string) === 'priceRange' || draw.type === 'fibonacci') {
                     const minX = Math.min(x1, x2), maxX = Math.max(x1, x2);
                     const minY = Math.min(y1, y2), maxY = Math.max(y1, y2);
                     if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) return draw;
