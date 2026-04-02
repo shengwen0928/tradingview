@@ -1,8 +1,6 @@
-build-and-deploy
-Process completed with exit code 2.
-build-and-deploy
-Property 'endDrawing' does not exist on type 'DrawingEngine'. Did you mean 'addDrawing'?
-build-and-deploy
-Property 'updateDrawing' does not exist on type 'DrawingEngine'. Did you mean 'updateDrawingText'?
-build-and-deploy
-Property 'startDrawing' does not exist on type 'DrawingEngine'.
+Uncaught TypeError: Cannot read properties of undefined (reading 'getMagnetMode')
+    at K.initMagnetLogic (index-22e3d7c2.js:3:19010)
+    at new K (index-22e3d7c2.js:3:18240)
+    at Q.initControllers (index-22e3d7c2.js:4:3206)
+    at new Q (index-22e3d7c2.js:4:2809)
+    at window.onload (index-22e3d7c2.js:8:56)

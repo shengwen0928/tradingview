@@ -68,8 +68,8 @@ class ChartEngine {
     this.loader = new LoaderController(this.activeManager, this.viewport);
     this.infoDisplay = new InfoDisplay();
 
-    this.initControllers();
     this.initInteraction();
+    this.initControllers();
     this.initMagnetSnapping();
     
     this.injectCustomStyles();

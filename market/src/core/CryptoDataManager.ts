@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { BinanceConnector } from '../connectors/BinanceConnector';
 import { OKXConnector } from '../connectors/OKXConnector';
 import { IConnector } from '../connectors/ConnectorInterface';
@@ -37,8 +38,7 @@ export class CryptoDataManager {
     private async syncClock() {
         try {
             const start = Date.now();
-            const response = await fetch('https://api.binance.com/api/v3/time');
-            const data = await response.json();
+            const { data } = await axios.get('https://api.binance.com/api/v3/time');
             const end = Date.now();
             this.serverTimeOffset = data.serverTime - (end - (end - start) / 2);
             console.log(`[CryptoDataManager] Time Offset: ${this.serverTimeOffset}ms`);
