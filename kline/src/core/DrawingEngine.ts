@@ -43,6 +43,41 @@ export class DrawingEngine {
         this.drawings = this.drawings.filter(d => d.id !== id);
     }
 
+    /**
+     * 🚀 新增：開始繪圖
+     */
+    public startDrawing(type: DrawingObject['type'], point: DrawingPoint) {
+        this.activeDrawing = {
+            id: 'draw_' + Date.now(),
+            type,
+            points: [point, { ...point }], // 初始化兩個點
+            color: '#2962ff',
+            lineWidth: 2
+        };
+    }
+
+    /**
+     * 🚀 新增：更新繪圖點 (通常是第二個點)
+     */
+    public updateDrawing(point: DrawingPoint) {
+        if (!this.activeDrawing) return;
+        if (this.activeDrawing.type === 'brush') {
+            this.activeDrawing.points.push(point);
+        } else {
+            this.activeDrawing.points[1] = point;
+        }
+    }
+
+    /**
+     * 🚀 新增：結束繪圖，將暫存物件轉入正式列表
+     */
+    public endDrawing() {
+        if (this.activeDrawing) {
+            this.drawings.push(this.activeDrawing);
+            this.activeDrawing = null;
+        }
+    }
+
     public updateDrawingColor(id: string, color: string) {
         const draw = this.drawings.find(d => d.id === id);
         if (draw) draw.color = color;
