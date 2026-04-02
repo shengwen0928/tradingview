@@ -1,16 +1,18 @@
 import { DataManager } from './DataManager';
 import { ViewportEngine } from './ViewportEngine';
 import { LoaderController } from './LoaderController';
+import { InfoDisplay } from '../ui/InfoDisplay';
 
 export class DataManagerService {
     private cryptoManager: DataManager;
     private stockManager: DataManager;
     private activeManager: DataManager;
     private loader: LoaderController;
+    private connectionStatus: string = 'connecting';
 
     constructor(
         private viewport: ViewportEngine,
-        private onStatusChange: (status: string, symbol: string) => void,
+        private infoDisplay: InfoDisplay,
         private requestRedraw: () => void
     ) {
         const onUpdate = (candles: any[], isHistory: boolean) => {
@@ -19,7 +21,8 @@ export class DataManagerService {
         };
 
         const statusCb = (status: string) => {
-            this.onStatusChange(status, this.activeManager.getSymbol());
+            this.connectionStatus = status;
+            this.infoDisplay.updateStatus(status, this.activeManager?.getSymbol() || '---');
         };
 
         this.cryptoManager = new DataManager(onUpdate, statusCb);
@@ -32,6 +35,7 @@ export class DataManagerService {
     public getCryptoManager() { return this.cryptoManager; }
     public getStockManager() { return this.stockManager; }
     public getLoader() { return this.loader; }
+    public getConnectionStatus() { return this.connectionStatus; }
 
     public setActiveManager(manager: DataManager) {
         this.activeManager = manager;

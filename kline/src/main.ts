@@ -14,6 +14,8 @@ import { InteractionCoordinator } from './core/InteractionCoordinator';
 import { ViewportController } from './core/ViewportController';
 import { DataManagerService } from './core/DataManagerService';
 import { RenderPipeline } from './core/RenderPipeline';
+import { LayoutController } from './core/LayoutController';
+import { APP_CONFIG } from './constants/AppConfig';
 
 // UI Components
 import { SymbolModal } from './ui/SymbolModal';
@@ -32,6 +34,7 @@ class ChartEngine {
   private dataService!: DataManagerService;
   private renderPipeline!: RenderPipeline;
   private vpController!: ViewportController;
+  private layoutController!: LayoutController;
   private symbolController!: SymbolController;
   private drawingController!: DrawingController;
   private magnetService!: MagnetService;
@@ -44,34 +47,32 @@ class ChartEngine {
   private scriptEditor!: ScriptEditor;
   private infoDisplay!: InfoDisplay;
 
-  private connectionStatus: string = 'connecting';
-
   constructor() {
     injectStyles();
+    
+    // 1. 初始化基礎引擎
     this.renderEngine = new RenderEngine(
-      document.getElementById('grid-canvas') as HTMLCanvasElement, 
-      document.getElementById('candle-canvas') as HTMLCanvasElement, 
-      document.getElementById('overlay-canvas') as HTMLCanvasElement
+      document.getElementById(APP_CONFIG.DOM_IDS.GRID_CANVAS) as HTMLCanvasElement, 
+      document.getElementById(APP_CONFIG.DOM_IDS.CANDLE_CANVAS) as HTMLCanvasElement, 
+      document.getElementById(APP_CONFIG.DOM_IDS.OVERLAY_CANVAS) as HTMLCanvasElement
     );
     this.scaleEngine = new ScaleEngine();
     this.viewport = new ViewportEngine(() => this.requestRedraw());
     this.drawingEngine = new DrawingEngine();
     this.infoDisplay = new InfoDisplay();
 
-    // 初始化數據服務
-    this.dataService = new DataManagerService(
-        this.viewport, 
-        (status, symbol) => { this.connectionStatus = status; this.infoDisplay.updateStatus(status, symbol); },
-        () => this.requestRedraw()
-    );
+    // 2. 初始化核心服務
+    this.dataService = new DataManagerService(this.viewport, this.infoDisplay, () => this.requestRedraw());
+    this.magnetService = new MagnetService(this.viewport, this.scaleEngine);
+    this.layoutController = new LayoutController(this.renderEngine, this.scaleEngine, () => this.requestRedraw());
 
     this.initControllers();
     this.initInteraction();
     this.initPipeline();
     
-    window.addEventListener('resize', () => this.handleResize());
-    this.handleResize();
-    this.init();
+    // 3. 啟動
+    this.layoutController.init();
+    this.dataService.getActiveManager().loadInitialData();
   }
 
   private initControllers() {
@@ -88,7 +89,7 @@ class ChartEngine {
     );
 
     this.tfController = new TimeframeController((tf) => { active().setTimeframe(tf); this.scaleEngine.resetAutoScale(); }, () => this.requestRedraw());
-    this.symbolModal = new SymbolModal((s, c) => this.symbolController.loadSymbol(s, c, this.tfController, this.connectionStatus));
+    this.symbolModal = new SymbolModal((s, c) => this.symbolController.loadSymbol(s, c, this.tfController, this.dataService.getConnectionStatus()));
     
     this.interactionEngine = new InteractionEngine(this.renderEngine.getOverlayCanvas(), 
         (dX, dY, z) => this.vpController.handleScroll(dX, dY, z),
@@ -102,7 +103,6 @@ class ChartEngine {
     const editToolbar = new DrawingEditToolbar(this.drawingEngine, () => this.requestRedraw());
     this.interactionCoordinator = new InteractionCoordinator(this.renderEngine.getOverlayCanvas(), this.interactionEngine, this.drawingEngine, editToolbar, this.viewport, this.scaleEngine);
     this.crosshairController = new CrosshairController(this.viewport, this.scaleEngine, this.renderEngine, this.infoDisplay, this.drawingEngine, this.interactionEngine);
-    this.magnetService = new MagnetService(this.viewport, this.scaleEngine);
     
     this.scriptEditor = new ScriptEditor(new PineScriptEngine(), active, () => this.requestRedraw());
   }
@@ -125,15 +125,6 @@ class ChartEngine {
   private draw() {
     this.renderPipeline.execute(this.dataService.getActiveManager(), () => this.requestRedraw());
   }
-
-  private handleResize() { 
-    const w = window.innerWidth, h = window.innerHeight; 
-    this.renderEngine.resize(w, h); 
-    this.scaleEngine.updateDimensions(w, h); 
-    this.requestRedraw(); 
-  }
-
-  private async init() { await this.dataService.getActiveManager().loadInitialData(); }
 }
 
 window.onload = () => { new ChartEngine(); };
