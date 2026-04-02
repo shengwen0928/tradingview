@@ -269,6 +269,9 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
             trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
             trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
+            
+            // 🚀 修正：將 Pine 的顏色字面量 #RRGGBB 轉為 JS 字串 "#RRGGBB"
+            trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
 
             // 2. 處理 ta.* 指標映射
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
@@ -287,6 +290,13 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/ta\.highest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.highest($1, $2)');
             trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.lowest($1, $2)');
             trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
+
+            // 🚀 繪圖映射 (補回遺漏的部分)
+            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, '_PINE_LIB_.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
+            trimmed = trimmed.replace(/label\.delete\(([^)]+)\)/g, '_PINE_LIB_.label_delete($1, ctx)');
+            trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, '_PINE_LIB_.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
+            trimmed = trimmed.replace(/box\.set_right\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.box_set_right($1, $2)');
+            trimmed = trimmed.replace(/box\.delete\(([^)]+)\)/g, '_PINE_LIB_.box_delete($1, ctx)');
 
             // 3. 處理多重賦值 [a, b] = ... 轉為 let [a, b] = ...
             if (trimmed.startsWith('[') && trimmed.includes('=')) {
