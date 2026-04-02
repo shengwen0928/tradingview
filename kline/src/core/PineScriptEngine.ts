@@ -317,7 +317,10 @@ export class PineScriptEngine {
             indentLevel--;
         }
 
-        return jsLines.join('\n');
+        const finalJS = jsLines.join('\n');
+        // 🚀 關鍵 Debug：印出編譯後的 JS 以便找出 '.' 錯誤的位置
+        console.log('[PineScriptEngine] Final Transpiled JS:\n', finalJS);
+        return finalJS;
     }
 
     /**

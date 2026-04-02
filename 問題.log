@@ -1,7 +1,2559 @@
-
-build-and-deploy
-Process completed with exit code 2.
-build-and-deploy
-Declaration or statement expected.
-build-and-deploy
-Declaration or statement expected.
+index-7f4a0ab0.js:3 [DataManager] Fetching from Crypto API: https://tradingviewer-gtr2.onrender.com/crypto/klines?id=BTC%2FUSDT&interval=1m
+index-7f4a0ab0.js:3 [DataManager] Received 500 initial candles
+index-7f4a0ab0.js:3 [DataManager] Latest Candle: 2026/4/2 下午10:31:00
+index-7f4a0ab0.js:3 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+setDataCount @ index-7f4a0ab0.js:1
+s @ index-7f4a0ab0.js:3
+loadInitialData @ index-7f4a0ab0.js:3
+await in loadInitialData
+Tt @ index-7f4a0ab0.js:113
+window.onload @ index-7f4a0ab0.js:113
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [DataManager] Backend WebSocket Connected ✅
+index-7f4a0ab0.js:3 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+update @ index-7f4a0ab0.js:3
+onMouseMove @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+startInertia @ index-7f4a0ab0.js:1
+(匿名) @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+index-7f4a0ab0.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected token '.'
+    at new Function (<anonymous>)
+    at B.run (index-7f4a0ab0.js:3:688)
+    at st.run (index-7f4a0ab0.js:3:16955)
+    at at.execute (index-7f4a0ab0.js:3:29475)
+    at index-7f4a0ab0.js:3:30914
+run @ index-7f4a0ab0.js:3
+execute @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:3
+requestAnimationFrame
+(匿名) @ index-7f4a0ab0.js:3
+(匿名) @ index-7f4a0ab0.js:113
+handleScroll @ index-7f4a0ab0.js:1
+handleScroll @ index-7f4a0ab0.js:3
+onScroll @ index-7f4a0ab0.js:3
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
+requestAnimationFrame
+e @ index-7f4a0ab0.js:1
