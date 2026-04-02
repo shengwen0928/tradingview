@@ -118,7 +118,23 @@
                 <button id="tf-main-btn" class="menu-btn">時間週期 ▾</button>
             </div>
             <!-- 🚀 新增：技術指標按鈕 -->
-            <button id="pine-editor-btn" class="menu-btn">技術指標</button>
+            <button id="indicator-menu-btn" class="menu-btn">技術指標</button>
+        </div>
+
+        <!-- 🚨 技術指標選擇彈窗 -->
+        <div id="indicator-modal" class="modal-overlay">
+            <div class="modal-content" style="width: 450px;">
+                <div style="padding: 16px; border-bottom: 1px solid #363c4e; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: bold; color: #fff;">指標</span>
+                    <button id="indicator-modal-close" style="background: transparent; border: none; color: #787b86; cursor: pointer; font-size: 20px;">&times;</button>
+                </div>
+                <div class="modal-header">
+                    <input type="text" id="indicator-search" placeholder="搜尋指標..." autocomplete="off">
+                </div>
+                <div id="indicator-list" class="symbol-list">
+                    <!-- 由 JS 動態生成指標清單 -->
+                </div>
+            </div>
         </div>
 
         <!-- 🚨 時間週期全螢幕彈窗 -->
