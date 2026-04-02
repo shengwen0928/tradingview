@@ -294,7 +294,8 @@ export class DataManager {
       } else {
         console.error(`[DataManager] Backend API Error:`, result.message);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error.name === 'AbortError') return; // 🚀 安靜退出
       console.error('[DataManager] Failed to load initial data from backend:', error);
     }
   }
