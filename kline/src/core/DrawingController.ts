@@ -71,7 +71,7 @@ export class DrawingController {
                         this.viewport, 
                         spacing, 
                         (t: number) => activeManager.getIndexAtTime(t), 
-                        (idx: number) => activeManager.getTimeAtIndex(idx)
+                        (idx: number) => activeManager.getTimeAtFloatIndex(idx)
                     );
                 } else if (this.drawingEngine.isPlacing()) {
                     this.drawingEngine.updateDrawing(point);
