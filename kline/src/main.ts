@@ -1,9 +1,7 @@
-import { DataManager } from './core/DataManager';
 import { ViewportEngine } from './core/ViewportEngine';
 import { ScaleEngine } from './core/ScaleEngine';
 import { RenderEngine } from './core/RenderEngine';
 import { InteractionEngine } from './core/InteractionEngine';
-import { LoaderController } from './core/LoaderController';
 import { PineScriptEngine } from './core/PineScriptEngine';
 import { DrawingEngine } from './core/DrawingEngine';
 import { SymbolController } from './core/SymbolController';
@@ -13,6 +11,9 @@ import { CrosshairController } from './core/CrosshairController';
 import { PriceAnimator } from './core/PriceAnimator';
 import { IndicatorController } from './core/IndicatorController';
 import { InteractionCoordinator } from './core/InteractionCoordinator';
+import { ViewportController } from './core/ViewportController';
+import { DataManagerService } from './core/DataManagerService';
+import { RenderPipeline } from './core/RenderPipeline';
 
 // UI Components
 import { SymbolModal } from './ui/SymbolModal';
@@ -24,24 +25,18 @@ import { DrawingEditToolbar } from './ui/DrawingEditToolbar';
 import { injectStyles } from './ui/Styles';
 
 class ChartEngine {
-  private cryptoManager!: DataManager;
-  private stockManager!: DataManager;
-  private activeManager!: DataManager;
-  private pineEngine!: PineScriptEngine; 
   private viewport!: ViewportEngine;
   private scaleEngine!: ScaleEngine;
   private renderEngine!: RenderEngine;
-  private loader!: LoaderController;
-  private drawingEngine!: DrawingEngine;
   private interactionEngine!: InteractionEngine;
+  private dataService!: DataManagerService;
+  private renderPipeline!: RenderPipeline;
+  private vpController!: ViewportController;
   private symbolController!: SymbolController;
   private drawingController!: DrawingController;
   private magnetService!: MagnetService;
   private crosshairController!: CrosshairController;
-  private priceAnimator!: PriceAnimator;
-  private indicatorController!: IndicatorController;
   private interactionCoordinator!: InteractionCoordinator;
-  private editToolbar!: DrawingEditToolbar;
   
   private symbolModal!: SymbolModal;
   private tfController!: TimeframeController;
@@ -60,29 +55,19 @@ class ChartEngine {
     );
     this.scaleEngine = new ScaleEngine();
     this.viewport = new ViewportEngine(() => this.requestRedraw());
-    this.pineEngine = new PineScriptEngine();
     this.drawingEngine = new DrawingEngine();
-    this.editToolbar = new DrawingEditToolbar(this.drawingEngine, () => this.requestRedraw());
-    this.priceAnimator = new PriceAnimator();
-    this.indicatorController = new IndicatorController(this.pineEngine);
-    
-    const onDataUpdate = (candles: any[], isHistory: boolean) => {
-        this.viewport.setDataCount(candles.length, isHistory);
-        this.requestRedraw();
-    };
-    const onStatusChange = (status: any) => {
-        this.connectionStatus = status;
-        this.infoDisplay.updateStatus(status, this.symbolController?.getCurrentSymbol() || 'BTC/USDT');
-    };
-
-    this.cryptoManager = new DataManager(onDataUpdate, onStatusChange);
-    this.stockManager = new DataManager(onDataUpdate, onStatusChange);
-    this.activeManager = this.cryptoManager;
-    this.loader = new LoaderController(this.activeManager, this.viewport);
     this.infoDisplay = new InfoDisplay();
+
+    // 初始化數據服務
+    this.dataService = new DataManagerService(
+        this.viewport, 
+        (status, symbol) => { this.connectionStatus = status; this.infoDisplay.updateStatus(status, symbol); },
+        () => this.requestRedraw()
+    );
 
     this.initControllers();
     this.initInteraction();
+    this.initPipeline();
     
     window.addEventListener('resize', () => this.handleResize());
     this.handleResize();
@@ -90,74 +75,55 @@ class ChartEngine {
   }
 
   private initControllers() {
+    const active = () => this.dataService.getActiveManager();
+    const loader = () => this.dataService.getLoader();
+
+    this.vpController = new ViewportController(this.viewport, this.scaleEngine, loader, () => this.requestRedraw());
+    
     this.symbolController = new SymbolController(
-        this.cryptoManager, this.stockManager, this.viewport, this.scaleEngine, this.infoDisplay,
-        (m) => { this.activeManager = m; this.loader = new LoaderController(m, this.viewport); },
+        this.dataService.getCryptoManager(), this.dataService.getStockManager(), 
+        this.viewport, this.scaleEngine, this.infoDisplay,
+        (m) => this.dataService.setActiveManager(m),
         () => this.requestRedraw()
     );
 
+    this.tfController = new TimeframeController((tf) => { active().setTimeframe(tf); this.scaleEngine.resetAutoScale(); }, () => this.requestRedraw());
     this.symbolModal = new SymbolModal((s, c) => this.symbolController.loadSymbol(s, c, this.tfController, this.connectionStatus));
-    this.tfController = new TimeframeController((tf) => { this.activeManager.setTimeframe(tf); this.scaleEngine.resetAutoScale(); }, () => this.requestRedraw());
-    this.drawingController = new DrawingController(this.interactionEngine, this.drawingEngine, this.viewport, this.scaleEngine, () => this.requestRedraw());
-    this.drawingToolbar = new DrawingToolbar(this.interactionEngine, this.drawingEngine, () => this.requestRedraw(), (tool) => this.drawingController.startDrawing(tool, this.activeManager));
-    this.scriptEditor = new ScriptEditor(this.pineEngine, () => this.activeManager, () => this.requestRedraw());
     
+    this.interactionEngine = new InteractionEngine(this.renderEngine.getOverlayCanvas(), 
+        (dX, dY, z) => this.vpController.handleScroll(dX, dY, z),
+        (mX, mY, s, z) => this.vpController.handleZoom(mX, s, z, this.renderEngine.getLogicalWidth()),
+        (mX, mY) => this.crosshairController.update(mX, mY, active(), () => this.requestRedraw())
+    );
+
+    this.drawingController = new DrawingController(this.interactionEngine, this.drawingEngine, this.viewport, this.scaleEngine, () => this.requestRedraw());
+    this.drawingToolbar = new DrawingToolbar(this.interactionEngine, this.drawingEngine, () => this.requestRedraw(), (tool) => this.drawingController.startDrawing(tool, active()));
+    
+    const editToolbar = new DrawingEditToolbar(this.drawingEngine, () => this.requestRedraw());
+    this.interactionCoordinator = new InteractionCoordinator(this.renderEngine.getOverlayCanvas(), this.interactionEngine, this.drawingEngine, editToolbar, this.viewport, this.scaleEngine);
     this.crosshairController = new CrosshairController(this.viewport, this.scaleEngine, this.renderEngine, this.infoDisplay, this.drawingEngine, this.interactionEngine);
     this.magnetService = new MagnetService(this.viewport, this.scaleEngine);
-    this.interactionCoordinator = new InteractionCoordinator(this.renderEngine.getOverlayCanvas(), this.interactionEngine, this.drawingEngine, this.editToolbar, this.viewport, this.scaleEngine);
+    
+    this.scriptEditor = new ScriptEditor(new PineScriptEngine(), active, () => this.requestRedraw());
   }
 
   private initInteraction() {
-    this.interactionEngine = new InteractionEngine(
-      this.renderEngine.getOverlayCanvas(),
-      (dX, dY, z) => { 
-        if (z === 'price') this.scaleEngine.handleVerticalPan(dY);
-        else { this.viewport.handleScroll(dX); this.scaleEngine.handleVerticalPan(dY); }
-        this.loader.checkLoadMore(); this.requestRedraw();
-      },
-      (mX, _mY, s, z) => {
-        if (z === 'price') this.scaleEngine.handleVerticalZoom(s);
-        else if (z === 'time') this.viewport.handleZoom(this.renderEngine.getLogicalWidth() / 2, s, this.renderEngine.getLogicalWidth());
-        else this.viewport.handleZoom(mX, s, this.renderEngine.getLogicalWidth());
-        this.loader.checkLoadMore(); this.requestRedraw();
-      },
-      (mX, mY) => this.crosshairController.update(mX, mY, this.activeManager, () => this.requestRedraw())
-    );
+    this.interactionEngine.setSnapProvider(this.magnetService.getSnapProvider(this.dataService.getActiveManager()));
+    this.interactionCoordinator.init(() => this.dataService.getActiveManager());
+  }
 
-    this.interactionEngine.setSnapProvider(this.magnetService.getSnapProvider(this.activeManager));
-    this.interactionCoordinator.init(() => this.activeManager);
+  private initPipeline() {
+    this.renderPipeline = new RenderPipeline(
+        this.viewport, this.scaleEngine, this.renderEngine, 
+        new PriceAnimator(), new IndicatorController(new PineScriptEngine()), 
+        this.drawingEngine, this.crosshairController
+    );
   }
 
   private requestRedraw() { requestAnimationFrame(() => this.draw()); }
 
   private draw() {
-    const candles = this.activeManager.getCandles();
-    if (candles.length === 0) return;
-
-    const { start, end } = this.viewport.getVisibleRange();
-    const { startIndex } = this.viewport.getRawRange();
-    const visible = candles.slice(start, end);
-    const cw = this.viewport.getCandleWidth();
-    const lastCandle = candles[candles.length - 1];
-
-    // 1. 動態更新價格平滑
-    const visualPrice = this.priceAnimator.update(lastCandle.close, () => this.requestRedraw());
-    
-    // 2. 更新與渲染背景層 (Grid, Axes)
-    this.scaleEngine.updateScale(visible);
-    this.renderEngine.drawGrid(this.scaleEngine);
-    this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx) => this.activeManager.getTimeAtIndex(idx), this.scaleEngine);
-    
-    // 3. 渲染數據層 (Candles, Indicators)
-    this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
-    this.renderEngine.drawIndicators(this.indicatorController.run(candles), start, end, startIndex, cw, 2, this.scaleEngine);
-    
-    // 4. 渲染互動層 (Drawings, Crosshair)
-    this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t) => this.activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
-    this.crosshairController.draw(this.activeManager);
-
-    // 5. 渲染價格線
-    this.renderEngine.drawLastPriceLine(visualPrice, visualPrice >= lastCandle.open ? '#26a69a' : '#ef5350', this.scaleEngine);
+    this.renderPipeline.execute(this.dataService.getActiveManager(), () => this.requestRedraw());
   }
 
   private handleResize() { 
@@ -167,7 +133,7 @@ class ChartEngine {
     this.requestRedraw(); 
   }
 
-  private async init() { await this.activeManager.loadInitialData(); }
+  private async init() { await this.dataService.getActiveManager().loadInitialData(); }
 }
 
 window.onload = () => { new ChartEngine(); };
