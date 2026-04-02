@@ -254,26 +254,39 @@ export class PineScriptEngine {
             let trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//')) return;
 
-            // 0. 處理函數定義 (name(args) => body)
+            // 🚀 0. 預處理：過濾 V6 特有關鍵字與物件
+            if (trimmed.startsWith('type ') || trimmed.startsWith('method ')) return;
+            trimmed = trimmed.replace(/^(?:float|int|bool|string|color|line|label|box|table)\s+([\w.]+)/g, '$1');
+
+            // 1. 處理函數定義 (更穩健的匹配)
             if (trimmed.includes('=>')) {
-                trimmed = trimmed.replace(/^([\w.]+)\(([^)]*)\)\s*=>\s*(.*)/, 'const $1 = ($2) => { return $3 };');
+                const parts = trimmed.split('=>');
+                const head = parts[0].trim();
+                const body = parts[1].trim();
+                if (head.includes('(')) {
+                    trimmed = `const ${head} = { return ${body || 'na'} };`;
+                } else {
+                    trimmed = `const ${head} = () => { return ${body || 'na'} };`;
+                }
                 jsLines.push(trimmed);
                 return;
             }
 
-            // 1. 處理基礎映射與 input
-            trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe)\(([^,]+)[^)]*\)/g, '$1');
+            // 2. 徹底攔截 input 系統 (只取第一個參數)
+            trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe|color)\s*\(([^,)]+)[^)]*\)/g, '$1');
+            trimmed = trimmed.replace(/input\s*\(([^,)]+)[^)]*\)/g, '$1');
+
+            // 3. 處理基礎映射
             trimmed = trimmed.replace(/math\.max/g, 'Math.max');
             trimmed = trimmed.replace(/math\.min/g, 'Math.min');
             trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
             trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
             trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
             trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
-            
-            // 🚀 修正：將 Pine 的顏色字面量 #RRGGBB 轉為 JS 字串 "#RRGGBB"
+
             trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
 
-            // 2. 處理 ta.* 指標映射
+            // 4. 指標映射
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
             trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
             trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
@@ -291,22 +304,16 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.lowest($1, $2)');
             trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
 
-            // 🚀 繪圖映射 (補回遺漏的部分)
+            // 5. 繪圖與特殊 API
             trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, '_PINE_LIB_.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
-            trimmed = trimmed.replace(/label\.delete\(([^)]+)\)/g, '_PINE_LIB_.label_delete($1, ctx)');
             trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, '_PINE_LIB_.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
-            trimmed = trimmed.replace(/box\.set_right\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.box_set_right($1, $2)');
-            trimmed = trimmed.replace(/box\.delete\(([^)]+)\)/g, '_PINE_LIB_.box_delete($1, ctx)');
+            trimmed = trimmed.replace(/(?:label|box|table|line)\.delete\(([^)]+)\)/g, '// Deleted $1');
+            trimmed = trimmed.replace(/indicator\([^)]*\)/g, '// indicator init');
 
-            // 3. 處理多重賦值 [a, b] = ... 轉為 let [a, b] = ...
-            if (trimmed.startsWith('[') && trimmed.includes('=')) {
-                trimmed = 'let ' + trimmed;
-            }
-
-            // 4. 基礎轉譯與 := 處理
+            // 6. 賦值與語法結構
+            if (trimmed.startsWith('[')) trimmed = 'let ' + trimmed;
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
-            // 處理 :=
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
 
             if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
@@ -316,26 +323,11 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 🚀 修正：精確判斷賦值，排除函數呼叫 (如 label.new)
-            const isAssignment = trimmed.includes('=') && 
-                                !trimmed.includes('==') && 
-                                !trimmed.includes('>=') && 
-                                !trimmed.includes('<=') && 
-                                !trimmed.includes('!=') &&
-                                !trimmed.includes('(') && // 如果有左括號，通常是函數呼叫而非單純賦值
-                                !trimmed.startsWith('if') && 
-                                !trimmed.startsWith('let') && 
-                                !trimmed.startsWith('const') && 
-                                !trimmed.startsWith('ctx.') && 
-                                !trimmed.startsWith('_PINE_LIB_');
-
-            if (isAssignment) {
-                trimmed = 'let ' + trimmed;
-            }
+            const isAssignment = trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>') && !trimmed.includes('<') && !trimmed.includes('(') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('const');
+            if (isAssignment) trimmed = 'let ' + trimmed;
 
             jsLines.push(trimmed + ';');
-            });
-        while (indentLevel > 0) {
+        });        while (indentLevel > 0) {
             jsLines.push('}');
             indentLevel--;
         }
