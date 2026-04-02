@@ -1,13 +1,14 @@
 import { InteractionEngine } from './InteractionEngine';
-import { DrawingEngine, DrawingObject, DrawingPoint } from './DrawingEngine';
+import { DrawingEngine, DrawingObject } from './DrawingEngine';
 import { ViewportEngine } from './ViewportEngine';
 import { ScaleEngine } from './ScaleEngine';
 import { DataManager } from './DataManager';
 
 export class DrawingController {
     private moveTarget: DrawingObject | null = null;
-    private moveStartPos = { x: 0, y: 0 };
-    private moveInitialPoints: DrawingPoint[] = []; // 🚀 新增：記錄移動前的原始座標快照
+    private moveStartMouseIndex: number = 0; // 🚀 新增：記錄滑鼠起始 K 棒索引
+    private moveStartMousePrice: number = 0; // 🚀 新增：記錄滑鼠起始價格
+    private moveInitialPoints: { index: number, price: number }[] = []; // 🚀 新增：物件端點初始數據座標
 
     constructor(
         private interactionEngine: InteractionEngine,
@@ -23,23 +24,24 @@ export class DrawingController {
             const candleWidth = this.viewport.getCandleWidth();
             const spacing = 2;
             
+            // 🚀 始終使用高精度的 FloatIndex 進行計算
             const rawIndex = mouseX / (candleWidth + spacing) + startIndex;
-            const time = tool === 'brush' 
-                ? activeManager.getTimeAtFloatIndex(rawIndex) 
-                : activeManager.getTimeAtIndex(Math.round(rawIndex));
-                
             const price = this.scaleEngine.yToPrice(mouseY);
+            const time = activeManager.getTimeAtFloatIndex(rawIndex);
             const point = { time, price };
 
             if (type === 'start') {
                 if (tool === 'move') {
-                    // 🚀 移動模式：尋找點擊到的物件
                     const hit = this.drawingEngine.hitTest(mouseX, mouseY, this.scaleEngine, startIndex, candleWidth, spacing, (t: number) => activeManager.getIndexAtTime(t));
                     if (hit) {
                         this.moveTarget = hit;
-                        this.moveStartPos = { x: mouseX, y: mouseY };
-                        // 🚀 關鍵：在開始移動時，深拷貝一份原始座標快照
-                        this.moveInitialPoints = hit.points.map(p => ({ ...p }));
+                        this.moveStartMouseIndex = rawIndex;
+                        this.moveStartMousePrice = price;
+                        // 🚀 關鍵：在開始移動時，記錄所有點的數據空間位置 (Index + Price)
+                        this.moveInitialPoints = hit.points.map(p => ({
+                            index: activeManager.getIndexAtTime(p.time),
+                            price: p.price
+                        }));
                     }
                     return;
                 }
@@ -57,20 +59,15 @@ export class DrawingController {
                 }
             } else if (type === 'move') {
                 if (tool === 'move' && this.moveTarget) {
-                    // 🚀 執行移動：計算相對於「起始點」的總位移
-                    const totalDx = mouseX - this.moveStartPos.x;
-                    const totalDy = mouseY - this.moveStartPos.y;
+                    // 🚀 核心改動：計算數據空間的「相對位移」
+                    const deltaIndex = rawIndex - this.moveStartMouseIndex;
+                    const deltaPrice = price - this.moveStartMousePrice;
                     
-                    // 🚀 呼叫新的絕對位移移動函式
-                    this.drawingEngine.moveDrawingAbsolute(
+                    this.drawingEngine.moveDrawingRelative(
                         this.moveTarget.id, 
                         this.moveInitialPoints,
-                        totalDx, 
-                        totalDy, 
-                        this.scaleEngine, 
-                        this.viewport, 
-                        spacing, 
-                        (t: number) => activeManager.getIndexAtTime(t), 
+                        deltaIndex, 
+                        deltaPrice, 
                         (idx: number) => activeManager.getTimeAtFloatIndex(idx)
                     );
                 } else if (this.drawingEngine.isPlacing()) {

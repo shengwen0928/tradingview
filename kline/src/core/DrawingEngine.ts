@@ -132,41 +132,25 @@ export class DrawingEngine {
     }
 
     /**
-     * 🚀 新增：絕對位移移動 (防止分離與累積誤差)
+     * 🚀 修正：數據空間相對位移 (徹底解決分離問題)
      */
-    public moveDrawingAbsolute(
+    public moveDrawingRelative(
         id: string, 
-        initialPoints: DrawingPoint[],
-        totalDeltaX: number, 
-        totalDeltaY: number, 
-        scaleEngine: ScaleEngine, 
-        viewport: any, 
-        spacing: number,
-        timeToIndex: (t: number) => number,
+        initialPoints: { index: number, price: number }[],
+        deltaIndex: number, 
+        deltaPrice: number, 
         indexToTime: (i: number) => number
     ) {
         const draw = this.drawings.find(d => d.id === id);
         if (!draw) return;
 
-        const candleWidth = viewport.getCandleWidth();
-        const { startIndex } = viewport.getRawRange();
-
         draw.points.forEach((p, i) => {
             const initialP = initialPoints[i];
             if (!initialP) return;
 
-            // 1. 計算原始座標
-            const startX = scaleEngine.indexToX(timeToIndex(initialP.time), startIndex, candleWidth, spacing);
-            const startY = scaleEngine.priceToY(initialP.price);
-
-            // 2. 加上總位移量 (絕對位移，不累積誤差)
-            const nextX = startX + totalDeltaX;
-            const nextY = startY + totalDeltaY;
-
-            // 3. 轉回時間與價格
-            const nextIndex = scaleEngine.xToIndex(nextX, startIndex, candleWidth, spacing);
-            p.time = indexToTime(nextIndex);
-            p.price = scaleEngine.yToPrice(nextY);
+            // 直接在數據空間 (Index/Price) 進行位移，不受滾動或縮放影響
+            p.time = indexToTime(initialP.index + deltaIndex);
+            p.price = initialP.price + deltaPrice;
         });
     }
 
