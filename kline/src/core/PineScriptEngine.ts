@@ -375,8 +375,6 @@ export class PineScriptEngine {
                 // 忽略執行期錯誤
             }
         }
-            }
-        }
         // 整理結果 (包含線條與繪圖物件)
         const finalPlots: any[] = [];
         plotBuffers.forEach((info, title) => {
