@@ -39,7 +39,8 @@ class ChartEngine {
   private currentSymbol: string = 'BTC/USDT'; 
   private lastMousePos = { x: 0, y: 0 };
   private hoveredDrawingId: string | null = null;
-  private visualLastPrice: number | null = null; // 🚀 新增：平滑視覺價格
+  private visualLastPrice: number | null = null; 
+  private editToolbar: HTMLElement | null = null; // 🚀 新增：浮動工具列
 
   constructor() {
     this.overlayCanvas = document.getElementById('overlay-canvas') as HTMLCanvasElement;
@@ -331,13 +332,70 @@ class ChartEngine {
   }
 
   private showEditToolbar(x: number, y: number, hit: any) {
-    console.log('[ChartEngine] Show drawing edit toolbar at', { x, y, hit });
-    // TODO: Implement actual floating toolbar for drawing objects
+    this.hideEditToolbar();
+
+    const toolbar = document.createElement('div');
+    toolbar.id = 'drawing-edit-toolbar';
+    toolbar.className = 'edit-toolbar';
+    toolbar.style.left = `${x + 20}px`;
+    toolbar.style.top = `${y - 20}px`;
+
+    const colors = ['#2962ff', '#ef5350', '#26a69a', '#f0b90b', '#fff'];
+    const widths = [1, 2, 3, 4];
+
+    toolbar.innerHTML = `
+        <div class="toolbar-section">
+            ${colors.map(c => `<div class="color-dot" style="background:${c}" data-color="${c}"></div>`).join('')}
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-section">
+            ${widths.map(w => `<div class="width-btn" data-width="${w}">${w}px</div>`).join('')}
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-section">
+            <div class="style-btn" id="toggle-dash">虛線</div>
+            <div class="delete-btn" id="delete-drawing">🗑️</div>
+        </div>
+    `;
+
+    document.body.appendChild(toolbar);
+    this.editToolbar = toolbar;
+
+    // 綁定事件
+    toolbar.querySelectorAll('.color-dot').forEach(dot => {
+        (dot as HTMLElement).onclick = () => {
+            this.drawingEngine.updateDrawingColor(hit.id, (dot as HTMLElement).dataset.color!);
+            this.requestRedraw();
+        };
+    });
+
+    toolbar.querySelectorAll('.width-btn').forEach(btn => {
+        (btn as HTMLElement).onclick = () => {
+            this.drawingEngine.updateDrawingWidth(hit.id, parseInt((btn as HTMLElement).dataset.width!));
+            this.requestRedraw();
+        };
+    });
+
+    const dashBtn = toolbar.querySelector('#toggle-dash') as HTMLElement;
+    dashBtn.onclick = () => {
+        const isDash = !(hit as any).isDash;
+        this.drawingEngine.updateDrawingDash(hit.id, isDash);
+        this.requestRedraw();
+    };
+
+    const deleteBtn = toolbar.querySelector('#delete-drawing') as HTMLElement;
+    deleteBtn.onclick = () => {
+        this.drawingEngine.deleteDrawing(hit.id);
+        this.hideEditToolbar();
+        this.requestRedraw();
+    };
   }
 
   private hideEditToolbar() {
-    // console.log('[ChartEngine] Hide drawing edit toolbar');
-    // TODO: Implement actual floating toolbar hiding
+    if (this.editToolbar) {
+        this.editToolbar.remove();
+        this.editToolbar = null;
+    }
   }
 
   private handleResize() { 
@@ -362,6 +420,17 @@ class ChartEngine {
         /* 🚀 提升全域清晰度 */
         body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
         canvas { image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
+
+        /* 🚀 浮動編輯工具列 */
+        .edit-toolbar { position: absolute; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; display: flex; align-items: center; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; gap: 8px; }
+        .toolbar-section { display: flex; align-items: center; gap: 6px; }
+        .toolbar-divider { width: 1px; height: 20px; background: #363c4e; margin: 0 4px; }
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.1s; }
+        .color-dot:hover { transform: scale(1.2); }
+        .width-btn, .style-btn { color: #d1d4dc; font-size: 11px; cursor: pointer; padding: 2px 6px; border-radius: 3px; }
+        .width-btn:hover, .style-btn:hover { background: #2a2e39; color: #fff; }
+        .delete-btn { cursor: pointer; font-size: 14px; padding: 2px 4px; filter: grayscale(1); transition: filter 0.2s; }
+        .delete-btn:hover { filter: grayscale(0); transform: scale(1.1); }
     `;
     document.head.appendChild(style);
   }

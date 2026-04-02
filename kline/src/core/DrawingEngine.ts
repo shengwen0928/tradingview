@@ -115,6 +115,16 @@ export class DrawingEngine {
         if (draw) draw.color = color;
     }
 
+    public updateDrawingWidth(id: string, width: number) {
+        const draw = this.drawings.find(d => d.id === id);
+        if (draw) draw.lineWidth = width;
+    }
+
+    public updateDrawingDash(id: string, isDash: boolean) {
+        const draw = this.drawings.find(d => d.id === id);
+        if (draw) (draw as any).isDash = isDash;
+    }
+
     public updateDrawingText(id: string, text: string) {
         const draw = this.drawings.find(d => d.id === id);
         if (draw) draw.text = text;
@@ -249,6 +259,13 @@ export class DrawingEngine {
             ctx.strokeStyle = draw.color;
             ctx.fillStyle = draw.color;
             ctx.lineWidth = draw.lineWidth || 2;
+            
+            // 🚀 支援虛線樣式
+            if ((draw as any).isDash) {
+                ctx.setLineDash([5, 5]);
+            } else {
+                ctx.setLineDash([]);
+            }
             
             // 🚨 判斷是否要顯示端點
             const isHovered = draw.id === hoveredId || draw === this.activeDrawing;
