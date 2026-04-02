@@ -273,10 +273,10 @@ export class PineScriptEngine {
 
             // 2. 徹底攔截 input 系統 (強效清理)
             // 匹配 input.xxx(...) 並精確提取第一個數字、布林或字串
-            trimmed = trimmed.replace(/input\.(?:\w+)\s*\(\s*([^,)]+)[^)]*\)/g, (match, p1) => {
+            trimmed = trimmed.replace(/input\.(?:\w+)\s*\(\s*([^,)]+)[^)]*\)/g, (_match, p1) => {
                 return p1.replace(/['"]/g, '').trim();
             });
-            trimmed = trimmed.replace(/input\s*\(\s*([^,)]+)[^)]*\)/g, (match, p1) => {
+            trimmed = trimmed.replace(/input\s*\(\s*([^,)]+)[^)]*\)/g, (_match, p1) => {
                 return p1.replace(/['"]/g, '').trim();
             });
 
