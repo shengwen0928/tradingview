@@ -132,23 +132,30 @@ class ChartEngine {
                     document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
                 }
             } else {
-                // 之後的點擊
-                const active = this.drawingEngine.getActiveDrawing();
-                const currentCount = active?.points.length || 0;
-                
-                if (currentCount === needed) {
-                    // 如果目前的點數剛好等於需要的點數，代表這一下是最後一個點的固定點擊
-                    this.drawingEngine.endDrawing();
-                    this.interactionEngine.setDrawingMode(null);
-                    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-                } else {
-                    // 還沒到最後一個點，繼續加點
-                    this.drawingEngine.addPoint(point);
+                // 之後的點擊 (僅針對非畫筆工具)
+                if (tool !== 'brush') {
+                    const active = this.drawingEngine.getActiveDrawing();
+                    const currentCount = active?.points.length || 0;
+                    
+                    if (currentCount === needed) {
+                        this.drawingEngine.endDrawing();
+                        this.interactionEngine.setDrawingMode(null);
+                        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                    } else {
+                        this.drawingEngine.addPoint(point);
+                    }
                 }
             }
         } else if (type === 'move') {
             if (this.drawingEngine.isPlacing()) {
                 this.drawingEngine.updateDrawing(point);
+            }
+        } else if (type === 'end') {
+            // 🚨 畫筆專屬：放開滑鼠時結束
+            if (tool === 'brush' && this.drawingEngine.isPlacing()) {
+                this.drawingEngine.endDrawing();
+                this.interactionEngine.setDrawingMode(null);
+                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
             }
         }
         this.requestRedraw();
