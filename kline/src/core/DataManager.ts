@@ -114,8 +114,10 @@ export class DataManager {
     const formattedBar = bar
       .replace('h', 'H').replace('d', 'D').replace('w', 'W').replace('y', 'Y').replace('M', 'M');
     
-    if (this.bar === formattedBar) return;
+    // 🚨 修正：即使週期標籤一致也強制 reload，解決預設值啟動失敗後無法手動修復的問題
+    if (this.bar === formattedBar && this.candles.length > 0) return;
     
+    console.log(`[DataManager] Set Timeframe: ${this.bar} -> ${formattedBar}`);
     this.bar = formattedBar;
     this.intervalMs = this.parseBarToMs(formattedBar);
     this.candles = [];
@@ -162,6 +164,10 @@ export class DataManager {
       this.ws.close();
     }
     if (this.pingInterval) clearInterval(this.pingInterval);
+
+    // 🚨 徹底重置，確保下一波資料觸發 UI 的 isFirstLoad 邏輯
+    this.candles = [];
+    this.onDataUpdated([], false);
 
     // 重新載入數據
     await this.loadInitialData();
@@ -274,19 +280,23 @@ export class DataManager {
       const res = JSON.parse(event.data);
       if (res.type === 'pong') return; // 忽略 Pong 回應
       
-      // 🚨 關鍵修復：嚴格檢查 res.interval
-      // 只有當前訂閱的標的且週期完全一致時才接受數據
-      if (res.type === 'kline' && res.id === this.instId && res.interval === this.bar) {
-        const raw = res.data;
-        const candle: Candle = {
-          time: raw.timestamp,
-          open: raw.open,
-          high: raw.high,
-          low: raw.low,
-          close: raw.close,
-          volume: raw.volume,
-        };
-        this.appendRealtimeData(candle, res.interval);
+      if (res.type === 'kline') {
+        // 🚨 容錯檢查：id 只要主體一致即可，週期不區分大小寫
+        const matchId = res.id === this.instId || res.id.split(':')[0] === this.instId.split(':')[0];
+        const matchTf = res.interval.toLowerCase() === this.bar.toLowerCase();
+
+        if (matchId && matchTf) {
+          const raw = res.data;
+          const candle: Candle = {
+            time: raw.timestamp,
+            open: raw.open,
+            high: raw.high,
+            low: raw.low,
+            close: raw.close,
+            volume: raw.volume,
+          };
+          this.appendRealtimeData(candle, res.interval);
+        }
       } else if (res.type === 'error') {
         console.error(`[DataManager] Backend WebSocket Error:`, res.message);
       }
@@ -368,25 +378,30 @@ export class DataManager {
   }
 
   public appendRealtimeData(candle: Candle, candleInterval: string): void {
-    // 🚨 最終防護：如果進來的資料週期與目前 DataManager 鎖定的週期不符，絕對不寫入
-    if (candleInterval !== this.bar) {
-      // console.warn(`[DataManager] Discarding mismatched candle: expected ${this.bar}, got ${candleInterval}`);
+    // 🚨 最終防護：放寬週期檢查 (不區分大小寫)
+    if (!candleInterval || candleInterval.toLowerCase() !== this.bar.toLowerCase()) {
+      return;
+    }
+
+    // 🚨 修正：處理初始資料還沒載入完的情況
+    if (this.candles.length === 0) {
+      this.candles = [candle];
+      this.onDataUpdated(this.candles, false);
       return;
     }
 
     const last = this.candles[this.candles.length - 1];
     let isChanged = false;
 
-    if (last && last.time === candle.time) {
-      this.candles[this.candles.length - 1] = candle;
+    if (last.time === candle.time) {
+      this.candles[this.candles.length - 1] = { ...last, ...candle };
       isChanged = true;
-      // console.log(`[Backend Update] Price: ${candle.close}`);
     } 
-    else if (last && candle.time > last.time) {
+    else if (candle.time > last.time) {
       this.candles.push(candle);
       if (this.candles.length > 5000) this.candles.shift();
       isChanged = true;
-      console.log(`[Backend New Candle] ${this.bar} Time: ${new Date(candle.time).toLocaleTimeString()}`);
+      console.log(`[DataManager] ${this.bar} New Candle: ${new Date(candle.time).toLocaleTimeString()}`);
     }
     
     if (isChanged) {

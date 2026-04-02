@@ -169,7 +169,15 @@ export class CryptoDataManager {
                 last.high = Math.max(last.high, data.high || data.close);
                 last.low = Math.min(last.low, data.low || data.close);
                 last.close = data.close;
-                last.volume = Math.max(last.volume, data.volume || 0);
+                
+                // 🚨 修正成交量邏輯：如果資料帶有 isTrade 標記，則視為單筆成交，應進行累加
+                // 如果是正常的 kline 訊息，則直接使用其累積成交量
+                if (data.isTrade) {
+                    last.volume += (data.volume || 0);
+                } else {
+                    last.volume = data.volume;
+                }
+                
                 candleToPush = last;
             } else if (alignedTs > last.timestamp) {
                 // 新的一根
