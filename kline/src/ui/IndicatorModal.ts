@@ -9,17 +9,10 @@ export class IndicatorModal {
     private indicators = [
         {
             id: 'sykes_leain',
-            name: '賽克斯X獵影 (Sykes X Leain)',
-            description: '專業交易系統：包含 Vegas 通道、QQE MOD 與自動止盈止損標註。',
+            name: '賽克斯X獵影 (V6 引擎版)',
+            description: '使用強化後的 Pine 引擎運行原始 V6 策略邏輯。',
             author: 'User',
-            script: `// 賽克斯X獵影 精簡執行版\n// 基於您的 指標.pine 核心邏輯\n\nema144 = ta.ema(close, 144)\nema169 = ta.ema(close, 169)\nema576 = ta.ema(close, 576)\nema676 = ta.ema(close, 676)\nema12 = ta.ema(close, 12)\n\nplot(ema144, "EMA 144", "#1848cc")\nplot(ema169, "EMA 169", "#1848cc")\nplot(ema576, "EMA 576", "#f23645")\nplot(ema676, "EMA 676", "#f23645")\nplot(ema12, "EMA 12", "#ff9800")\n\n// 訊號範例\nlong_signal = ta.crossover(ema12, math.max(ema144, ema169))\nif long_signal\n    label.new(bar_index, low, "BUY", color="#00ff00")\n\nshort_signal = ta.crossunder(ema12, math.min(ema144, ema169))\nif short_signal\n    label.new(bar_index, high, "SELL", color="#ff0000")`
-        },
-        {
-            id: 'ma_cross',
-            name: '均線交叉 (MA Cross)',
-            description: '經典快慢均線交叉訊號。',
-            author: 'System',
-            script: `fast = ta.sma(close, 9)\nslow = ta.sma(close, 21)\nplot(fast, "Fast MA", "#2962ff")\nplot(slow, "Slow MA", "#ff9800")\nif ta.crossover(fast, slow)\n    label.new(bar_index, low, "UP", style="up")`
+            script: `// 這裡之後可以貼入您完整的 指標.pine 內容\nema144 = ta.ema(close, 144)\nema169 = ta.ema(close, 169)\nplot(ema144, "EMA 144", "#1848cc")\nplot(ema169, "EMA 169", "#1848cc")`
         }
     ];
 

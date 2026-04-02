@@ -254,7 +254,15 @@ export class PineScriptEngine {
             let trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//')) return;
 
-            // 1. 基礎映射
+            // 0. 處理函數定義 (name(args) => body)
+            if (trimmed.includes('=>')) {
+                trimmed = trimmed.replace(/^([\w.]+)\(([^)]*)\)\s*=>\s*(.*)/, 'const $1 = ($2) => { return $3 };');
+                jsLines.push(trimmed);
+                return;
+            }
+
+            // 1. 處理基礎映射與 input
+            trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe)\(([^,]+)[^)]*\)/g, '$1');
             trimmed = trimmed.replace(/math\.max/g, 'Math.max');
             trimmed = trimmed.replace(/math\.min/g, 'Math.min');
             trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
@@ -262,7 +270,7 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
             trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
 
-            // 2. 指標映射 (使用 _PINE_LIB_)
+            // 2. 處理 ta.* 指標映射
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
             trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
             trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
@@ -280,14 +288,12 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.lowest($1, $2)');
             trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
 
-            // 3. 繪圖映射
-            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, '_PINE_LIB_.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
-            trimmed = trimmed.replace(/label\.delete\(([^)]+)\)/g, '_PINE_LIB_.label_delete($1, ctx)');
-            trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, '_PINE_LIB_.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
-            trimmed = trimmed.replace(/box\.set_right\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.box_set_right($1, $2)');
-            trimmed = trimmed.replace(/box\.delete\(([^)]+)\)/g, '_PINE_LIB_.box_delete($1, ctx)');
+            // 3. 處理多重賦值 [a, b] = ... 轉為 let [a, b] = ...
+            if (trimmed.startsWith('[') && trimmed.includes('=')) {
+                trimmed = 'let ' + trimmed;
+            }
 
-            // 4. 基礎轉譯
+            // 4. 基礎轉譯與 := 處理
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
@@ -299,7 +305,7 @@ export class PineScriptEngine {
                 return;
             }
 
-            if (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>=') && !trimmed.includes('<=') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('ctx.') && !trimmed.startsWith('plot')) {
+            if (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>=') && !trimmed.includes('<=') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('const') && !trimmed.startsWith('ctx.') && !trimmed.startsWith('plot')) {
                 trimmed = 'let ' + trimmed;
             }
 
@@ -358,8 +364,19 @@ export class PineScriptEngine {
             }
         };
 
-        // 🚀 執行沙盒：將常用變數直接注入執行範圍
-        const executeBar = new Function('ctx', '_PINE_LIB_', 'Math', 'close', 'open', 'high', 'low', 'volume', 'bar_index', compiledJs);
+        // 🚀 終極沙盒物件注入 (Mock 進階 Pine 命名空間)
+        const request = {
+            security: (_s: string, _tf: string, src: any) => src
+        };
+        const table = {
+            new: () => ({}),
+            cell: () => {}
+        };
+        const syminfo = { tickerid: 'CURRENT' };
+        const timeframe = { period: '60', is_intraday: true };
+        const barstate = { islast: true, isconfirmed: true };
+
+        const executeBar = new Function('ctx', '_PINE_LIB_', 'Math', 'close', 'open', 'high', 'low', 'volume', 'bar_index', 'request', 'table', 'syminfo', 'timeframe', 'barstate', compiledJs);
 
         for (let i = 0; i < size; i++) {
             ctx.bar_index = i;
@@ -370,9 +387,9 @@ export class PineScriptEngine {
             ctx.volume.setCurrentIndex(i);
 
             try {
-                executeBar(ctx, PineLibrary, Math, ctx.close, ctx.open, ctx.high, ctx.low, ctx.volume, ctx.bar_index);
+                executeBar(ctx, PineLibrary, Math, ctx.close, ctx.open, ctx.high, ctx.low, ctx.volume, ctx.bar_index, request, table, syminfo, timeframe, barstate);
             } catch (e) {
-                // 忽略執行期錯誤
+                // 忽略 Bar 級別錯誤
             }
         }
         // 整理結果 (包含線條與繪圖物件)
