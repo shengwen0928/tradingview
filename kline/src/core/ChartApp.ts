@@ -71,7 +71,7 @@ export class ChartApp {
 
     crosshairController.interactionEngine = interactionEngine; 
 
-    const symbolController = new SymbolController(dataService.getCryptoManager(), dataService.getStockManager(), viewport, scaleEngine, infoDisplay, (m) => dataService.setActiveManager(m), renderLoop.requestRedraw);
+    const symbolController = new SymbolController(dataService.getCryptoManager(), dataService.getStockManager(), scaleEngine, infoDisplay, (m) => dataService.setActiveManager(m), renderLoop.requestRedraw);
     const drawingController = new DrawingController(interactionEngine, drawingEngine, viewport, scaleEngine, renderLoop.requestRedraw);
     
     // 5. UI 組件

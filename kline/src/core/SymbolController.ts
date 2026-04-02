@@ -10,7 +10,6 @@ export class SymbolController {
     constructor(
         private cryptoManager: DataManager,
         private stockManager: DataManager,
-        private _viewport: ViewportEngine,
         private scaleEngine: ScaleEngine,
         private infoDisplay: InfoDisplay,
         private updateLoader: (manager: DataManager) => void,
