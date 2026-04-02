@@ -351,7 +351,6 @@ class ChartEngine {
         
         /* 🚀 繪圖工具列按鈕樣式優化 */
         .tool-btn:hover, .tool-btn.active { background: #2a2e39 !important; color: #fff !important; }
-        .tool-btn.active { border-left: 3px solid #2962ff; } /* 保留一個小藍條作為選中提示，或可根據需求移除 */
         
         /* 🚀 提升全域清晰度 */
         body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }

@@ -18,11 +18,19 @@ export class DrawingToolbar {
       const btn = document.getElementById(`tool-${tool}`);
       if (btn) {
         btn.onclick = () => {
+          const isActive = btn.classList.contains('active');
+          
+          // 清除所有按鈕的 active 狀態
           document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          if (tool === 'cursor') {
+
+          if (tool === 'cursor' || isActive) {
+            // 如果點擊的是游標，或是重複點擊目前的工具 -> 切換回游標模式
+            document.getElementById('tool-cursor')?.classList.add('active');
             this.interactionEngine.setDrawingMode(null);
+            this.drawingEngine.endDrawing(); // 確保停止任何進行中的繪圖
           } else {
+            // 正常切換到新工具
+            btn.classList.add('active');
             this.startDrawing(tool);
           }
         };
