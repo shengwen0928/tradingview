@@ -253,6 +253,14 @@ export class DrawingEngine {
             // 🚨 判斷是否要顯示端點
             const isHovered = draw.id === hoveredId || draw === this.activeDrawing;
 
+            // 🚀 如果只有一個點且是正在繪製中，先畫出那個點以便定位
+            if (draw.points.length === 1 && draw === this.activeDrawing) {
+                const p = draw.points[0];
+                const x = scaleEngine.indexToX(timeToIndex(p.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+                const y = scaleEngine.priceToY(p.price);
+                this.drawPoint(ctx, x, y);
+            }
+
             if (draw.type === 'trendline' && draw.points.length >= 2) {
                 this.drawTrendLine(ctx, draw, scaleEngine, exactStartIndex, candleWidth, spacing, timeToIndex, isHovered);
             } else if (draw.type === 'horizontal') {
