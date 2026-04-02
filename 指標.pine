@@ -1,0 +1,861 @@
+//@version=6
+indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+
+// ==========================================
+// 總開關 (Project Toggles)
+// ==========================================
+enable_sykes = input.bool(true, "啟用賽克斯", group="專案總開關")
+enable_leain = input.bool(true, "啟用獵影", group="專案總開關")
+
+// ==========================================
+// 1. 賽克斯專案參數
+// ==========================================
+group_struct = "市場結構設定"
+lb_len = input.int(5, "結構回看強度 (Left)", minval=1, group=group_struct)
+rb_len = input.int(5, "結構確認強度 (Right)", minval=1, group=group_struct)
+trend_mode = input.string("Vegas 通道", "趨勢判定模式", options=["市場結構 (HH/LL)", "Vegas 通道"], group=group_struct)
+show_labels = input.bool(false, "顯示結構標籤 (HH/LL)", group=group_struct)
+
+group_panel = "面板顯示設定"
+show_panel = input.bool(true, "顯示趨勢面板", group=group_panel)
+panel_pos  = input.string("Bottom Right", "面板位置", options=["Top Right", "Bottom Right", "Top Left", "Bottom Left", "Top Center", "Bottom Center"], group=group_panel)
+
+group_extra = "自訂時區監控 (手動勾選)"
+ex1_en = input.bool(true, "監控 1", inline="ex1", group=group_extra)
+ex1_tf = input.timeframe("60", "", inline="ex1", group=group_extra)
+ex2_en = input.bool(true, "監控 2", inline="ex2", group=group_extra)
+ex2_tf = input.timeframe("240", "", inline="ex2", group=group_extra)
+ex3_en = input.bool(true, "監控 3", inline="ex3", group=group_extra)
+ex3_tf = input.timeframe("D", "", inline="ex3", group=group_extra)
+ex4_en = input.bool(true, "監控 4", inline="ex4", group=group_extra)
+ex4_tf = input.timeframe("W", "", inline="ex4", group=group_extra)
+
+group_mtf = "智慧對標開關 (當前對標 HTF)"
+en_smart = input.bool(true, "啟用自動對標模式 (LTF -> HTF)", group=group_mtf)
+filter_mtf = input.bool(false, "進場需符合對標時區趨勢 (共振過濾)", group=group_mtf)
+filter_same_bar = input.bool(true, "過濾單根 K 棒同時完成回測與進場 (防急漲急跌)", group=group_mtf)
+
+group_vegas = "EMA/MA (Vegas Tunnels)"
+ema_len1 = input.int(144, "EMA 1 (小通道 1)", group=group_vegas)
+ema_len2 = input.int(169, "EMA 2 (小通道 2)", group=group_vegas)
+ema_len3 = input.int(576, "EMA 3 (大通道 1)", group=group_vegas)
+ema_len4 = input.int(676, "EMA 4 (大通道 2)", group=group_vegas)
+ema_len5 = input.int(12, "EMA 5 (過濾線)", group=group_vegas)
+ema_fast_len = input.int(7, "EMA 快線 (出場用)", group=group_vegas)
+ignore_bars_after_ema_exit = input.int(0, "過濾線收回後忽略 K 棒數", minval=0, group=group_vegas, tooltip="在過濾線（EMA 12）收回到趨勢方向（脫離小通道）後的 N 根 K 棒內禁止進場。")
+ignore_bars_after_breakout = input.int(0, "實體突破後忽略 K 棒數", minval=0, group=group_vegas, tooltip="收盤價突破通道後，必須經過 N 根 K 棒才開始判定回測。")
+ema12_buffer_mult = input.float(0.0, "過濾線安全邊距 (ATR倍數)", step=0.1, minval=0.0, group=group_vegas, tooltip="過濾線離通道太近時重置判斷。設為 0 則僅在纏繞時重置。建議值 0.3~0.8。")
+
+group_qqe = "QQE MOD Settings"
+rsiLengthPrimary = input.int(6, title="RSI 天數長度", group=group_qqe)
+rsiSmoothingPrimary = input.int(5, title="RSI Smoothing", group=group_qqe)
+qqeFactorPrimary = input.float(3.0, title="QQE Factor", group=group_qqe)
+thresholdPrimary = input.float(3.0, title="Threshold", group=group_qqe)
+sourcePrimary = input.source(close, title="RSI來源", group=group_qqe)
+
+rsiLengthSecondary = input.int(6, title="RSI 天數長度", group=group_qqe)
+rsiSmoothingSecondary = input.int(5, title="RSI Smoothing", group=group_qqe)
+qqeFactorSecondary = input.float(1.61, title="QQE Factor", group=group_qqe)
+thresholdSecondary = input.float(3.0, title="Threshold", group=group_qqe)
+sourceSecondary = input.source(close, title="RSI來源", group=group_qqe)
+
+bollingerLength = input.int(50, title="長度", group=group_qqe)
+bollingerMultiplier = input.float(0.35, title="乘數", group=group_qqe)
+
+group_tp_sl_sykes = "賽克斯止盈止損設定"
+show_tp_sl_sykes = input.bool(true, "顯示止盈止損框", group=group_tp_sl_sykes)
+reward_risk_ratio_sykes = input.float(1.0, "盈虧比 (R:R)", step=0.1, minval=0.1, group=group_tp_sl_sykes, tooltip="止盈距離相對於止損距離的倍數")
+
+// ==========================================
+// 2. 獵影專案參數
+// ==========================================
+group_atr_std = "ATR 通道標準設定"
+atrPeriod = input.int(title='ATR 週期', defval=3, minval=1, group=group_atr_std)
+atrMultiplier = input.float(title='ATR 通道縮放倍數', defval=2.5, step=0.1, minval=0.01, group=group_atr_std)
+atrSourceRef = "close"
+
+group_trade_set = "交易策略設定"
+rewardRiskRatio = input.float(title="交易策略盈虧比 (R:R)", defval=1.0, step=0.1, minval=0.1, group=group_trade_set)
+allowMultipleTrades = input.bool(title="允許同時持有多單 (多重開單)", defval=true, group=group_trade_set)
+slPaddingMult = input.float(0.0, "止損緩衝 (ATR倍數)", step=0.1, minval=0.0, group=group_trade_set)
+allowNoPatternEntry = input.bool(false, "啟用無形態進場 (收盤價)", group=group_trade_set)
+showPnLLabels = input.bool(true, "顯示止盈止損標籤", group=group_trade_set)
+
+group_tbl_set = "表格設定"
+showTable = input.bool(title="顯示止損表格", defval=false, group=group_tbl_set)
+allowTableRepainting = input.bool(title="允許表格重繪", defval=false, group=group_tbl_set)
+alignTableVertically = input.bool(title="垂直對齊表格", defval=true, group=group_tbl_set)
+tablePosition = input.string(title="表格位置", defval="右下", options=["右上","左上","中上","右中","左中","正中","右下","左下","中下"], group=group_tbl_set)
+
+group_stats_set = "統計設定"
+showStats = input.bool(title="顯示勝率統計表格", defval=true, group=group_stats_set)
+statsPosition = input.string(title="統計表格位置", defval="右上", options=["右上","左上","中上","右中","左中","正中","右下","左下","中下"], group=group_stats_set)
+statsTextSize = input.string(title="統計文字大小", defval="small", options=["tiny", "small", "normal", "large", "huge"], group=group_stats_set)
+
+GRP_OBV_MA = "OBV 平滑處理"
+maTypeInput = input.string("SMA + Bollinger Bands", "類型", options = ["None", "SMA", "SMA + Bollinger Bands", "EMA", "SMMA (RMA)", "WMA", "VWMA"], group = GRP_OBV_MA)
+maLengthInput = input.int(14, "長度", group = GRP_OBV_MA)
+bbMultInput = input.float(2.0, "布林帶標準差", minval = 0.001, maxval = 50, step = 0.5, group = GRP_OBV_MA)
+
+GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾"
+useAtrFilter = input.bool(false, "啟用 ATR 波動收斂過濾", group=GRP_ATR_FILTER)
+atrFilterLen = input.int(14, "ATR 原始長度", minval=1, group=GRP_ATR_FILTER)
+shortAtrLen = input.int(3, "短期 ATR 平滑長度 (EMA)", minval=1, group=GRP_ATR_FILTER)
+longAtrLen = input.int(21, "長期 ATR 平滑長度 (EMA)", minval=1, group=GRP_ATR_FILTER)
+
+GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)"
+useVolExpMethod1 = input.bool(false, "啟用 方法一：寬度動能 (Momentum)", group=GRP_VOL_EXP)
+useVolExpMethod2 = input.bool(false, "啟用 方法二：突破壓縮區 (Squeeze Break)", group=GRP_VOL_EXP)
+useVolExpMethod3 = input.bool(false, "啟用 方法三：Z-Score 異常擴張 (Statistical)", group=GRP_VOL_EXP)
+method2Lookback = input.int(50, "M2: 壓縮觀察長度", minval=10, group=GRP_VOL_EXP)
+sqzMult = input.float(1.2, "M2: 壓縮定義 (Lowest * N)", step=0.1, group=GRP_VOL_EXP)
+expMult = input.float(1.1, "M2: 爆發定義 (Width > Prev * N)", step=0.05, group=GRP_VOL_EXP)
+zScoreThreshold = input.float(2.0, "Z-Score 閾值 (方法三)", step=0.1, group=GRP_VOL_EXP)
+useIgnoreFirst = input.bool(false, "⚠️ 忽略擴張後的第一單", group=GRP_VOL_EXP)
+
+GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)"
+usePrc = input.bool(false, "啟用 1. K線範圍壓縮 (Price Range)", group=GRP_SQZ)
+prcLen = input.int(20, "1. 平均長度", group=GRP_SQZ)
+prcThresh = input.float(0.7, "1. 壓縮閾值 (0.7 = 70%)", step=0.1, group=GRP_SQZ)
+useKc = input.bool(false, "啟用 2. 凱特納通道收斂 (KC)", group=GRP_SQZ)
+kcLen = input.int(20, "2. 長度", group=GRP_SQZ)
+kcMult = input.float(1.5, "2. 倍數", group=GRP_SQZ)
+useVolSqz = input.bool(false, "啟用 3. 成交量收斂 (Volume)", group=GRP_SQZ)
+volSqzLen = input.int(20, "3. 平均長度", group=GRP_SQZ)
+volSqzThresh = input.float(0.7, "3. 收斂閾值 (0.7 = 70%)", step=0.1, group=GRP_SQZ)
+useDc = input.bool(false, "啟用 4. 唐奇安通道收縮 (Donchian)", group=GRP_SQZ)
+dcLen = input.int(20, "4. 通道長度", group=GRP_SQZ)
+dcSmaLen = input.int(50, "4. 平均寬度長度", group=GRP_SQZ)
+useAdxSqz = input.bool(false, "啟用 5. ADX 趨勢強度 (ADX < N)", group=GRP_SQZ)
+adxSqzLen = input.int(14, "5. ADX 長度", group=GRP_SQZ)
+adxSqzThresh = input.int(20, "5. ADX 閾值", group=GRP_SQZ)
+useRsiSqz = input.bool(false, "啟用 6. RSI 區間收斂 (40-60)", group=GRP_SQZ)
+rsiSqzLen = input.int(14, "6. RSI 長度", group=GRP_SQZ)
+rsiLower = input.int(40, "6. RSI 下限", group=GRP_SQZ)
+rsiUpper = input.int(60, "6. RSI 上限", group=GRP_SQZ)
+useStochSqz = input.bool(false, "啟用 7. 隨機指標區間收斂 (Stochastic 20-80)", group=GRP_SQZ)
+stochSqzLen = input.int(14, "7. Stoch 長度", group=GRP_SQZ)
+stochSqzLower = input.int(20, "7. Stoch 下限", group=GRP_SQZ)
+stochSqzUpper = input.int(80, "7. Stoch 上限", group=GRP_SQZ)
+
+GRP_EMA_MA = "7EMA_5MA 設定"
+showEmaMa = input.bool(false, "顯示 7EMA/5MA", group=GRP_EMA_MA)
+len1  = input.int(144, minval=1, title="EMA 1", group=GRP_EMA_MA)
+len2  = input.int(169, minval=1, title="EMA 2", group=GRP_EMA_MA)
+len3  = input.int(576, minval=1, title="EMA 3", group=GRP_EMA_MA)
+len4  = input.int(676, minval=1, title="EMA 4", group=GRP_EMA_MA)
+len5  = input.int(12,  minval=1, title="EMA 5", group=GRP_EMA_MA)
+len6  = input.int(400, minval=1, title="EMA 6", group=GRP_EMA_MA)
+len7  = input.int(11,  minval=1, title="MA 1", group=GRP_EMA_MA)
+len8  = input.int(23,  minval=1, title="MA 2", group=GRP_EMA_MA)
+len9  = input.int(25,  minval=1, title="MA 3", group=GRP_EMA_MA)
+len10 = input.int(39,  minval=1, title="MA 4", group=GRP_EMA_MA)
+len11 = input.int(200, minval=1, title="MA 5", group=GRP_EMA_MA)
+src1  = input.source(close, title="EMA 1 Source", group=GRP_EMA_MA)
+src2  = input.source(close, title="EMA 2 Source", group=GRP_EMA_MA)
+src3  = input.source(close, title="EMA 3 Source", group=GRP_EMA_MA)
+src4  = input.source(close, title="EMA 4 Source", group=GRP_EMA_MA)
+src5  = input.source(close, title="EMA 5 Source", group=GRP_EMA_MA)
+src6  = input.source(close, title="EMA 6 Source", group=GRP_EMA_MA)
+src7  = input.source(close, title="MA 1 Source", group=GRP_EMA_MA)
+src8  = input.source(close, title="MA 2 Source", group=GRP_EMA_MA)
+src9  = input.source(close, title="MA 3 Source", group=GRP_EMA_MA)
+src10 = input.source(close, title="MA 4 Source", group=GRP_EMA_MA)
+src11 = input.source(close, title="MA 5 Source", group=GRP_EMA_MA)
+
+// ==========================================
+// Sykes 全域資料結構與函數
+// ==========================================
+type SykesTrade
+    float entry
+    float sl
+    float tp
+    bool isLong
+    box tpBox
+    box slBox
+    label entryLabel
+    label slLabel
+    label tpLabel
+
+f_get_trend() =>
+    // 確保交叉判斷函數在函數的最頂層，避免警告並維持計算連續性
+    _ph_val = ta.pivothigh(high, 5, 5)
+    _pl_val = ta.pivotlow(low, 5, 5)
+    _last_ph = ta.valuewhen(not na(_ph_val), _ph_val, 0)
+    _last_pl = ta.valuewhen(not na(_pl_val), _pl_val, 0)
+    _co = ta.crossover(close, _last_ph)
+    _cu = ta.crossunder(close, _last_pl)
+    
+    // Vegas 通道判斷所需的 EMA 也在此計算
+    _e144_tmp = ta.ema(close, 144)
+    _e169_tmp = ta.ema(close, 169)
+    _e576_tmp = ta.ema(close, 576)
+    _e676_tmp = ta.ema(close, 676)
+    
+    var int _t = 0
+    if trend_mode == "市場結構 (HH/LL)"
+        if _co
+            _t := 1
+        else if _cu
+            _t := -1
+    else // Vegas 通道
+        _bull = math.min(_e144_tmp, _e169_tmp) > math.max(_e576_tmp, _e676_tmp)
+        _bear = math.max(_e144_tmp, _e169_tmp) < math.min(_e576_tmp, _e676_tmp)
+        _t := _bull ? 1 : _bear ? -1 : 0
+    _t
+
+get_pos_sykes(_pos) =>
+    switch _pos
+        "Top Right"      => position.top_right
+        "Bottom Right"   => position.bottom_right
+        "Top Left"       => position.top_left
+        "Bottom Left"    => position.bottom_left
+        "Top Center"     => position.top_center
+        "Bottom Center"  => position.bottom_center
+        => position.top_right
+
+f_add_row_sykes(_table, _r, _name, _trend) =>
+    _txt = _trend == 1 ? "上漲 ▲" : _trend == -1 ? "下跌 ▼" : "轉換中"
+    _bg  = _trend == 1 ? color.new(color.green, 40) : _trend == -1 ? color.new(color.red, 40) : color.new(color.gray, 50)
+    table.cell(_table, 0, _r, _name, bgcolor=color.new(color.black, 40), text_color=color.white, text_size=size.small)
+    table.cell(_table, 1, _r, _txt, bgcolor=_bg, text_color=color.white, text_size=size.small)
+
+calculateQQE(rsiLength, smoothingFactor, qqeFactor, source) =>
+    wildersLength = rsiLength * 2 - 1
+    rsi_val = ta.rsi(source, rsiLength)
+    smoothedRsi = ta.ema(rsi_val, smoothingFactor)
+    atrRsi = math.abs(smoothedRsi[1] - smoothedRsi)
+    smoothedAtrRsi = ta.ema(atrRsi, wildersLength)
+    dynamicAtrRsi = smoothedAtrRsi * qqeFactor
+    var float longBand = 0.0
+    var float shortBand = 0.0
+    var int trendDirection = 0
+    newShortBand = smoothedRsi + dynamicAtrRsi
+    newLongBand = smoothedRsi - dynamicAtrRsi
+    longBand := smoothedRsi[1] > longBand[1] and smoothedRsi > longBand[1] ? math.max(longBand[1], newLongBand) : newLongBand
+    shortBand := smoothedRsi[1] < shortBand[1] and smoothedRsi < shortBand[1] ? math.min(shortBand[1], newShortBand) : newShortBand
+    _c_short = ta.cross(smoothedRsi, shortBand[1])
+    _c_long = ta.cross(longBand[1], smoothedRsi)
+    if _c_short
+        trendDirection := 1
+    else if _c_long
+        trendDirection := -1
+    else
+        trendDirection := nz(trendDirection[1])
+    [trendDirection == 1 ? longBand : shortBand, smoothedRsi]
+
+// ==========================================
+// Leain 全域資料結構與函數
+// ==========================================
+getBandOffsetSource(srcIn, isUpperBand) =>
+    ret = close
+    switch srcIn
+        "close" => ret := close
+        "wicks" => ret := isUpperBand ? high : low
+        => ret := close
+    ret
+
+getTablePosition(posIn) =>
+	posOut = position.bottom_right
+	switch (posIn)
+		"右上" => posOut := position.top_right
+		"左上" => posOut := position.top_left
+		"中上" => posOut := position.top_center
+		"右中" => posOut := position.middle_right
+		"左中" => posOut := position.middle_left
+		"正中" => posOut := position.middle_center
+		"右下" => posOut := position.bottom_right
+		"左下" => posOut := position.bottom_left
+		"中下" => posOut := position.bottom_center
+		=> posOut := position.bottom_right
+	posOut
+
+getTextSize(sizeIn) =>
+    switch sizeIn
+        "tiny"   => size.tiny
+        "small"  => size.small
+        "normal" => size.normal
+        "large"  => size.large
+        "huge"   => size.huge
+        => size.small
+
+ma_leain(source, length, MAtype) =>
+	switch MAtype
+		"SMA"                   => ta.sma(source, length)
+		"SMA + Bollinger Bands" => ta.sma(source, length)
+		"EMA"                   => ta.ema(source, length)
+		"SMMA (RMA)"            => ta.rma(source, length)
+		"WMA"                   => ta.wma(source, length)
+		"VWMA"                  => ta.vwma(source, length)
+
+// ==========================================
+// Sykes 計算與繪圖邏輯
+// ==========================================
+
+// --- A. 智慧對標邏輯 ---
+string target_tf = ""
+string pair_name = ""
+curr_p = timeframe.period
+if en_smart and enable_sykes
+    if curr_p == "1"
+        target_tf := "15", pair_name := "對標: 15m"
+    else if curr_p == "3"
+        target_tf := "45", pair_name := "對標: 45m"
+    else if curr_p == "5"
+        target_tf := "60", pair_name := "對標: 1h"
+    else if curr_p == "10"
+        target_tf := "120", pair_name := "對標: 2h"
+    else if curr_p == "15"
+        target_tf := "240", pair_name := "對標: 4h"
+    else if curr_p == "30"
+        target_tf := "480", pair_name := "對標: 8h"
+    else if curr_p == "45"
+        target_tf := "720", pair_name := "對標: 12h"
+    else if curr_p == "60" or curr_p == "1H"
+        target_tf := "1D", pair_name := "對標: 1d"
+    else if curr_p == "120"
+        target_tf := "2D", pair_name := "對標: 2d"
+    else if curr_p == "240"
+        target_tf := "3D", pair_name := "對標: 3d"
+    else if curr_p == "480"
+        target_tf := "1W", pair_name := "對標: 1w"
+    else if curr_p == "1D" or curr_p == "D"
+        target_tf := "1M", pair_name := "對標: 1M"
+
+// 預先計算趨勢 (確保函數內的 ta.* 每根 K 棒都執行)
+trend_raw_val = f_get_trend()
+trend_curr = enable_sykes ? trend_raw_val : 0
+trend_htf  = enable_sykes ? request.security(syminfo.tickerid, target_tf != "" ? target_tf : timeframe.period, f_get_trend(), gaps=barmerge.gaps_off) : 0
+trend_ex1  = (enable_sykes and ex1_en) ? request.security(syminfo.tickerid, ex1_tf, f_get_trend(), gaps=barmerge.gaps_off) : 0
+trend_ex2  = (enable_sykes and ex2_en) ? request.security(syminfo.tickerid, ex2_tf, f_get_trend(), gaps=barmerge.gaps_off) : 0
+trend_ex3  = (enable_sykes and ex3_en) ? request.security(syminfo.tickerid, ex3_tf, f_get_trend(), gaps=barmerge.gaps_off) : 0
+trend_ex4  = (enable_sykes and ex4_en) ? request.security(syminfo.tickerid, ex4_tf, f_get_trend(), gaps=barmerge.gaps_off) : 0
+
+// --- B. 賽克斯策略核心邏輯 ---
+ema144_sy = ta.ema(close, ema_len1)
+ema169_sy = ta.ema(close, ema_len2)
+ema576_sy = ta.ema(close, ema_len3)
+ema676_sy = ta.ema(close, ema_len4)
+ema12_sy  = ta.ema(close, ema_len5)
+ema7_sy   = ta.ema(close, ema_fast_len)
+
+bull_trend_aligned = math.min(ema144_sy, ema169_sy) > math.max(ema576_sy, ema676_sy)
+bear_trend_aligned = math.max(ema144_sy, ema169_sy) < math.min(ema576_sy, ema676_sy)
+
+tunnel_max = math.max(ema144_sy, ema169_sy)
+tunnel_min = math.min(ema144_sy, ema169_sy)
+body_high = math.max(open, close)
+body_low  = math.min(open, close)
+
+buffer_dist = nz(ta.atr(14)) * ema12_buffer_mult
+ema12_ok_long  = ema12_sy > (tunnel_max + buffer_dist)
+ema12_ok_short = ema12_sy < (tunnel_min - buffer_dist)
+
+// 確保交叉函數在全域範圍內計算
+ema_exit_long_cross  = ta.crossover(ema12_sy, tunnel_max)
+ema_exit_short_cross = ta.crossunder(ema12_sy, tunnel_min)
+bars_since_ema_exit_long  = ta.barssince(ema_exit_long_cross)
+bars_since_ema_exit_short = ta.barssince(ema_exit_short_cross)
+
+price_break_long_cross  = ta.crossover(close, tunnel_max)
+price_break_short_cross = ta.crossunder(close, tunnel_min)
+bars_since_price_break_long  = ta.barssince(price_break_long_cross)
+bars_since_price_break_short = ta.barssince(price_break_short_cross)
+
+is_retest_bull_bar = ema12_ok_long  and bull_trend_aligned and (nz(bars_since_ema_exit_long, 999) >= ignore_bars_after_ema_exit) and (nz(bars_since_price_break_long, 999) >= ignore_bars_after_breakout) and low <= tunnel_max and body_low > tunnel_min
+is_retest_bear_bar = ema12_ok_short and bear_trend_aligned and (nz(bars_since_ema_exit_short, 999) >= ignore_bars_after_ema_exit) and (nz(bars_since_price_break_short, 999) >= ignore_bars_after_breakout) and high >= tunnel_min and body_high < tunnel_max
+
+var bool waiting_for_long = false
+var bool waiting_for_short = false
+var float sl_long = na
+var float sl_short = na
+
+if enable_sykes
+    if not ema12_ok_long
+        waiting_for_long := false
+        sl_long := na
+    if not ema12_ok_short
+        waiting_for_short := false
+        sl_short := na
+    if is_retest_bull_bar
+        waiting_for_long := true
+        sl_long := low
+    if is_retest_bear_bar
+        waiting_for_short := true
+        sl_short := high
+    if waiting_for_long and low <= tunnel_min
+        sl_long := math.min(nz(sl_long, low), low)
+    if waiting_for_short and high >= tunnel_max
+        sl_short := math.max(nz(sl_short, high), high)
+
+[pTrend, pRSI] = calculateQQE(rsiLengthPrimary, rsiSmoothingPrimary, qqeFactorPrimary, sourcePrimary)
+[sTrend, sRSI] = calculateQQE(rsiLengthSecondary, rsiSmoothingSecondary, qqeFactorSecondary, sourceSecondary)
+bolBasis = ta.sma(pTrend - 50, bollingerLength)
+bolDev = bollingerMultiplier * ta.stdev(pTrend - 50, bollingerLength)
+
+qqe_is_blue = (pRSI - 50 > bolBasis + bolDev) and (sRSI - 50 > thresholdSecondary)
+qqe_is_red = (pRSI - 50 < bolBasis - bolDev) and (sRSI - 50 < -thresholdSecondary)
+is_gray = math.abs(sRSI - 50) > thresholdSecondary and not (qqe_is_blue or qqe_is_red)
+
+strength = math.min(math.abs(sRSI - 50) / 25.0, 1.0)
+final_qqe_color = qqe_is_blue ? color.new(#00c3ff, 100 - int(strength * 100)) : 
+                 qqe_is_red ? color.new(#ff0062, 100 - int(strength * 100)) : 
+                 is_gray ? color.new(#707070, 50) : color.new(color.gray, 90)
+
+long_trigger_potential = ema12_ok_long and (nz(bars_since_ema_exit_long, 999) >= ignore_bars_after_ema_exit) and waiting_for_long and close > ema12_sy and bull_trend_aligned and qqe_is_blue and close > tunnel_max
+short_trigger_potential = ema12_ok_short and (nz(bars_since_ema_exit_short, 999) >= ignore_bars_after_ema_exit) and waiting_for_short and close < ema12_sy and bear_trend_aligned and qqe_is_red and close < tunnel_min
+
+long_trigger  = long_trigger_potential and (not filter_same_bar or waiting_for_long[1])
+short_trigger = short_trigger_potential and (not filter_same_bar or waiting_for_short[1])
+
+long_ok  = not filter_mtf or trend_htf == 1
+short_ok = not filter_mtf or trend_htf == -1
+
+long_signal = long_trigger and long_ok and not (long_trigger[1] and long_ok[1])
+short_signal = short_trigger and short_ok and not (short_trigger[1] and short_ok[1])
+
+var array<SykesTrade> active_sykes_trades = array.new<SykesTrade>()
+
+if enable_sykes
+    if show_tp_sl_sykes
+        if long_signal
+            trade_entry = close
+            trade_sl = sl_long
+            if na(trade_sl)
+                label.new(bar_index, high + (high - low) * 0.2, "SL is NA", color=color.new(color.blue, 100), textcolor=color.white, style=label.style_label_down, size=size.tiny, force_overlay=true)
+            else
+                trade_risk = trade_entry - trade_sl
+                trade_tp = trade_entry + (trade_risk * reward_risk_ratio_sykes)
+                tp_box = box.new(bar_index, trade_entry, bar_index + 1, trade_tp, border_color=na, bgcolor=color.new(color.green, 80), force_overlay=true)
+                sl_box = box.new(bar_index, trade_entry, bar_index + 1, trade_sl, border_color=na, bgcolor=color.new(color.red, 80), force_overlay=true)
+                entry_label = label.new(bar_index + 2, trade_entry, text="Entry: " + str.tostring(trade_entry, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+                sl_label = label.new(bar_index + 2, trade_sl, text="SL: " + str.tostring(trade_sl, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+                tp_label = label.new(bar_index + 2, trade_tp, text="TP: " + str.tostring(trade_tp, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+                array.push(active_sykes_trades, SykesTrade.new(trade_entry, trade_sl, trade_tp, true, tp_box, sl_box, entry_label, sl_label, tp_label))
+
+        if short_signal
+            trade_entry = close
+            trade_sl = sl_short
+            if na(trade_sl)
+                label.new(bar_index, low - (high - low) * 0.2, "SL is NA", color=color.new(color.orange, 100), textcolor=color.white, style=label.style_label_up, size=size.tiny, force_overlay=true)
+            else
+                trade_risk = trade_sl - trade_entry
+                trade_tp = trade_entry - (trade_risk * reward_risk_ratio_sykes)
+                tp_box = box.new(bar_index, trade_entry, bar_index + 1, trade_tp, border_color=na, bgcolor=color.new(color.green, 80), force_overlay=true)
+                sl_box = box.new(bar_index, trade_entry, bar_index + 1, trade_sl, border_color=na, bgcolor=color.new(color.red, 80), force_overlay=true)
+                entry_label = label.new(bar_index + 2, trade_entry, text="Entry: " + str.tostring(trade_entry, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+                sl_label = label.new(bar_index + 2, trade_sl, text="SL: " + str.tostring(trade_sl, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+                tp_label = label.new(bar_index + 2, trade_tp, text="TP: " + str.tostring(trade_tp, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+                array.push(active_sykes_trades, SykesTrade.new(trade_entry, trade_sl, trade_tp, false, tp_box, sl_box, entry_label, sl_label, tp_label))
+
+        if array.size(active_sykes_trades) > 0
+            for i = array.size(active_sykes_trades) - 1 to 0
+                t = array.get(active_sykes_trades, i)
+                box.set_right(t.tpBox, bar_index + 1)
+                box.set_right(t.slBox, bar_index + 1)
+                if t.isLong
+                    if high >= t.tp
+                        box.delete(t.tpBox), box.delete(t.slBox), label.delete(t.entryLabel), label.delete(t.slLabel), label.delete(t.tpLabel)
+                        array.remove(active_sykes_trades, i)
+                    else if low <= t.sl
+                        box.delete(t.tpBox), box.delete(t.slBox), label.delete(t.entryLabel), label.delete(t.slLabel), label.delete(t.tpLabel)
+                        array.remove(active_sykes_trades, i)
+                else
+                    if low <= t.tp
+                        box.delete(t.tpBox), box.delete(t.slBox), label.delete(t.entryLabel), label.delete(t.slLabel), label.delete(t.tpLabel)
+                        array.remove(active_sykes_trades, i)
+                    else if high >= t.sl
+                        box.delete(t.tpBox), box.delete(t.slBox), label.delete(t.entryLabel), label.delete(t.slLabel), label.delete(t.tpLabel)
+                        array.remove(active_sykes_trades, i)
+
+    if long_signal or not bull_trend_aligned or close < math.min(ema576_sy, ema676_sy) or body_low < tunnel_min or (long_trigger_potential and not waiting_for_long[1] and filter_same_bar)
+        waiting_for_long := false
+        sl_long := na
+    if short_signal or not bear_trend_aligned or close > math.max(ema576_sy, ema676_sy) or body_high > tunnel_max or (short_trigger_potential and not waiting_for_short[1] and filter_same_bar)
+        waiting_for_short := false
+        sl_short := na
+
+// --- 賽克斯繪圖 ---
+plot(enable_sykes ? ema144_sy : na, "Sykes EMA 144", color=#1848cc, linewidth=2, force_overlay=true)
+plot(enable_sykes ? ema169_sy : na, "Sykes EMA 169", color=#1848cc, linewidth=2, force_overlay=true)
+plot(enable_sykes ? ema576_sy : na, "Sykes EMA 576", color=#f23645, linewidth=2, force_overlay=true)
+plot(enable_sykes ? ema676_sy : na, "Sykes EMA 676", color=#f23645, linewidth=2, force_overlay=true)
+plot(enable_sykes ? ema12_sy : na, "Sykes EMA 12", color=#ff9800, linewidth=2, force_overlay=true)
+plot(enable_sykes ? ema7_sy : na, "Sykes EMA 7 (快線)", color=color.new(color.white, 70), linewidth=1, force_overlay=true)
+
+plotshape(enable_sykes and long_signal, "Sykes BUY", shape.labelup, location.belowbar, color.green, text="BUY", textcolor=color.white, size=size.small, force_overlay=true)
+plotshape(enable_sykes and short_signal, "Sykes SELL", shape.labeldown, location.abovebar, color.red, text="SELL", textcolor=color.white, size=size.small, force_overlay=true)
+
+// 確保交叉判斷在全域範圍執行
+sykes_exit_long_cross = ta.crossunder(ema7_sy, ema12_sy)
+sykes_exit_short_cross = ta.crossover(ema7_sy, ema12_sy)
+
+plotshape(enable_sykes and sykes_exit_long_cross, "Sykes 多單出場", shape.xcross, location.abovebar, color.new(color.orange, 50), force_overlay=true)
+plotshape(enable_sykes and sykes_exit_short_cross, "Sykes 空單出場", shape.xcross, location.belowbar, color.new(color.orange, 50), force_overlay=true)
+
+plotshape(enable_sykes, "Sykes QQE MOD Gradient", shape.square, location.bottom, final_qqe_color, size=size.tiny, force_overlay=true)
+
+// 市場結構標籤
+ph_sy = ta.pivothigh(high, lb_len, rb_len)
+pl_sy = ta.pivotlow(low, lb_len, rb_len)
+var float last_ph_sy = na
+var float last_pl_sy = na
+if enable_sykes and show_labels
+    if not na(ph_sy)
+        label.new(bar_index[rb_len], ph_sy, ph_sy > last_ph_sy ? "HH" : "LH", style=label.style_label_down, color=ph_sy > last_ph_sy ? color.green : color.red, textcolor=color.white, size=size.tiny, force_overlay=true)
+    if not na(pl_sy)
+        label.new(bar_index[rb_len], pl_sy, pl_sy < last_pl_sy ? "LL" : "HL", style=label.style_label_up, color=pl_sy < last_pl_sy ? color.red : color.green, textcolor=color.white, size=size.tiny, yloc=yloc.belowbar, force_overlay=true)
+
+if enable_sykes
+    if not na(ph_sy)
+        last_ph_sy := ph_sy
+    if not na(pl_sy)
+        last_pl_sy := pl_sy
+
+// 趨勢面板
+if enable_sykes and show_panel and barstate.islast
+    var trend_table = table.new(get_pos_sykes(panel_pos), 2, 8, border_width = 1, border_color=color.new(color.gray, 50), force_overlay=true)
+    table.cell(trend_table, 0, 0, "時區項目", bgcolor=color.new(color.gray, 20), text_color=color.white, text_size=size.small)
+    table.cell(trend_table, 1, 0, "趨勢狀態", bgcolor=color.new(color.gray, 20), text_color=color.white, text_size=size.small)
+    
+    curr_row = 1
+    f_add_row_sykes(trend_table, curr_row, "當前圖表", trend_curr)
+    curr_row += 1
+
+    if en_smart and pair_name != ""
+        f_add_row_sykes(trend_table, curr_row, pair_name, trend_htf)
+        curr_row += 1
+    
+    if ex1_en
+        f_add_row_sykes(trend_table, curr_row, "監控: " + ex1_tf, trend_ex1)
+        curr_row += 1
+    if ex2_en
+        f_add_row_sykes(trend_table, curr_row, "監控: " + ex2_tf, trend_ex2)
+        curr_row += 1
+    if ex3_en
+        f_add_row_sykes(trend_table, curr_row, "監控: " + ex3_tf, trend_ex3)
+        curr_row += 1
+    if ex4_en
+        f_add_row_sykes(trend_table, curr_row, "監控: " + ex4_tf, trend_ex4)
+        curr_row += 1
+
+// ==========================================
+// 獵影計算與繪圖邏輯
+// ==========================================
+
+// --- Style & Colors ---
+var color tableColor = color.rgb(0, 175, 200, 20)
+var color tableTextHeaderColor = color.rgb(255, 255, 0, 0)
+var color tableTextColor = color.rgb(255, 255, 255, 0)
+var color tableLongBGColor = color.rgb(0, 255, 0, 90)
+var color tableShortBGColor = color.rgb(255, 0, 0, 80)
+var color colorAtrUp = color.rgb(0, 255, 0, 50)
+var color colorAtrDn = color.rgb(255, 0, 0, 50)
+var color colorObv = #2962FF
+var color colorObvMa = color.yellow
+var color colorBbUp = color.green
+var color colorBbDn = color.green
+var color colorBbFillNormal = color.new(color.green, 90)
+var color colorBoxTp = color.new(color.green, 80)
+var color colorBoxSl = color.new(color.red, 80)
+
+// ATR Calculations
+atr_le = ta.atr(atrPeriod)
+scaledATR = atr_le * atrMultiplier
+upperATRBand = getBandOffsetSource(atrSourceRef, true) + scaledATR
+lowerATRBand = getBandOffsetSource(atrSourceRef, false) - scaledATR
+
+plot(enable_leain ? upperATRBand : na, title="Leain ATR 上軌", color=colorAtrUp, linewidth=2, force_overlay=true, style=plot.style_stepline)
+plot(enable_leain ? lowerATRBand : na, title="Leain ATR 下軌", color=colorAtrDn, linewidth=2, force_overlay=true, style=plot.style_stepline)
+
+if (showTable and enable_leain)
+    var atrTable = table.new(position=getTablePosition(tablePosition), columns=2, rows=8, force_overlay=true)
+    table.set_border_width(atrTable, 1)
+    table.set_frame_width(atrTable, 1)
+    table.set_border_color(atrTable, tableColor)
+    table.set_frame_color(atrTable, tableColor)
+    
+	if (alignTableVertically)
+		table.cell(atrTable, 0, 0, text="多單 ATR 止損", text_color=tableTextHeaderColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 0, 1, text="多單 ATR 止損距離", text_color=tableTextHeaderColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 0, 2, text="空單 ATR 止損", text_color=tableTextHeaderColor, bgcolor=tableShortBGColor)
+		table.cell(atrTable, 0, 3, text="空單 ATR 止損距離", text_color=tableTextHeaderColor, bgcolor=tableShortBGColor)
+		table.cell(atrTable, 1, 0, text=str.tostring(allowTableRepainting ? lowerATRBand : lowerATRBand[1], format.mintick), text_color=tableTextColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 1, 1, text=str.tostring(allowTableRepainting ? close - lowerATRBand : close[1] - lowerATRBand[1], format.mintick), text_color=tableTextColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 1, 2, text=str.tostring(allowTableRepainting ? upperATRBand : upperATRBand[1], format.mintick), text_color=tableTextColor, bgcolor=tableShortBGColor)
+		table.cell(atrTable, 1, 3, text=str.tostring(allowTableRepainting ? upperATRBand - close : upperATRBand[1] - close[1], format.mintick), text_color=tableTextColor, bgcolor=tableShortBGColor)
+	else
+		table.cell(atrTable, 0, 0, text="多單 ATR 止損", text_color=tableTextHeaderColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 1, 0, text="多單 ATR 止損距離", text_color=tableTextHeaderColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 2, 0, text="空單 ATR 止損", text_color=tableTextHeaderColor, bgcolor=tableShortBGColor)
+		table.cell(atrTable, 3, 0, text="空單 ATR 止損距離", text_color=tableTextHeaderColor, bgcolor=tableShortBGColor)
+		table.cell(atrTable, 0, 1, text=str.tostring(allowTableRepainting ? lowerATRBand : lowerATRBand[1], format.mintick), text_color=tableTextColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 1, 1, text=str.tostring(allowTableRepainting ? close - lowerATRBand : close[1] - lowerATRBand[1], format.mintick), text_color=tableTextColor, bgcolor=tableLongBGColor)
+		table.cell(atrTable, 2, 1, text=str.tostring(allowTableRepainting ? upperATRBand : upperATRBand[1], format.mintick), text_color=tableTextColor, bgcolor=tableShortBGColor)
+		table.cell(atrTable, 3, 1, text=str.tostring(allowTableRepainting ? upperATRBand - close : upperATRBand[1] - close[1], format.mintick), text_color=tableTextColor, bgcolor=tableShortBGColor)
+
+// OBV Logic
+obv_src = close
+obv = ta.cum(math.sign(ta.change(obv_src)) * volume)
+plot(enable_leain ? obv : na, color=colorObv, title="Leain OBV (能量潮)", format=format.volume)
+
+enableMA = maTypeInput != "None"
+isBB = maTypeInput == "SMA + Bollinger Bands"
+smoothingMA = enableMA ? ma_leain(obv, maLengthInput, maTypeInput) : na
+smoothingStDev = isBB ? ta.stdev(obv, maLengthInput) * bbMultInput : na
+plot(enable_leain and enableMA ? smoothingMA : na, "Leain OBV 均線", color=colorObvMa, display = enableMA ? display.all : display.none, editable = enableMA, format=format.volume)
+
+upperBandValue = smoothingMA + smoothingStDev
+lowerBandValue = smoothingMA - smoothingStDev
+
+bbUpperBand = plot(enable_leain and isBB ? upperBandValue : na, title = "Leain 布林帶上軌", color=colorBbUp, display = isBB ? display.all : display.none, editable = isBB, format=format.volume)
+bbLowerBand = plot(enable_leain and isBB ? lowerBandValue : na, title = "Leain 布林帶下軌", color=colorBbDn, display = isBB ? display.all : display.none, editable = isBB, format=format.volume)
+fill(bbUpperBand, bbLowerBand, color= colorBbFillNormal, title="Leain 布林帶背景填充", display = isBB ? display.all : display.none, editable = isBB)
+
+// ATR Filter
+atrRaw = ta.atr(atrFilterLen)
+shortAtr = ta.ema(atrRaw, shortAtrLen)
+longAtr = ta.ema(atrRaw, longAtrLen)
+isAtrConsolidation = shortAtr < longAtr
+isAtrFilterPass = useAtrFilter ? isAtrConsolidation : true
+
+// Volatility Expansion
+safeBasis = smoothingMA == 0 ? 1 : smoothingMA
+relBbWidth = math.abs((upperBandValue - lowerBandValue) / safeBasis) 
+bbwChange = relBbWidth - relBbWidth[1]
+isMomExp = bbwChange > ta.sma(bbwChange, 20)
+passMethod1 = useVolExpMethod1 ? isMomExp : true
+lowestWidth = ta.lowest(relBbWidth, method2Lookback)
+isSqueeze = relBbWidth < lowestWidth * sqzMult
+isBreakExpansion = not isSqueeze and relBbWidth > relBbWidth[1] * expMult
+passMethod2 = useVolExpMethod2 ? isBreakExpansion : true
+bbwMean = ta.sma(relBbWidth, 50)
+bbwStd = ta.stdev(relBbWidth, 50)
+bbwZ = bbwStd != 0 ? (relBbWidth - bbwMean) / bbwStd : 0
+isZExplosion = bbwZ > zScoreThreshold
+passMethod3 = useVolExpMethod3 ? isZExplosion : true
+isVolExpPass = passMethod1 and passMethod2 and passMethod3
+
+// Squeeze Filters
+trRange = high - low
+isPrcSqueeze = trRange < ta.sma(trRange, prcLen) * prcThresh
+passPrc = usePrc ? isPrcSqueeze : true
+kcMid = ta.ema(close, kcLen)
+kcAtr = ta.atr(kcLen)
+kcUpper = kcMid + kcMult * kcAtr
+kcLower = kcMid - kcMult * kcAtr
+isKcSqueeze = close < kcUpper and close > kcLower
+passKc = useKc ? isKcSqueeze : true
+isVolSqueeze = volume < ta.sma(volume, volSqzLen) * volSqzThresh
+passVolSqz = useVolSqz ? isVolSqueeze : true
+dcHigh = ta.highest(high, dcLen)
+dcLow = ta.lowest(low, dcLen)
+dcWidth = dcHigh - dcLow
+isDcSqueeze = dcWidth < ta.sma(dcWidth, dcSmaLen)
+passDc = useDc ? isDcSqueeze : true
+[adxDiP, adxDiM, adxVal] = ta.dmi(adxSqzLen, adxSqzLen)
+isAdxSqueeze = adxVal < adxSqzThresh
+passAdxSqz = useAdxSqz ? isAdxSqueeze : true
+rsiValSqz = ta.rsi(close, rsiSqzLen)
+isRsiSqueeze = rsiValSqz > rsiLower and rsiValSqz < rsiUpper
+passRsiSqz = useRsiSqz ? isRsiSqueeze : true
+stochK = ta.sma(ta.stoch(close, high, low, stochSqzLen), 3)
+isStochSqueeze = stochK > stochSqzLower and stochK < stochSqzUpper
+passStochSqz = useStochSqz ? isStochSqueeze : true
+isSqzFilterPass = passPrc and passKc and passVolSqz and passDc and passAdxSqz and passRsiSqz and passStochSqz
+
+// Signals
+var int signalsSinceExp = 0
+var bool wasExpPassLast = false
+isExpStart = isVolExpPass and not wasExpPassLast
+wasExpPassLast := isVolExpPass
+if isExpStart
+    signalsSinceExp := 0
+
+wasAboveUpper = obv[1] >= upperBandValue[1]
+wasBelowLower = obv[1] <= lowerBandValue[1]
+isBelowUpper = obv < upperBandValue
+isAboveLower = obv > lowerBandValue
+rawReturnDown = isBB and wasAboveUpper and isBelowUpper and isAtrFilterPass and isVolExpPass and isSqzFilterPass
+rawReturnUp = isBB and wasBelowLower and isAboveLower and isAtrFilterPass and isVolExpPass and isSqzFilterPass
+if (rawReturnDown or rawReturnUp)
+    signalsSinceExp += 1
+isIgnored = useIgnoreFirst and signalsSinceExp <= 1
+bbReturnDown = rawReturnDown and not isIgnored
+bbReturnUp = rawReturnUp and not isIgnored
+
+// Patterns
+currentBodySize = math.abs(close - open)
+prevBodySize = math.abs(close[1] - open[1])
+changePercent = math.abs(close - close[1]) / close[1] * 100
+hasUpperShadow = high > math.max(open, close)
+hasLowerShadow = low < math.min(open, close)
+isDoji = changePercent <= 0.05 and hasUpperShadow and hasLowerShadow
+isBodyEngulfing = (currentBodySize > prevBodySize) and not isDoji
+hasUpperWick = high > math.max(open, close)
+hasLowerWick = low < math.min(open, close)
+hasPrevUpperWick = high[1] > math.max(open[1], close[1])
+hasPrevLowerWick = low[1] < math.min(open[1], close[1])
+isGreenCandle = close > open
+isRedCandle = close < open
+isPrevGreen = close[1] > open[1]
+isPrevRed = close[1] < open[1]
+isWickEngulfingShort = (high > high[1]) and hasUpperWick and hasPrevUpperWick and not isDoji and isPrevGreen and isRedCandle
+isWickEngulfingLong = (low < low[1]) and hasLowerWick and hasPrevLowerWick and not isDoji and isPrevRed and isGreenCandle
+
+// Trade Tracking
+type Trade
+    float entryPrice
+    float slPrice
+    float tpPrice
+    bool isLong
+    int entryBarIndex
+    box tpBox
+    box slBox
+    label entryLabel
+    label slLabel
+    label tpLabel
+
+var trades = array.new<Trade>()
+var int totalWins = 0
+var int totalLosses = 0
+bool alertTpLong = false
+bool alertSlLong = false
+bool alertTpShort = false
+bool alertSlShort = false
+
+// Entry
+if enable_leain and barstate.isconfirmed
+    if bbReturnDown
+        bool valid = false
+        string patternName = ""
+        float tradeEntry = na
+        if isDoji
+            valid := true, tradeEntry := close, patternName := "十字星"
+        else if isBodyEngulfing
+            valid := true, tradeEntry := (open + close) / 2, patternName := "實體吞沒"
+        else if isWickEngulfingShort
+            valid := true, tradeEntry := close[1], patternName := "影線吞沒"
+        else if allowNoPatternEntry
+            valid := true, tradeEntry := close, patternName := "無形態"
+        
+        if valid and (allowMultipleTrades or array.size(trades) == 0)
+            float tradeSL = upperATRBand + (atr_le * slPaddingMult)
+            float risk = tradeSL - tradeEntry
+            float tradeTP = tradeEntry - (risk * rewardRiskRatio)
+            box tBox = box.new(bar_index, tradeEntry, bar_index + 1, tradeTP, border_color=na, bgcolor=colorBoxTp, force_overlay=true)
+            box sBox = box.new(bar_index, tradeEntry, bar_index + 1, tradeSL, border_color=na, bgcolor=colorBoxSl, force_overlay=true)
+            label eLabel = label.new(bar_index + 1, tradeEntry, text="EP: " + str.tostring(tradeEntry, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+            label sLabel = label.new(bar_index + 1, tradeSL, text="SL: " + str.tostring(tradeSL, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+            label tLabel = label.new(bar_index + 1, tradeTP, text="TP: " + str.tostring(tradeTP, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+            Trade newTrade = Trade.new(tradeEntry, tradeSL, tradeTP, false, bar_index, tBox, sBox, eLabel, sLabel, tLabel)
+            array.push(trades, newTrade)
+            alert("⬇️ 獵影做空進場 (" + patternName + ") @ " + str.tostring(tradeEntry, format.mintick), alert.freq_once_per_bar)
+
+    if bbReturnUp
+        bool valid = false
+        string patternName = ""
+        float tradeEntry = na
+        if isDoji
+            valid := true, tradeEntry := close, patternName := "十字星"
+        else if isBodyEngulfing
+            valid := true, tradeEntry := (open + close) / 2, patternName := "實體吞沒"
+        else if isWickEngulfingLong
+            valid := true, tradeEntry := close, patternName := "影線吞沒"
+        else if allowNoPatternEntry
+            valid := true, tradeEntry := close, patternName := "無形態"
+        
+        if valid and (allowMultipleTrades or array.size(trades) == 0)
+            float tradeSL = lowerATRBand - (atr_le * slPaddingMult)
+            float risk = tradeEntry - tradeSL
+            float tradeTP = tradeEntry + (risk * rewardRiskRatio)
+            box tBox = box.new(bar_index, tradeEntry, bar_index + 1, tradeTP, border_color=na, bgcolor=colorBoxTp, force_overlay=true)
+            box sBox = box.new(bar_index, tradeEntry, bar_index + 1, tradeSL, border_color=na, bgcolor=colorBoxSl, force_overlay=true)
+            label eLabel = label.new(bar_index + 1, tradeEntry, text="EP: " + str.tostring(tradeEntry, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+            label sLabel = label.new(bar_index + 1, tradeSL, text="SL: " + str.tostring(tradeSL, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+            label tLabel = label.new(bar_index + 1, tradeTP, text="TP: " + str.tostring(tradeTP, format.mintick), color=color.new(color.black, 100), textcolor=color.white, style=label.style_label_left, size=size.small, force_overlay=true)
+            Trade newTrade = Trade.new(tradeEntry, tradeSL, tradeTP, true, bar_index, tBox, sBox, eLabel, sLabel, tLabel)
+            array.push(trades, newTrade)
+            alert("⬆️ 獵影做多進場 (" + patternName + ") @ " + str.tostring(tradeEntry, format.mintick), alert.freq_once_per_bar)
+
+// Update/Exit Leain trades
+if array.size(trades) > 0 and enable_leain
+    for i = array.size(trades) - 1 to 0
+        Trade t = array.get(trades, i)
+        box.set_right(t.tpBox, bar_index + 1)
+        box.set_right(t.slBox, bar_index + 1)
+        label.set_x(t.entryLabel, bar_index + 1)
+        label.set_x(t.slLabel, bar_index + 1)
+        label.set_x(t.tpLabel, bar_index + 1)
+        bool tpHit = false
+        bool slHit = false
+        if t.isLong
+            if high >= t.tpPrice
+                tpHit := true, alertTpLong := true
+            else if low <= t.slPrice
+                slHit := true, alertSlLong := true
+        else
+            if low <= t.tpPrice
+                tpHit := true, alertTpShort := true
+            else if high >= t.slPrice
+                slHit := true, alertSlShort := true
+        if tpHit or slHit
+            if tpHit
+                totalWins += 1
+                alert("💰 獵影止盈觸發!", alert.freq_once_per_bar)
+            else
+                totalLosses += 1
+                alert("🛑 獵影止損觸發!", alert.freq_once_per_bar)
+            if showPnLLabels
+                label.new(t.entryBarIndex, na, text=tpHit ? "✅" : "❌", color=tpHit ? color.green : color.red, textcolor=color.white, yloc=t.isLong ? yloc.belowbar : yloc.abovebar, style=t.isLong ? label.style_label_up : label.style_label_down, size=size.normal, force_overlay=true)
+            box.delete(t.tpBox), box.delete(t.slBox), label.delete(t.entryLabel), label.delete(t.slLabel), label.delete(t.tpLabel)
+            array.remove(trades, i)
+
+// Leain Stats Table
+if showStats and enable_leain and barstate.islast
+    var table statsTbl = table.new(position=getTablePosition(statsPosition), columns=2, rows=4, bgcolor=color.new(color.black, 20), border_width=1, border_color=color.gray, force_overlay=true)
+    table.set_position(statsTbl, getTablePosition(statsPosition))
+    totalTrades = totalWins + totalLosses
+    winRate = totalTrades > 0 ? (float(totalWins) / totalTrades) * 100 : 0.0
+    txtSize = getTextSize(statsTextSize)
+    table.cell(statsTbl, 0, 0, "📊 Leain 策略統計", text_color=color.white, bgcolor=color.new(color.blue, 30), text_size=txtSize)
+    table.merge_cells(statsTbl, 0, 0, 1, 0)
+    table.cell(statsTbl, 0, 1, "止盈單 (Wins)", text_color=color.white, bgcolor=color.new(color.black, 20), text_halign=text.align_left, text_size=txtSize)
+    table.cell(statsTbl, 1, 1, str.tostring(totalWins), text_color=color.green, bgcolor=color.new(color.black, 20), text_size=txtSize)
+    table.cell(statsTbl, 0, 2, "止損單 (Losses)", text_color=color.white, bgcolor=color.new(color.black, 20), text_halign=text.align_left, text_size=txtSize)
+    table.cell(statsTbl, 1, 2, str.tostring(totalLosses), text_color=color.red, bgcolor=color.new(color.black, 20), text_size=txtSize)
+    table.cell(statsTbl, 0, 3, "勝率 (Win Rate)", text_color=color.white, bgcolor=color.new(color.black, 20), text_halign=text.align_left, text_size=txtSize)
+    table.cell(statsTbl, 1, 3, str.tostring(winRate, "#.##") + "%", text_color=winRate >= 50 ? color.green : color.red, bgcolor=color.new(color.black, 20), text_size=txtSize)
+
+// 7EMA_5MA Logic (Leain part)
+ema1_le = ta.ema(src1, len1)
+ema2_le = ta.ema(src2, len2)
+ema3_le = ta.ema(src3, len3)
+ema4_le = ta.ema(src4, len4)
+ema5_le = ta.ema(src5, len5)
+ema6_le = ta.ema(src6, len6)
+ma1_le  = ta.sma(src7, len7)
+ma2_le  = ta.sma(src8, len8)
+ma3_le  = ta.sma(src9, len9)
+ma4_le  = ta.sma(src10, len10)
+ma5_le  = ta.sma(src11, len11)
+
+plot(enable_leain and showEmaMa ? ema1_le : na, color=color.rgb(67, 0, 252), linewidth=2, title="Leain EMA 1", force_overlay=true)
+plot(enable_leain and showEmaMa ? ema2_le : na, color=color.rgb(67, 0, 252), linewidth=2, title="Leain EMA 2", force_overlay=true)
+plot(enable_leain and showEmaMa ? ema3_le : na, color=color.rgb(252, 16, 4), linewidth=2, title="Leain EMA 3", force_overlay=true)
+plot(enable_leain and showEmaMa ? ema4_le : na, color=color.rgb(252, 16, 4), linewidth=2, title="Leain EMA 4", force_overlay=true)
+plot(enable_leain and showEmaMa ? ema5_le : na, color=color.rgb(255, 251, 0), linewidth=2, title="Leain EMA 5", force_overlay=true)
+plot(enable_leain and showEmaMa ? ema6_le : na, color=color.purple, linewidth=2, title="Leain EMA 6", force_overlay=true)
+plot(enable_leain and showEmaMa ? ma1_le : na, color=color.orange, linewidth=2, title="Leain MA 1", force_overlay=true)
+plot(enable_leain and showEmaMa ? ma2_le : na, color=color.purple, linewidth=2, title="Leain MA 2", force_overlay=true)
+plot(enable_leain and showEmaMa ? ma3_le : na, color=color.green, linewidth=2, title="Leain MA 3", force_overlay=true)
+plot(enable_leain and showEmaMa ? ma4_le : na, color=color.red, linewidth=2, title="Leain MA 4", force_overlay=true)
+plot(enable_leain and showEmaMa ? ma5_le : na, color=color.yellow, linewidth=2, title="Leain MA 5", force_overlay=true)
+
+// Alerts
+alertcondition(enable_leain and bbReturnDown, title="訊號: 做空進場 (Short Entry)", message="OBV 訊號：做空進場 (Short Entry)")
+alertcondition(enable_leain and bbReturnUp, title="訊號: 做多進場 (Long Entry)", message="OBV 訊號：做多進場 (Long Entry)")
+alertcondition(enable_leain and alertTpLong, title="訊號: 多單止盈 (Long TP)", message="多單止盈 (Long TP Hit)")
+alertcondition(enable_leain and alertSlLong, title="訊號: 多單止損 (Long SL)", message="多單止損 (Long SL Hit)")
+alertcondition(enable_leain and alertTpShort, title="訊號: 空單止盈 (Short TP)", message="空單止盈 (Short TP Hit)")
+alertcondition(enable_leain and alertSlShort, title="訊號: 空單止損 (Short SL)", message="空單止損 (Short SL Hit)")
