@@ -339,6 +339,14 @@ export class PineScriptEngine {
             // 7. 語法結構與 := 處理
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
+
+            // 🚀 修正：處理 var 狀態初始化 (必須在補 let 之前)
+            if (trimmed.match(/^var\s+/)) {
+                trimmed = trimmed.replace(/^var\s+(?:bool|int|float|string|color|line|label|box|table)?\s*([a-zA-Z_]\w*)\s*=\s*(.*)/, `if (ctx.vars['$1'] === undefined) ctx.vars['$1'] = $2; let $1 = ctx.vars['$1']`);
+                jsLines.push(trimmed + ';');
+                return;
+            }
+
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
 
             if (trimmed.startsWith('if ') && !trimmed.includes('{')) {

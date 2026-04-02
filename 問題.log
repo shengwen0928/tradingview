@@ -1,14 +1,14 @@
-[IndicatorController] Compilation error: SyntaxError: Invalid or unexpected token
+index-4072760c.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier '_t'
     at new Function (<anonymous>)
-    at _.run (index-ad52c8c7.js:4:692)
-    at st.run (index-ad52c8c7.js:4:16959)
-    at at.execute (index-ad52c8c7.js:4:29479)
-    at index-ad52c8c7.js:4:30918
-run	@	index-ad52c8c7.js:4
-execute	@	index-ad52c8c7.js:4
-(匿名)	@	index-ad52c8c7.js:4
+    at _.run (index-4072760c.js:4:692)
+    at st.run (index-4072760c.js:4:16959)
+    at at.execute (index-4072760c.js:4:29479)
+    at index-4072760c.js:4:30918
+run	@	index-4072760c.js:4
+execute	@	index-4072760c.js:4
+(匿名)	@	index-4072760c.js:4
 requestAnimationFrame		
-(匿名)	@	index-ad52c8c7.js:4
-update	@	index-ad52c8c7.js:4
-onMouseMove	@	index-ad52c8c7.js:4
-(匿名)	@	index-ad52c8c7.js:1
+(匿名)	@	index-4072760c.js:4
+update	@	index-4072760c.js:4
+onMouseMove	@	index-4072760c.js:4
+(匿名)	@	index-4072760c.js:1
