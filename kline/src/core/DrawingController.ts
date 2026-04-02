@@ -5,6 +5,9 @@ import { ScaleEngine } from './ScaleEngine';
 import { DataManager } from './DataManager';
 
 export class DrawingController {
+    private moveTarget: any = null;
+    private moveStartPos = { x: 0, y: 0 };
+
     constructor(
         private interactionEngine: InteractionEngine,
         private drawingEngine: DrawingEngine,
@@ -28,30 +31,41 @@ export class DrawingController {
             const point = { time, price };
 
             if (type === 'start') {
-                const needed = this.drawingEngine.getPointsNeeded(tool as any);
+                if (tool === 'move') {
+                    // 🚀 移動模式：尋找點擊到的物件
+                    const hit = this.drawingEngine.hitTest(mouseX, mouseY, this.scaleEngine, startIndex, candleWidth, spacing, (t) => activeManager.getIndexAtTime(t));
+                    if (hit) {
+                        this.moveTarget = hit;
+                        this.moveStartPos = { x: mouseX, y: mouseY };
+                    }
+                    return;
+                }
 
+                const needed = this.drawingEngine.getPointsNeeded(tool as any);
                 if (!this.drawingEngine.isPlacing()) {
                     this.drawingEngine.startDrawing(tool as any, point);
-                    if (needed === 1) {
-                        this.finishDrawing();
-                    }
+                    if (needed === 1) this.finishDrawing();
                 } else {
                     if (tool !== 'brush') {
                         const active = this.drawingEngine.getActiveDrawing();
-                        const currentCount = active?.points.length || 0;
-                        if (currentCount === needed) {
-                            this.finishDrawing();
-                        } else {
-                            this.drawingEngine.addPoint(point);
-                        }
+                        if ((active?.points.length || 0) === needed) this.finishDrawing();
+                        else this.drawingEngine.addPoint(point);
                     }
                 }
             } else if (type === 'move') {
-                if (this.drawingEngine.isPlacing()) {
+                if (tool === 'move' && this.moveTarget) {
+                    // 🚀 執行移動
+                    const dx = mouseX - this.moveStartPos.x;
+                    const dy = mouseY - this.moveStartPos.y;
+                    this.drawingEngine.moveDrawing(this.moveTarget.id, dx, dy, this.scaleEngine, startIndex, candleWidth, spacing, (t) => activeManager.getIndexAtTime(t), (idx) => activeManager.getTimeAtIndex(idx));
+                    this.moveStartPos = { x: mouseX, y: mouseY };
+                } else if (this.drawingEngine.isPlacing()) {
                     this.drawingEngine.updateDrawing(point);
                 }
             } else if (type === 'end') {
-                if (tool === 'brush' && this.drawingEngine.isPlacing()) {
+                if (tool === 'move') {
+                    this.moveTarget = null;
+                } else if (tool === 'brush' && this.drawingEngine.isPlacing()) {
                     this.drawingEngine.endDrawing();
                 }
             }
