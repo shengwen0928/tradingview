@@ -17,7 +17,7 @@ export class CrosshairController {
         private renderEngine: RenderEngine,
         private infoDisplay: InfoDisplay,
         private drawingEngine: DrawingEngine,
-        private interactionEngine: InteractionEngine
+        public interactionEngine?: InteractionEngine
     ) {}
 
     public update(mouseX: number, mouseY: number, activeManager: DataManager, requestRedraw: () => void) {
@@ -61,9 +61,9 @@ export class CrosshairController {
         );
 
         // 2. 畫繪圖預覽點
-        const mode = this.interactionEngine.getDrawingMode();
+        const mode = this.interactionEngine?.getDrawingMode();
         if (mode && mode !== 'cursor' && mode !== 'move' && !this.drawingEngine.isPlacing()) {
-            const snapped = this.interactionEngine.getSnappedPos(this.lastMousePos.x, this.lastMousePos.y);
+            const snapped = this.interactionEngine!.getSnappedPos(this.lastMousePos.x, this.lastMousePos.y);
             this.renderEngine.drawPreviewPoint(snapped.x, snapped.y);
         }
     }

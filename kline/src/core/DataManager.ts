@@ -36,6 +36,14 @@ export class DataManager {
     return this.intervalMs;
   }
 
+  public getSymbol(): string {
+    return this.instId;
+  }
+
+  public getTimeframe(): string {
+    return this.bar;
+  }
+
   public getTimeAtFloatIndex(targetIndex: number): number {
     if (this.candles.length === 0) return Date.now();
 

@@ -7,7 +7,7 @@ export class ColorPicker {
 
     constructor(
         private container: HTMLElement,
-        private initialColor: string,
+        initialColor: string,
         private onChange: (hex: string) => void
     ) {
         const { h, s, v } = hexToHsv(initialColor);

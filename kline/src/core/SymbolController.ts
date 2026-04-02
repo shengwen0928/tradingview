@@ -1,7 +1,6 @@
 import { DataManager } from './DataManager';
 import { ViewportEngine } from './ViewportEngine';
 import { ScaleEngine } from './ScaleEngine';
-import { LoaderController } from './LoaderController';
 import { TimeframeController } from '../ui/TimeframeController';
 import { InfoDisplay } from '../ui/InfoDisplay';
 
@@ -11,7 +10,7 @@ export class SymbolController {
     constructor(
         private cryptoManager: DataManager,
         private stockManager: DataManager,
-        private viewport: ViewportEngine,
+        private _viewport: ViewportEngine,
         private scaleEngine: ScaleEngine,
         private infoDisplay: InfoDisplay,
         private updateLoader: (manager: DataManager) => void,
