@@ -151,11 +151,10 @@ class ChartEngine {
                 this.drawingEngine.updateDrawing(point);
             }
         } else if (type === 'end') {
-            // 🚨 畫筆專屬：放開滑鼠時結束
+            // 🚨 畫筆專屬：放開滑鼠時結束當前線段，但保持畫筆工具選中
             if (tool === 'brush' && this.drawingEngine.isPlacing()) {
                 this.drawingEngine.endDrawing();
-                this.interactionEngine.setDrawingMode(null);
-                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                // 不再呼叫 setDrawingMode(null)，允許連續畫下一筆
             }
         }
         this.requestRedraw();
