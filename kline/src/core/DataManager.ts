@@ -21,6 +21,7 @@ export class DataManager {
     : 'https://tradingviewer-gtr2.onrender.com';
     
   private wsUrl = this.apiUrl.replace('http', 'ws');
+  private reloadTimeout: any = null; // 🚀 新增：防抖定時器
 
   constructor(
     onDataUpdated: (candles: Candle[], isHistory: boolean) => void,
@@ -180,19 +181,28 @@ export class DataManager {
   }
 
   private async reload(): Promise<void> {
-    // 關閉現有連線
-    if (this.ws) {
-      this.ws.onclose = null;
-      this.ws.close();
-    }
-    if (this.pingInterval) clearInterval(this.pingInterval);
+    // 🚀 防抖處理：如果短時間內重複呼叫，取消前一個請求
+    if (this.reloadTimeout) clearTimeout(this.reloadTimeout);
 
-    // 🚨 徹底重置，確保下一波資料觸發 UI 的 isFirstLoad 邏輯
-    this.candles = [];
-    this.onDataUpdated([], false);
+    this.reloadTimeout = setTimeout(async () => {
+      // 關閉現有連線
+      if (this.ws) {
+        this.ws.onclose = null;
+        if (this.ws.readyState === WebSocket.CONNECTING || this.ws.readyState === WebSocket.OPEN) {
+          this.ws.close();
+        }
+        this.ws = null;
+      }
+      if (this.pingInterval) clearInterval(this.pingInterval);
 
-    // 重新載入數據
-    await this.loadInitialData();
+      // 🚨 徹底重置
+      this.candles = [];
+      this.onDataUpdated([], false);
+
+      // 重新載入數據
+      await this.loadInitialData();
+      this.reloadTimeout = null;
+    }, 200); // 200ms 防抖
   }
 
   public getCandles(): Candle[] {
