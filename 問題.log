@@ -1,20 +1,3502 @@
-build-and-deploy
-',' expected.
-build-and-deploy
-An element access expression should take an argument.
-build-and-deploy
-',' expected.
-build-and-deploy
-Declaration or statement expected.
-build-and-deploy
-Declaration or statement expected.
-build-and-deploy
-Declaration or statement expected.
-build-and-deploy
-Declaration or statement expected.
-build-and-deploy
-';' expected.
-build-and-deploy
-',' expected.
-build-and-deploy
-',' expected.
+index-4159b19f.js:4 [DataManager] Fetching from Crypto API: https://tradingviewer-gtr2.onrender.com/crypto/klines?id=BTC%2FUSDT&interval=1m
+index-4159b19f.js:4 [DataManager] Received 500 initial candles
+index-4159b19f.js:4 [DataManager] Latest Candle: 2026/4/2 下午9:19:00
+index-4159b19f.js:4 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+setDataCount @ index-4159b19f.js:1
+s @ index-4159b19f.js:4
+loadInitialData @ index-4159b19f.js:4
+await in loadInitialData
+Tt @ index-4159b19f.js:137
+window.onload @ index-4159b19f.js:137
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [DataManager] Backend WebSocket Connected ✅
+index-4159b19f.js:4 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:137
+handleScroll @ index-4159b19f.js:1
+handleScroll @ index-4159b19f.js:4
+onScroll @ index-4159b19f.js:4
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+e @ index-4159b19f.js:1
+requestAnimationFrame
+startInertia @ index-4159b19f.js:1
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
+index-4159b19f.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-4159b19f.js:4:609)
+    at st.run (index-4159b19f.js:4:16808)
+    at at.execute (index-4159b19f.js:4:29328)
+    at index-4159b19f.js:4:30767
+run @ index-4159b19f.js:4
+execute @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:4
+requestAnimationFrame
+(匿名) @ index-4159b19f.js:4
+update @ index-4159b19f.js:4
+onMouseMove @ index-4159b19f.js:4
+(匿名) @ index-4159b19f.js:1
