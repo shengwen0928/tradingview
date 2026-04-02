@@ -352,7 +352,7 @@ class ChartEngine {
                         ${colors.map(c => `<div class="color-dot" style="background:${c}" data-color="${c}"></div>`).join('')}
                     </div>
                     <div class="color-popover-divider"></div>
-                    <div class="color-picker-wrapper">
+                    <div class="popover-custom-picker">
                         <input type="color" id="custom-color-input" value="${hit.color}">
                         <div class="custom-color-label">自定義顏色 🎨</div>
                     </div>
@@ -484,9 +484,25 @@ class ChartEngine {
         .color-popover { position: absolute; bottom: 30px; left: 0; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; padding: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); z-index: 1001; min-width: 130px; }
         .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; justify-items: center; }
         .color-popover-divider { height: 1px; background: #363c4e; margin: 8px 0; }
-        .color-picker-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; padding: 4px; border-radius: 4px; transition: background 0.2s; position: relative; }
-        .color-picker-wrapper:hover { background: #2a2e39; }
-        .custom-color-label { font-size: 11px; color: #d1d4dc; white-space: nowrap; text-align: center; }
+        
+        /* 🚀 徹底修正：選單內的自定義顏色按鈕居中 */
+        .popover-custom-picker { 
+            display: flex; 
+            flex-direction: row;
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            padding: 8px 0; 
+            border-radius: 4px; 
+            transition: background 0.2s; 
+            position: relative; 
+            width: 100%;
+            margin: 0 auto;
+        }
+        .popover-custom-picker:hover { background: #2a2e39; }
+        .popover-custom-picker input[type="color"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; left: 0; top: 0; }
+        
+        .custom-color-label { font-size: 11px; color: #d1d4dc; white-space: nowrap; pointer-events: none; width: 100%; text-align: center; }
         .width-btn.active { background: #2962ff !important; color: #fff !important; }
     `;
     document.head.appendChild(style);
