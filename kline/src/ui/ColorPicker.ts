@@ -34,26 +34,36 @@ export class ColorPicker {
         const svCursor = this.container.querySelector('#sv-cursor') as HTMLElement;
         const hueCursor = this.container.querySelector('#hue-cursor') as HTMLElement;
 
-        // 1. SV 區域
-        const svCtx = svCanvas.getContext('2d')!;
-        svCtx.fillStyle = hsvToHex(this.h, 100, 100);
-        svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
-        
-        const whiteGrd = svCtx.createLinearGradient(0, 0, svCanvas.width, 0);
-        whiteGrd.addColorStop(0, '#fff'); whiteGrd.addColorStop(1, 'transparent');
-        svCtx.fillStyle = whiteGrd; svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+        if (!svCanvas || !hueCanvas || !svCursor || !hueCursor) return;
 
-        const blackGrd = svCtx.createLinearGradient(0, 0, 0, svCanvas.height);
-        blackGrd.addColorStop(0, 'transparent'); blackGrd.addColorStop(1, '#000');
-        svCtx.fillStyle = blackGrd; svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+        // 1. SV 區域
+        const svCtx = svCanvas.getContext('2d');
+        if (svCtx) {
+            svCtx.clearRect(0, 0, svCanvas.width, svCanvas.height);
+            svCtx.fillStyle = hsvToHex(this.h, 100, 100);
+            svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+            
+            const whiteGrd = svCtx.createLinearGradient(0, 0, svCanvas.width, 0);
+            whiteGrd.addColorStop(0, 'rgba(255,255,255,1)'); 
+            whiteGrd.addColorStop(1, 'rgba(255,255,255,0)');
+            svCtx.fillStyle = whiteGrd; svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+
+            const blackGrd = svCtx.createLinearGradient(0, 0, 0, svCanvas.height);
+            blackGrd.addColorStop(0, 'rgba(0,0,0,0)'); 
+            blackGrd.addColorStop(1, 'rgba(0,0,0,1)');
+            svCtx.fillStyle = blackGrd; svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+        }
 
         // 2. Hue 區域
-        const hueCtx = hueCanvas.getContext('2d')!;
-        const hueGrd = hueCtx.createLinearGradient(0, 0, hueCanvas.width, 0);
-        for(let i=0; i<=360; i+=30) hueGrd.addColorStop(i/360, hsvToHex(i, 100, 100));
-        hueCtx.fillStyle = hueGrd; hueCtx.fillRect(0, 0, hueCanvas.width, hueCanvas.height);
+        const hueCtx = hueCanvas.getContext('2d');
+        if (hueCtx) {
+            hueCtx.clearRect(0, 0, hueCanvas.width, hueCanvas.height);
+            const hueGrd = hueCtx.createLinearGradient(0, 0, hueCanvas.width, 0);
+            for(let i=0; i<=360; i+=30) hueGrd.addColorStop(i/360, hsvToHex(i, 100, 100));
+            hueCtx.fillStyle = hueGrd; hueCtx.fillRect(0, 0, hueCanvas.width, hueCanvas.height);
+        }
 
-        // 3. 游標
+        // 3. 游標位置
         svCursor.style.left = `${(this.s/100) * svCanvas.width}px`;
         svCursor.style.top = `${(1 - this.v/100) * svCanvas.height}px`;
         hueCursor.style.left = `${(this.h/360) * hueCanvas.width}px`;
