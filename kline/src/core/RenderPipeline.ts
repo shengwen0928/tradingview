@@ -40,6 +40,19 @@ export class RenderPipeline {
         this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
         this.renderEngine.drawIndicators(this.indicatorController.run(candles), start, end, startIndex, cw, 2, this.scaleEngine);
         
+        // 🚀 核心：計算畫面內最高最低點並標註
+        let maxHigh = -Infinity, minLow = Infinity;
+        let maxIdx = -1, minIdx = -1;
+        visible.forEach((c, i) => {
+            if (c.high > maxHigh) { maxHigh = c.high; maxIdx = start + i; }
+            if (c.low < minLow) { minLow = c.low; minIdx = start + i; }
+        });
+        this.renderEngine.drawMinMaxLabels(
+            { price: maxHigh, index: maxIdx }, 
+            { price: minLow, index: minIdx }, 
+            startIndex, cw, 2, this.scaleEngine
+        );
+
         // 4. 渲染互動層 (Drawings, Crosshair)
         this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t: number) => activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
         this.crosshairController.draw(activeManager);

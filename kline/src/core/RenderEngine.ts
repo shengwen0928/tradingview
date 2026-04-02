@@ -376,6 +376,59 @@ export class RenderEngine {
     this.drawLabel(ctx, price.toFixed(2), this.width - 40, y, color);
   }
 
+  /**
+   * 🚀 新增：繪製畫面內最高與最低點標籤
+   */
+  public drawMinMaxLabels(
+    highCandle: { price: number, index: number },
+    lowCandle: { price: number, index: number },
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    const ctx = this.candleCtx;
+    ctx.save();
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+
+    const drawLabel = (price: number, index: number, isHigh: boolean) => {
+      const x = (index - exactStartIndex) * (candleWidth + spacing) + candleWidth / 2;
+      const y = scaleEngine.priceToY(price);
+      const text = price.toFixed(2);
+      const padding = 4;
+      const textWidth = ctx.measureText(text).width;
+      
+      const rectW = textWidth + padding * 2;
+      const rectH = 14;
+      const rectX = x - rectW / 2;
+      const rectY = isHigh ? y - rectH - 10 : y + 10;
+
+      // 畫背景小方塊
+      ctx.fillStyle = 'rgba(42, 46, 57, 0.8)';
+      ctx.fillRect(rectX, rectY, rectW, rectH);
+      ctx.strokeStyle = '#d1d4dc';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(rectX, rectY, rectW, rectH);
+
+      // 畫文字
+      ctx.fillStyle = '#d1d4dc';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, x, rectY + rectH / 2);
+
+      // 畫連接線
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, isHigh ? rectY + rectH : rectY);
+      ctx.strokeStyle = 'rgba(209, 212, 220, 0.5)';
+      ctx.stroke();
+    };
+
+    if (!isNaN(highCandle.price)) drawLabel(highCandle.price, highCandle.index, true);
+    if (!isNaN(lowCandle.price)) drawLabel(lowCandle.price, lowCandle.index, false);
+    ctx.restore();
+  }
+
   private drawLabel(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, bgColor: string): void {
     const padding = 4;
     ctx.font = '12px sans-serif';
