@@ -481,10 +481,12 @@ class ChartEngine {
         .color-menu-wrapper { position: relative; display: flex; align-items: center; }
         .color-main-btn { width: 20px; height: 20px; border-radius: 4px; cursor: pointer; border: 2px solid #363c4e; transition: border-color 0.2s; }
         .color-main-btn:hover { border-color: #2962ff; }
-        .color-popover { position: absolute; bottom: 30px; left: 0; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; padding: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); z-index: 1001; width: 120px; }
-        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
+        .color-popover { position: absolute; bottom: 30px; left: 0; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; padding: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); z-index: 1001; min-width: 130px; }
+        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; justify-items: center; }
         .color-popover-divider { height: 1px; background: #363c4e; margin: 8px 0; }
-        .custom-color-label { font-size: 11px; color: #d1d4dc; white-space: nowrap; }
+        .color-picker-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; padding: 4px; border-radius: 4px; transition: background 0.2s; position: relative; }
+        .color-picker-wrapper:hover { background: #2a2e39; }
+        .custom-color-label { font-size: 11px; color: #d1d4dc; white-space: nowrap; text-align: center; }
         .width-btn.active { background: #2962ff !important; color: #fff !important; }
     `;
     document.head.appendChild(style);
