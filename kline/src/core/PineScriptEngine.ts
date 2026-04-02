@@ -272,12 +272,12 @@ export class PineScriptEngine {
             }
 
             // 2. 徹底攔截 input 系統 (強效清理)
-            // 匹配 input.xxx(...) 並精確提取第一個數字、布林或字串
-            trimmed = trimmed.replace(/input\.(?:\w+)\s*\(\s*([^,)]+)[^)]*\)/g, (_match, p1) => {
-                return p1.replace(/['"]/g, '').trim();
+            // 匹配 input.xxx(...) 或 input(...) 並精確提取第一個參數
+            trimmed = trimmed.replace(/input\.(?:\w+)\s*\(\s*([^,)]+)[^)]*\)/g, (match, p1) => {
+                return p1.split(',')[0].replace(/['"]/g, '').trim();
             });
-            trimmed = trimmed.replace(/input\s*\(\s*([^,)]+)[^)]*\)/g, (_match, p1) => {
-                return p1.replace(/['"]/g, '').trim();
+            trimmed = trimmed.replace(/input\s*\(\s*([^,)]+)[^)]*\)/g, (match, p1) => {
+                return p1.split(',')[0].replace(/['"]/g, '').trim();
             });
 
             // 3. 處理數學與顏色
@@ -289,7 +289,7 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
             trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
 
-            // 4. 指標映射
+            // 4. 指標映射 (統一使用 _PINE_LIB_)
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
             trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
             trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
