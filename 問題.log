@@ -1,4 +1,4 @@
-index-ad52c8c7.js:4 [IndicatorController] Compilation error: SyntaxError: Invalid or unexpected token
+[IndicatorController] Compilation error: SyntaxError: Invalid or unexpected token
     at new Function (<anonymous>)
     at _.run (index-ad52c8c7.js:4:692)
     at st.run (index-ad52c8c7.js:4:16959)
@@ -9,70 +9,6 @@ execute	@	index-ad52c8c7.js:4
 (匿名)	@	index-ad52c8c7.js:4
 requestAnimationFrame		
 (匿名)	@	index-ad52c8c7.js:4
-(匿名)	@	index-ad52c8c7.js:114
-handleScroll	@	index-ad52c8c7.js:1
-handleScroll	@	index-ad52c8c7.js:4
-onScroll	@	index-ad52c8c7.js:4
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
-requestAnimationFrame		
-e	@	index-ad52c8c7.js:1
+update	@	index-ad52c8c7.js:4
+onMouseMove	@	index-ad52c8c7.js:4
+(匿名)	@	index-ad52c8c7.js:1
