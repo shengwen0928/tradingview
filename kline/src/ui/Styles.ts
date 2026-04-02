@@ -23,6 +23,15 @@ export const injectStyles = () => {
         .delete-btn { cursor: pointer; font-size: 14px; padding: 2px 4px; filter: grayscale(1); transition: filter 0.2s; }
         .delete-btn:hover { filter: grayscale(0); transform: scale(1.1); }
 
+        /* 🚀 線條樣式收納選單 (歸類介面) */
+        .width-menu-wrapper { position: relative; display: flex; align-items: center; }
+        .width-main-btn { background: #363c4e; color: #d1d4dc; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; min-width: 36px; text-align: center; border: 1px solid transparent; transition: all 0.2s; }
+        .width-main-btn:hover { background: #454b5e; border-color: #2962ff; color: #fff; }
+        .width-popover { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; padding: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); z-index: 1001; display: flex; flex-direction: column; gap: 2px; }
+        .width-item { padding: 6px 16px; color: #d1d4dc; cursor: pointer; font-size: 11px; border-radius: 4px; white-space: nowrap; transition: background 0.2s; text-align: center; }
+        .width-item:hover { background: #2a2e39; color: #fff; }
+        .width-item.active { background: #2962ff; color: #fff; }
+
         /* 🚀 顏色收納選單樣式 */
         .color-menu-wrapper { position: relative; display: flex; align-items: center; }
         .color-main-btn { width: 20px; height: 20px; border-radius: 4px; cursor: pointer; border: 2px solid #363c4e; transition: border-color 0.2s; }

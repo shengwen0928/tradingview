@@ -35,7 +35,12 @@ export class DrawingEditToolbar {
             </div>
             <div class="toolbar-divider"></div>
             <div class="toolbar-section">
-                ${widths.map(w => `<div class="width-btn ${hit.lineWidth === w ? 'active' : ''}" data-width="${w}">${w}px</div>`).join('')}
+                <div class="width-menu-wrapper">
+                    <div class="width-main-btn" id="width-trigger">${hit.lineWidth || 2}px</div>
+                    <div class="width-popover" id="width-popover" style="display:none">
+                        ${widths.map(w => `<div class="width-item ${hit.lineWidth === w ? 'active' : ''}" data-width="${w}">${w}px</div>`).join('')}
+                    </div>
+                </div>
             </div>
             <div class="toolbar-divider"></div>
             <div class="toolbar-section">
@@ -53,38 +58,50 @@ export class DrawingEditToolbar {
             this.requestRedraw();
         };
 
-        // 1. 初始化顏色彈出選單
-        const trigger = toolbar.querySelector('#color-trigger') as HTMLElement;
-        const popover = toolbar.querySelector('#color-popover') as HTMLElement;
-        trigger.onclick = (e) => {
+        // 1. 顏色彈窗處理
+        const colorTrigger = toolbar.querySelector('#color-trigger') as HTMLElement;
+        const colorPopover = toolbar.querySelector('#color-popover') as HTMLElement;
+        colorTrigger.onclick = (e) => {
             e.stopPropagation();
-            popover.style.display = popover.style.display === 'none' ? 'block' : 'none';
+            widthPopover.style.display = 'none'; // 互斥
+            colorPopover.style.display = colorPopover.style.display === 'none' ? 'block' : 'none';
         };
 
-        // 2. 初始化自定義色盤
+        // 2. 寬度彈窗處理 (歸類收納)
+        const widthTrigger = toolbar.querySelector('#width-trigger') as HTMLElement;
+        const widthPopover = toolbar.querySelector('#width-popover') as HTMLElement;
+        widthTrigger.onclick = (e) => {
+            e.stopPropagation();
+            colorPopover.style.display = 'none'; // 互斥
+            widthPopover.style.display = widthPopover.style.display === 'none' ? 'block' : 'none';
+        };
+
+        // 3. 初始化自定義色盤
         const pickerRoot = toolbar.querySelector('#custom-picker-root') as HTMLElement;
         new ColorPicker(pickerRoot, hit.color, (newColor) => {
             update({ color: newColor });
-            trigger.style.background = newColor;
+            colorTrigger.style.background = newColor;
         });
 
-        // 3. 預設顏色點點擊
+        // 4. 預設顏色點點擊
         toolbar.querySelectorAll('.color-dot').forEach(dot => {
             (dot as HTMLElement).onclick = () => {
                 const newColor = (dot as HTMLElement).dataset.color!;
                 update({ color: newColor });
-                trigger.style.background = newColor;
-                popover.style.display = 'none';
+                colorTrigger.style.background = newColor;
+                colorPopover.style.display = 'none';
             };
         });
 
-        // 4. 寬度調整 (歸類處理)
-        toolbar.querySelectorAll('.width-btn').forEach(btn => {
-            (btn as HTMLElement).onclick = () => {
-                const lineWidth = parseInt((btn as HTMLElement).dataset.width!);
+        // 5. 寬度項目點擊
+        toolbar.querySelectorAll('.width-item').forEach(item => {
+            (item as HTMLElement).onclick = () => {
+                const lineWidth = parseInt((item as HTMLElement).dataset.width!);
                 update({ lineWidth });
-                toolbar.querySelectorAll('.width-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                widthTrigger.innerText = `${lineWidth}px`;
+                toolbar.querySelectorAll('.width-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                widthPopover.style.display = 'none';
             };
         });
 
