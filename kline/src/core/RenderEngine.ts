@@ -389,38 +389,26 @@ export class RenderEngine {
   ): void {
     const ctx = this.candleCtx;
     ctx.save();
-    ctx.font = 'bold 10px sans-serif';
+    ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
     const drawLabel = (price: number, index: number, isHigh: boolean) => {
       const x = (index - exactStartIndex) * (candleWidth + spacing) + candleWidth / 2;
       const y = scaleEngine.priceToY(price);
-      const text = price.toFixed(2);
-      const padding = 4;
-      const textWidth = ctx.measureText(text).width;
+      const text = `${isHigh ? '▼ ' : '▲ '}${price.toFixed(2)}`;
       
-      const rectW = textWidth + padding * 2;
-      const rectH = 14;
-      const rectX = x - rectW / 2;
-      const rectY = isHigh ? y - rectH - 10 : y + 10;
+      const labelY = isHigh ? y - 12 : y + 12;
 
-      // 畫背景小方塊
-      ctx.fillStyle = 'rgba(42, 46, 57, 0.8)';
-      ctx.fillRect(rectX, rectY, rectW, rectH);
-      ctx.strokeStyle = '#d1d4dc';
-      ctx.lineWidth = 0.5;
-      ctx.strokeRect(rectX, rectY, rectW, rectH);
+      // 🚀 只畫文字，不畫框
+      ctx.fillStyle = isHigh ? '#ef5350' : '#26a69a'; // 使用紅/綠區分
+      ctx.fillText(text, x, labelY);
 
-      // 畫文字
-      ctx.fillStyle = '#d1d4dc';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, x, rectY + rectH / 2);
-
-      // 畫連接線
+      // 畫一條極淡的指引線
       ctx.beginPath();
       ctx.moveTo(x, y);
-      ctx.lineTo(x, isHigh ? rectY + rectH : rectY);
-      ctx.strokeStyle = 'rgba(209, 212, 220, 0.5)';
+      ctx.lineTo(x, isHigh ? labelY + 5 : labelY - 5);
+      ctx.strokeStyle = 'rgba(209, 212, 220, 0.3)';
       ctx.stroke();
     };
 

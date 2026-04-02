@@ -40,13 +40,20 @@ export class RenderPipeline {
         this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
         this.renderEngine.drawIndicators(this.indicatorController.run(candles), start, end, startIndex, cw, 2, this.scaleEngine);
         
-        // 🚀 核心：計算畫面內最高最低點並標註
+        // 🚀 核心：計算畫面內最高最低點並標註 (使用精確的 rawRange 提升靈敏度)
+        const { startIndex: rawStart, endIndex: rawEnd } = this.viewport.getRawRange();
         let maxHigh = -Infinity, minLow = Infinity;
         let maxIdx = -1, minIdx = -1;
-        visible.forEach((c, i) => {
-            if (c.high > maxHigh) { maxHigh = c.high; maxIdx = start + i; }
-            if (c.low < minLow) { minLow = c.low; minIdx = start + i; }
-        });
+        
+        const scanStart = Math.max(0, Math.floor(rawStart));
+        const scanEnd = Math.min(candles.length, Math.ceil(rawEnd));
+
+        for (let i = scanStart; i < scanEnd; i++) {
+            const c = candles[i];
+            if (c.high > maxHigh) { maxHigh = c.high; maxIdx = i; }
+            if (c.low < minLow) { minLow = c.low; minIdx = i; }
+        }
+
         this.renderEngine.drawMinMaxLabels(
             { price: maxHigh, index: maxIdx }, 
             { price: minLow, index: minIdx }, 
