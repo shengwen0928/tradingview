@@ -43,23 +43,36 @@ export class DrawingToolbar {
   private initMagnetLogic() {
     const btn = document.getElementById('tool-magnet')!;
     const icon = document.getElementById('magnet-icon')!;
+    
+    // 初始化一次狀態 (確保同步)
+    const initialMode = this.interactionEngine.getMagnetMode();
+    this.updateMagnetUI(initialMode, btn, icon);
+
     btn.onclick = () => {
       const current = this.interactionEngine.getMagnetMode();
       let next: 'off' | 'weak' | 'strong' = 'off';
       if (current === 'off') next = 'weak';
       else if (current === 'weak') next = 'strong';
       else next = 'off';
+      
       this.interactionEngine.setMagnetMode(next);
-      if (next === 'off') {
-        icon.style.stroke = '#787b86';
-        btn.title = '磁鐵模式 (關閉)';
-      } else if (next === 'weak') {
-        icon.style.stroke = '#2962ff';
-        btn.title = '磁鐵模式 (弱磁鐵)';
-      } else {
-        icon.style.stroke = '#f0b90b';
-        btn.title = '磁鐵模式 (強磁鐵)';
-      }
+      this.updateMagnetUI(next, btn, icon);
     };
+  }
+
+  private updateMagnetUI(mode: 'off' | 'weak' | 'strong', btn: HTMLElement, icon: HTMLElement) {
+    if (mode === 'off') {
+      icon.style.stroke = '#787b86';
+      btn.title = '磁鐵模式 (關閉)';
+      btn.classList.remove('active');
+    } else if (mode === 'weak') {
+      icon.style.stroke = '#2962ff';
+      btn.title = '磁鐵模式 (弱磁鐵)';
+      btn.classList.add('active');
+    } else {
+      icon.style.stroke = '#f0b90b';
+      btn.title = '磁鐵模式 (強磁鐵)';
+      btn.classList.add('active');
+    }
   }
 }

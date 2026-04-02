@@ -119,23 +119,32 @@ class ChartEngine {
         const point = { time, price };
 
         if (type === 'start') {
+            const needed = this.drawingEngine.getPointsNeeded(tool as any);
+
             if (!this.drawingEngine.isPlacing()) {
-                // 第一下點擊：開始繪圖
+                // 第一下點擊
                 this.drawingEngine.startDrawing(tool as any, point);
-            } else {
-                // 之後的點擊：
-                const needed = this.drawingEngine.getPointsNeeded(tool as any);
-                const current = this.drawingEngine.getActiveDrawing()?.points.length || 0;
                 
-                if (current < needed) {
-                    // 還沒達到所需點數，新增一個點
+                // 如果只需要 1 個點（水平線、垂直線、文字），立刻結束
+                if (needed === 1) {
+                    this.drawingEngine.endDrawing();
+                    this.interactionEngine.setDrawingMode(null);
+                    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                }
+            } else {
+                // 之後的點擊
+                const active = this.drawingEngine.getActiveDrawing();
+                const currentCount = active?.points.length || 0;
+                
+                if (currentCount < needed) {
                     this.drawingEngine.addPoint(point);
                 }
                 
-                // 再次檢查，如果點數夠了就結束
+                // 再次檢查是否完成
                 if (this.drawingEngine.getActiveDrawing()?.points.length === needed) {
                     this.drawingEngine.endDrawing();
-                    this.interactionEngine.setDrawingMode(null); // 完成後退出繪圖模式
+                    this.interactionEngine.setDrawingMode(null);
+                    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
                 }
             }
         } else if (type === 'move') {

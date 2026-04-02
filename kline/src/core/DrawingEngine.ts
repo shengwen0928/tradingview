@@ -48,9 +48,23 @@ export class DrawingEngine {
     }
 
     public getPointsNeeded(type: DrawingObject['type']): number {
-        if (type === 'triangle' || type === 'parallelChannel') return 3;
-        if (type === 'brush') return 999; // 筆刷特殊處理
-        return 2;
+        switch (type) {
+            // 點 1 下
+            case 'horizontal':
+            case 'vertical':
+            case 'text':
+                return 1;
+            // 點 3 下
+            case 'triangle':
+            case 'parallelChannel':
+                return 3;
+            // 筆刷 (特殊)
+            case 'brush':
+                return 999;
+            // 點 2 下 (預設)
+            default:
+                return 2;
+        }
     }
 
     /**
