@@ -359,12 +359,10 @@ export class PineScriptEngine {
         };
 
         // 🚀 執行沙盒：將常用變數直接注入執行範圍
-        const executeBar = new Function('ctx', 'Lib', 'Math', 'close', 'open', 'high', 'low', 'volume', 'bar_index', compiledJs);
+        const executeBar = new Function('ctx', '_PINE_LIB_', 'Math', 'close', 'open', 'high', 'low', 'volume', 'bar_index', compiledJs);
 
-        // 🚀 核心：Bar-by-Bar Loop (逐根掃描)
         for (let i = 0; i < size; i++) {
             ctx.bar_index = i;
-            // 更新 Series 當前指針
             ctx.open.setCurrentIndex(i);
             ctx.high.setCurrentIndex(i);
             ctx.low.setCurrentIndex(i);
@@ -375,6 +373,8 @@ export class PineScriptEngine {
                 executeBar(ctx, PineLibrary, Math, ctx.close, ctx.open, ctx.high, ctx.low, ctx.volume, ctx.bar_index);
             } catch (e) {
                 // 忽略執行期錯誤
+            }
+        }
             }
         }
         // 整理結果 (包含線條與繪圖物件)
