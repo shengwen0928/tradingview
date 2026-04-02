@@ -264,7 +264,7 @@ export class PineScriptEngine {
             }
 
             // 7. 歷史陣列索引轉換 [] -> .get()
-            trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (match, p1, p2) => {
+            trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => {
                 return `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`;
             });
 
