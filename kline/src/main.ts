@@ -90,7 +90,8 @@ class ChartEngine {
     this.drawingToolbar = new DrawingToolbar(
       this.interactionEngine,
       this.drawingEngine,
-      () => this.requestRedraw()
+      () => this.requestRedraw(),
+      (tool) => this.startDrawing(tool)
     );
     this.scriptEditor = new ScriptEditor(
       this.pineEngine,
@@ -106,6 +107,25 @@ class ChartEngine {
       symbolModal: !!this.symbolModal,
       drawingToolbar: !!this.drawingToolbar,
       scriptEditor: !!this.scriptEditor
+    });
+  }
+
+  private startDrawing(tool: string) {
+    this.interactionEngine.setDrawingMode(tool, (mouseX, mouseY, type) => {
+        const { startIndex } = this.viewport.getRawRange();
+        const candleWidth = this.viewport.getCandleWidth();
+        const time = this.activeManager.getTimeAtIndex(mouseX / (candleWidth + 2) + startIndex);
+        const price = this.scaleEngine.yToPrice(mouseY);
+        const point = { time, price };
+
+        if (type === 'start') {
+            this.drawingEngine.startDrawing(tool as any, point);
+        } else if (type === 'move') {
+            this.drawingEngine.updateDrawing(point);
+        } else if (type === 'end') {
+            this.drawingEngine.endDrawing();
+        }
+        this.requestRedraw();
     });
   }
 

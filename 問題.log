@@ -1,8 +1,6 @@
 build-and-deploy
 Process completed with exit code 2.
 build-and-deploy
-'hit' is declared but its value is never read.
+'DataManager' is declared but its value is never read.
 build-and-deploy
-Property 'hideEditToolbar' is declared but its value is never read.
-build-and-deploy
-Property 'showEditToolbar' is declared but its value is never read.
+'ScaleEngine' is declared but its value is never read.

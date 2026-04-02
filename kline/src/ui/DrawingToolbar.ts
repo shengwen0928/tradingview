@@ -5,7 +5,8 @@ export class DrawingToolbar {
   constructor(
     private interactionEngine: InteractionEngine,
     private drawingEngine: DrawingEngine,
-    private onRequestRedraw: () => void
+    private onRequestRedraw: () => void,
+    private startDrawing: (tool: string) => void
   ) {
     this.init();
     this.initMagnetLogic();
@@ -22,7 +23,7 @@ export class DrawingToolbar {
           if (tool === 'cursor') {
             this.interactionEngine.setDrawingMode(null);
           } else {
-            this.interactionEngine.setDrawingMode(tool as any);
+            this.startDrawing(tool);
           }
         };
       }
