@@ -254,80 +254,84 @@ export class PineScriptEngine {
             let trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//')) return;
 
-            // 🚀 0. 預處理：過濾 V6 特有關鍵字與物件
-            if (trimmed.startsWith('type ') || trimmed.startsWith('method ')) return;
-            trimmed = trimmed.replace(/^(?:float|int|bool|string|color|line|label|box|table)\s+([\w.]+)/g, '$1');
+            // 🚀 0. 基礎語法與物件清理
+            if (trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(')) {
+                jsLines.push('// ' + trimmed);
+                return;
+            }
 
-            // 1. 處理函數定義 (更穩健的匹配)
+            // 1. 處理函數定義 (f_name() => body)
             if (trimmed.includes('=>')) {
                 const parts = trimmed.split('=>');
-                const head = parts[0].trim();
-                const body = parts[1].trim();
-                if (head.includes('(')) {
-                    trimmed = `const ${head} = { return ${body || 'na'} };`;
-                } else {
-                    trimmed = `const ${head} = () => { return ${body || 'na'} };`;
+                let namePart = parts[0].trim();
+                const bodyPart = parts[1].trim();
+                if (!namePart.includes('(')) namePart += ' = ()';
+                else namePart = namePart.replace('(', ' = (');
+                jsLines.push(`const ${namePart} => { return ${bodyPart || 'null'} };`);
+                return;
+            }
+
+                // 2. 徹底攔截 input 並提取預設值 (排除剩餘參數造成的語法錯誤)
+                trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe|color)\s*\(([^,)]+)[^)]*\)/g, '$1');
+                trimmed = trimmed.replace(/input\s*\(([^,)]+)[^)]*\)/g, '$1');
+
+                // 3. 處理數學與顏色
+                trimmed = trimmed.replace(/math\.max/g, 'Math.max');
+                trimmed = trimmed.replace(/math\.min/g, 'Math.min');
+                trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
+                trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
+                trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
+                trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
+                trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
+
+                // 4. 指標映射
+                trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
+                trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
+                trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
+                trimmed = trimmed.replace(/ta\.wma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.wma($1, $2)');
+                trimmed = trimmed.replace(/ta\.vwma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.vwma($1, volume, $2)');
+                trimmed = trimmed.replace(/ta\.rsi\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rsi($1, $2, ctx, 'rsi_${idCounter++}')`);
+                trimmed = trimmed.replace(/ta\.crossover\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossover($1, $2)');
+                trimmed = trimmed.replace(/ta\.crossunder\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossunder($1, $2)');
+                trimmed = trimmed.replace(/ta\.atr\(([^)]+)\)/g, `_PINE_LIB_.atr(high, low, close, $1, ctx, 'atr_${idCounter++}')`);
+                trimmed = trimmed.replace(/ta\.stdev\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.stdev($1, $2)');
+                trimmed = trimmed.replace(/ta\.pivothigh\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivothigh($1, $2, $3)');
+                trimmed = trimmed.replace(/ta\.pivotlow\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivotlow($1, $2, $3)');
+                trimmed = trimmed.replace(/ta\.valuewhen\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.valuewhen($1, $2, $3, ctx, 'vw_${idCounter++}')`);
+                trimmed = trimmed.replace(/ta\.highest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.highest($1, $2)');
+                trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.lowest($1, $2)');
+                trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
+
+                // 5. 繪圖映射
+                trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, '_PINE_LIB_.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
+                trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, '_PINE_LIB_.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
+
+                // 6. 清理 Pine 專有類型宣告 (如 float entry;)
+                trimmed = trimmed.replace(/^(?:float|int|bool|string|color|line|label|box|table)\s+([\w.]+)/g, '$1');
+
+                // 7. 語法結構與賦值
+                trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
+                trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
+                trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
+
+                if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
+                    const cond = trimmed.replace(/^if\s+/, '').trim();
+                    jsLines.push(`if (${cond}) {`);
+                    indentLevel++;
+                    return;
                 }
-                jsLines.push(trimmed);
-                return;
-            }
 
-            // 2. 徹底攔截 input 系統 (只取第一個參數)
-            trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe|color)\s*\(([^,)]+)[^)]*\)/g, '$1');
-            trimmed = trimmed.replace(/input\s*\(([^,)]+)[^)]*\)/g, '$1');
+                // 判斷是否為單獨的單字 (非法語句)，將其註解
+                if (/^\w+;?$/.test(trimmed) && !['return', 'break', 'continue'].includes(trimmed)) {
+                    jsLines.push('// ' + trimmed);
+                    return;
+                }
 
-            // 3. 處理基礎映射
-            trimmed = trimmed.replace(/math\.max/g, 'Math.max');
-            trimmed = trimmed.replace(/math\.min/g, 'Math.min');
-            trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
-            trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
-            trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
-            trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
+                const isAssignment = trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>') && !trimmed.includes('<') && !trimmed.includes('(') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('const');
+                if (isAssignment) trimmed = 'let ' + trimmed;
 
-            trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
-
-            // 4. 指標映射
-            trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
-            trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
-            trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
-            trimmed = trimmed.replace(/ta\.wma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.wma($1, $2)');
-            trimmed = trimmed.replace(/ta\.vwma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.vwma($1, volume, $2)');
-            trimmed = trimmed.replace(/ta\.rsi\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rsi($1, $2, ctx, 'rsi_${idCounter++}')`);
-            trimmed = trimmed.replace(/ta\.crossover\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossover($1, $2)');
-            trimmed = trimmed.replace(/ta\.crossunder\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossunder($1, $2)');
-            trimmed = trimmed.replace(/ta\.atr\(([^)]+)\)/g, `_PINE_LIB_.atr(high, low, close, $1, ctx, 'atr_${idCounter++}')`);
-            trimmed = trimmed.replace(/ta\.stdev\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.stdev($1, $2)');
-            trimmed = trimmed.replace(/ta\.pivothigh\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivothigh($1, $2, $3)');
-            trimmed = trimmed.replace(/ta\.pivotlow\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivotlow($1, $2, $3)');
-            trimmed = trimmed.replace(/ta\.valuewhen\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.valuewhen($1, $2, $3, ctx, 'vw_${idCounter++}')`);
-            trimmed = trimmed.replace(/ta\.highest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.highest($1, $2)');
-            trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.lowest($1, $2)');
-            trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
-
-            // 5. 繪圖與特殊 API
-            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, '_PINE_LIB_.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
-            trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, '_PINE_LIB_.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
-            trimmed = trimmed.replace(/(?:label|box|table|line)\.delete\(([^)]+)\)/g, '// Deleted $1');
-            trimmed = trimmed.replace(/indicator\([^)]*\)/g, '// indicator init');
-
-            // 6. 賦值與語法結構
-            if (trimmed.startsWith('[')) trimmed = 'let ' + trimmed;
-            trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
-            trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
-            trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
-
-            if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
-                const cond = trimmed.replace(/^if\s+/, '').trim();
-                jsLines.push(`if (${cond}) {`);
-                indentLevel++;
-                return;
-            }
-
-            const isAssignment = trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>') && !trimmed.includes('<') && !trimmed.includes('(') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('const');
-            if (isAssignment) trimmed = 'let ' + trimmed;
-
-            jsLines.push(trimmed + ';');
-        });        while (indentLevel > 0) {
+                jsLines.push(trimmed + ';');
+            });        while (indentLevel > 0) {
             jsLines.push('}');
             indentLevel--;
         }
