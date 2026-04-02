@@ -265,14 +265,15 @@ export class PineScriptEngine {
                 const parts = trimmed.split('=>');
                 let head = parts[0].trim();
                 const body = parts[1].trim();
-                if (!head.includes('(')) head += ' = ()';
-                else head = head.replace('(', ' = (');
-                jsLines.push(`const ${head} => { return ${body || 'null'} };`);
+                // 正確的箭頭函式賦值格式
+                if (!head.includes('(')) head = `const ${head} = ()`;
+                else head = `const ${head.replace('(', ' = (')}`;
+                jsLines.push(`${head} => { return ${body || 'null'} };`);
                 return;
             }
 
             // 2. 徹底攔截 input 系統 (強效清理)
-            // 匹配 input.xxx(...) 或 input(...) 並精確提取第一個參數
+            // 匹配 input.xxx(...) 並精確提取第一個數字、布林或字串
             trimmed = trimmed.replace(/input\.(?:\w+)\s*\(\s*([^,)]+)[^)]*\)/g, (_match, p1) => {
                 return p1.split(',')[0].replace(/['"]/g, '').trim();
             });
@@ -327,6 +328,7 @@ export class PineScriptEngine {
             }
 
             // 🚀 核心：偵測賦值語句並自動補 let
+            // 排除含有 ( 的情況，因為那通常是函數呼叫
             const isAssignment = (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>') && !trimmed.includes('<') && !trimmed.includes('(')) || trimmed.startsWith('[');
             const isKnownDeclare = trimmed.startsWith('let') || trimmed.startsWith('const') || trimmed.startsWith('var');
             
