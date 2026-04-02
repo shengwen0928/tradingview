@@ -14,6 +14,7 @@ export class DataManager {
   private ws: WebSocket | null = null;
   private pingInterval: any = null;
   private reconnectTimeout: any = null; // 🚨 新增：重連定時器
+  private abortController: AbortController | null = null; // 🚀 新增：請求中止控制器
 
   // Backend URLs
   private apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5173')
@@ -181,28 +182,49 @@ export class DataManager {
   }
 
   private async reload(): Promise<void> {
-    // 🚀 防抖處理：如果短時間內重複呼叫，取消前一個請求
+    // 🚀 防抖處理：如果短時間內重複呼叫，取消前一個定時器與請求
     if (this.reloadTimeout) clearTimeout(this.reloadTimeout);
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+    }
 
     this.reloadTimeout = setTimeout(async () => {
-      // 關閉現有連線
+      // 1. 徹底關閉現有連線
       if (this.ws) {
+        this.ws.onopen = null;
+        this.ws.onmessage = null;
+        this.ws.onerror = null;
         this.ws.onclose = null;
+        
         if (this.ws.readyState === WebSocket.CONNECTING || this.ws.readyState === WebSocket.OPEN) {
           this.ws.close();
         }
         this.ws = null;
       }
-      if (this.pingInterval) clearInterval(this.pingInterval);
+      
+      if (this.pingInterval) {
+        clearInterval(this.pingInterval);
+        this.pingInterval = null;
+      }
 
-      // 🚨 徹底重置
+      // 2. 準備新的請求控制器
+      this.abortController = new AbortController();
+
+      // 3. 徹底重置數據狀態
       this.candles = [];
       this.onDataUpdated([], false);
 
-      // 重新載入數據
-      await this.loadInitialData();
-      this.reloadTimeout = null;
-    }, 200); // 200ms 防抖
+      // 4. 重新載入數據
+      try {
+        await this.loadInitialData();
+      } catch (err: any) {
+        if (err.name === 'AbortError') console.log('[DataManager] Previous load aborted.');
+        else console.error('[DataManager] Load error:', err);
+      } finally {
+        this.reloadTimeout = null;
+      }
+    }, 300); // 🚀 增加到 300ms 防抖，確保快速切換時更穩定
   }
 
   public getCandles(): Candle[] {
@@ -253,7 +275,7 @@ export class DataManager {
       if (!isStock && this.currentSource) url += `&source=${encodeURIComponent(this.currentSource)}`;
 
       console.log(`[DataManager] Fetching from ${isStock ? 'Stock' : 'Crypto'} API: ${url}`);
-      const response = await fetch(url);
+      const response = await fetch(url, { signal: this.abortController?.signal });
       const result = await response.json();
 
       if (result.success) {
