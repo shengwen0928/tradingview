@@ -340,24 +340,32 @@ class ChartEngine {
     toolbar.style.left = `${x + 20}px`;
     toolbar.style.top = `${y - 20}px`;
 
-    const colors = ['#2962ff', '#ef5350', '#26a69a', '#f0b90b', '#fff'];
+    const colors = ['#2962ff', '#ef5350', '#26a69a', '#f0b90b', '#ffffff', '#000000', '#9c27b0', '#ff9800'];
     const widths = [1, 2, 3, 4];
 
     toolbar.innerHTML = `
         <div class="toolbar-section">
-            ${colors.map(c => `<div class="color-dot" style="background:${c}" data-color="${c}"></div>`).join('')}
-            <div class="color-picker-wrapper">
-                <input type="color" id="custom-color-input" value="${hit.color}">
-                <div class="custom-color-icon">🎨</div>
+            <div class="color-menu-wrapper">
+                <div class="color-main-btn" id="color-trigger" style="background:${hit.color}"></div>
+                <div class="color-popover" id="color-popover" style="display:none">
+                    <div class="color-grid">
+                        ${colors.map(c => `<div class="color-dot" style="background:${c}" data-color="${c}"></div>`).join('')}
+                    </div>
+                    <div class="color-popover-divider"></div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="custom-color-input" value="${hit.color}">
+                        <div class="custom-color-label">自定義顏色 🎨</div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="toolbar-divider"></div>
         <div class="toolbar-section">
-            ${widths.map(w => `<div class="width-btn" data-width="${w}">${w}px</div>`).join('')}
+            ${widths.map(w => `<div class="width-btn ${hit.lineWidth === w ? 'active' : ''}" data-width="${w}">${w}px</div>`).join('')}
         </div>
         <div class="toolbar-divider"></div>
         <div class="toolbar-section">
-            <div class="style-btn" id="toggle-dash">虛線</div>
+            <div class="style-btn" id="toggle-dash">${(hit as any).isDash ? '實線' : '虛線'}</div>
             <div class="delete-btn" id="delete-drawing">🗑️</div>
         </div>
     `;
@@ -365,17 +373,41 @@ class ChartEngine {
     document.body.appendChild(toolbar);
     this.editToolbar = toolbar;
 
-    // 綁定事件
+    // 🚀 顏色彈出選單邏輯
+    const trigger = toolbar.querySelector('#color-trigger') as HTMLElement;
+    const popover = toolbar.querySelector('#color-popover') as HTMLElement;
+    trigger.onclick = (e) => {
+        e.stopPropagation();
+        popover.style.display = popover.style.display === 'none' ? 'block' : 'none';
+    };
+
+    // 點擊外部關閉選單
+    const closePopover = () => { popover.style.display = 'none'; };
+
     toolbar.querySelectorAll('.color-dot').forEach(dot => {
         (dot as HTMLElement).onclick = () => {
-            this.drawingEngine.updateDrawingColor(hit.id, (dot as HTMLElement).dataset.color!);
+            const newColor = (dot as HTMLElement).dataset.color!;
+            this.drawingEngine.updateDrawingColor(hit.id, newColor);
+            trigger.style.background = newColor;
             this.requestRedraw();
+            closePopover();
         };
     });
 
+    const colorPicker = toolbar.querySelector('#custom-color-input') as HTMLInputElement;
+    colorPicker.oninput = (e) => {
+        const newColor = (e.target as HTMLInputElement).value;
+        this.drawingEngine.updateDrawingColor(hit.id, newColor);
+        trigger.style.background = newColor;
+        this.requestRedraw();
+    };
+
+    // 其他按鈕邏輯
     toolbar.querySelectorAll('.width-btn').forEach(btn => {
         (btn as HTMLElement).onclick = () => {
             this.drawingEngine.updateDrawingWidth(hit.id, parseInt((btn as HTMLElement).dataset.width!));
+            toolbar.querySelectorAll('.width-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             this.requestRedraw();
         };
     });
@@ -384,6 +416,7 @@ class ChartEngine {
     dashBtn.onclick = () => {
         const isDash = !(hit as any).isDash;
         this.drawingEngine.updateDrawingDash(hit.id, isDash);
+        dashBtn.innerText = isDash ? '實線' : '虛線';
         this.requestRedraw();
     };
 
@@ -394,13 +427,8 @@ class ChartEngine {
         this.requestRedraw();
     };
 
-    // 🚀 自定義色盤綁定
-    const colorPicker = toolbar.querySelector('#custom-color-input') as HTMLInputElement;
-    colorPicker.oninput = (e) => {
-        const newColor = (e.target as HTMLInputElement).value;
-        this.drawingEngine.updateDrawingColor(hit.id, newColor);
-        this.requestRedraw();
-    };
+    // 防止工具列內點擊冒泡
+    toolbar.onclick = (e) => e.stopPropagation();
   }
 
   private hideEditToolbar() {
@@ -448,6 +476,16 @@ class ChartEngine {
         .color-picker-wrapper { position: relative; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .custom-color-icon { font-size: 14px; z-index: 1; pointer-events: none; }
         #custom-color-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+
+        /* 🚀 顏色收納選單樣式 */
+        .color-menu-wrapper { position: relative; display: flex; align-items: center; }
+        .color-main-btn { width: 20px; height: 20px; border-radius: 4px; cursor: pointer; border: 2px solid #363c4e; transition: border-color 0.2s; }
+        .color-main-btn:hover { border-color: #2962ff; }
+        .color-popover { position: absolute; bottom: 30px; left: 0; background: #1e222d; border: 1px solid #363c4e; border-radius: 6px; padding: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); z-index: 1001; width: 120px; }
+        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
+        .color-popover-divider { height: 1px; background: #363c4e; margin: 8px 0; }
+        .custom-color-label { font-size: 11px; color: #d1d4dc; white-space: nowrap; }
+        .width-btn.active { background: #2962ff !important; color: #fff !important; }
     `;
     document.head.appendChild(style);
   }
