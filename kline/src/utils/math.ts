@@ -43,22 +43,30 @@ export const formatPrice = (price: number, precision: number = 2): string => {
 };
 
 /**
- * 🚀 顏色轉換工具：HSV 轉 Hex
+ * 🚀 顏色轉換工具：HSV 轉 8 碼 Hex (#RRGGBBAA)
  */
-export const hsvToHex = (h: number, s: number, v: number): string => {
+export const hsvToHex8 = (h: number, s: number, v: number, a: number): string => {
   s /= 100; v /= 100;
   const k = (n: number) => (n + h / 60) % 6;
   const f = (n: number) => v * (1 - s * Math.max(0, Math.min(k(n), 4 - k(n), 1)));
+  const alpha = Math.round(a * 255).toString(16).padStart(2, '0');
   const rgb = [f(5), f(3), f(1)].map(x => Math.round(x * 255).toString(16).padStart(2, '0'));
-  return `#${rgb.join('')}`;
+  return `#${rgb.join('')}${alpha}`;
 };
 
 /**
- * 🚀 顏色轉換工具：Hex 轉 HSV
+ * 🚀 顏色轉換工具：Hex 轉 HSV (支援 3, 6, 8 碼)
  */
-export const hexToHsv = (hex: string): { h: number, s: number, v: number } => {
+export const hexToHsv = (hex: string): { h: number, s: number, v: number, a: number } => {
   hex = hex.replace('#', '');
   if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  
+  let a = 1;
+  if (hex.length === 8) {
+    a = parseInt(hex.substring(6, 8), 16) / 255;
+    hex = hex.substring(0, 6);
+  }
+
   const r = parseInt(hex.substring(0, 2), 16) / 255;
   const g = parseInt(hex.substring(2, 4), 16) / 255;
   const b = parseInt(hex.substring(4, 6), 16) / 255;
@@ -76,5 +84,5 @@ export const hexToHsv = (hex: string): { h: number, s: number, v: number } => {
       }
       h /= 6;
   }
-  return { h: h * 360, s: s * 100, v: v * 100 };
+  return { h: h * 360, s: s * 100, v: v * 100, a };
 };

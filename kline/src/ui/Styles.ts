@@ -37,8 +37,12 @@ export const injectStyles = () => {
         #sv-canvas { width: 120px; height: 80px; background: #000; border-radius: 4px; cursor: crosshair; display: block; }
         #hue-canvas { width: 120px; height: 12px; border-radius: 2px; cursor: ew-resize; display: block; }
         
-        .sv-cursor { position: absolute; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
-        .hue-cursor { position: absolute; width: 4px; height: 16px; border: 2px solid #fff; border-radius: 2px; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; top: 50%; }
+        .sv-cursor { position: absolute; width: 100%; height: 10px; border: 2px solid #fff; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; width: 10px; }
+        .hue-cursor, .alpha-cursor { position: absolute; width: 4px; height: 16px; border: 2px solid #fff; border-radius: 2px; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; top: 50%; }
+        
+        /* 🚀 透明度背景棋盤格 */
+        .alpha-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 2px; z-index: -1; background-image: linear-gradient(45deg, #333 25%, transparent 25%), linear-gradient(-45deg, #333 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #333 75%), linear-gradient(-45deg, transparent 75%, #333 75%); background-size: 8px 8px; background-position: 0 0, 0 4px, 4px -4px, -4px 0px; background-color: #1e222d; }
+        #alpha-canvas { width: 120px; height: 12px; border-radius: 2px; cursor: ew-resize; display: block; }
         
         .width-btn.active { background: #2962ff !important; color: #fff !important; }
     `;
