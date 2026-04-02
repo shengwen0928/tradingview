@@ -25,7 +25,8 @@ export class ColorPicker {
                 <div class="hue-cursor" id="hue-cursor"></div>
             </div>
         `;
-        this.updateUI(false);
+        // 🚀 延遲一幀執行，確保 DOM 已掛載
+        requestAnimationFrame(() => this.updateUI(false));
     }
 
     private updateUI(triggerChange: boolean = true) {

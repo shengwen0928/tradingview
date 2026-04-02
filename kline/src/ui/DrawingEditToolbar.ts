@@ -55,7 +55,7 @@ export class DrawingEditToolbar {
             popover.style.display = popover.style.display === 'none' ? 'block' : 'none';
         };
 
-        // 2. 初始化自定義色盤
+        // 2. 初始化自定義色盤 (在 appendChild 之後)
         const pickerRoot = toolbar.querySelector('#custom-picker-root') as HTMLElement;
         new ColorPicker(pickerRoot, hit.color, (newColor) => {
             this.drawingEngine.updateDrawingColor(hit.id, newColor);
