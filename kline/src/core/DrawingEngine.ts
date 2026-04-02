@@ -287,13 +287,27 @@ export class DrawingEngine {
 
     private drawBrush(ctx: CanvasRenderingContext2D, draw: DrawingObject, scaleEngine: ScaleEngine, exactStartIndex: number, candleWidth: number, spacing: number, timeToIndex: (time: number) => number) {
         if (draw.points.length < 2) return;
+
+        const pts = draw.points.map(p => ({
+            x: scaleEngine.indexToX(timeToIndex(p.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2,
+            y: scaleEngine.priceToY(p.price)
+        }));
+
         ctx.beginPath();
-        draw.points.forEach((p, i) => {
-            const x = scaleEngine.indexToX(timeToIndex(p.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2;
-            const y = scaleEngine.priceToY(p.price);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        });
+        ctx.moveTo(pts[0].x, pts[0].y);
+
+        if (pts.length < 3) {
+            ctx.lineTo(pts[1].x, pts[1].y);
+        } else {
+            let i;
+            for (i = 1; i < pts.length - 2; i++) {
+                const xc = (pts[i].x + pts[i + 1].x) / 2;
+                const yc = (pts[i].y + pts[i + 1].y) / 2;
+                ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+            }
+            // 最後兩個點
+            ctx.quadraticCurveTo(pts[i].x, pts[i].y, pts[i + 1].x, pts[i + 1].y);
+        }
         ctx.stroke();
     }
 

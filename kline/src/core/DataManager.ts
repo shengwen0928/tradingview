@@ -34,6 +34,28 @@ export class DataManager {
     return this.intervalMs;
   }
 
+  public getTimeAtFloatIndex(targetIndex: number): number {
+    if (this.candles.length === 0) return Date.now();
+
+    const dataIdx = Math.floor(targetIndex);
+    const fraction = targetIndex - dataIdx;
+
+    // 1. 如果在數據範圍內
+    if (dataIdx >= 0 && dataIdx < this.candles.length) {
+      const currentTime = this.candles[dataIdx].time;
+      // 如果有下一個點，則根據下一個點推算間距，否則用 intervalMs
+      const nextTime = (dataIdx + 1 < this.candles.length) 
+        ? this.candles[dataIdx + 1].time 
+        : currentTime + this.intervalMs;
+      
+      return currentTime + fraction * (nextTime - currentTime);
+    }
+
+    // 2. 否則使用 getTimeAtIndex 的邏輯推算
+    const baseTime = this.getTimeAtIndex(dataIdx);
+    return baseTime + fraction * this.intervalMs;
+  }
+
   // 🚨 修正：優先使用實際數據時間，徹底解決對齊偏移問題
   public getTimeAtIndex(targetIndex: number): number {
     if (this.candles.length === 0) return Date.now();

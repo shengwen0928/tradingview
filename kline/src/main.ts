@@ -114,7 +114,14 @@ class ChartEngine {
     this.interactionEngine.setDrawingMode(tool, (mouseX, mouseY, type) => {
         const { startIndex } = this.viewport.getRawRange();
         const candleWidth = this.viewport.getCandleWidth();
-        const time = this.activeManager.getTimeAtIndex(mouseX / (candleWidth + 2) + startIndex);
+        const spacing = 2;
+        
+        // 🚨 畫筆專屬：使用浮點數索引以獲取子蠟燭級別的精確時間
+        const rawIndex = mouseX / (candleWidth + spacing) + startIndex;
+        const time = tool === 'brush' 
+            ? this.activeManager.getTimeAtFloatIndex(rawIndex) 
+            : this.activeManager.getTimeAtIndex(Math.round(rawIndex));
+            
         const price = this.scaleEngine.yToPrice(mouseY);
         const point = { time, price };
 
