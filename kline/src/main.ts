@@ -136,15 +136,14 @@ class ChartEngine {
                 const active = this.drawingEngine.getActiveDrawing();
                 const currentCount = active?.points.length || 0;
                 
-                if (currentCount < needed) {
-                    this.drawingEngine.addPoint(point);
-                }
-                
-                // 再次檢查是否完成
-                if (this.drawingEngine.getActiveDrawing()?.points.length === needed) {
+                if (currentCount === needed) {
+                    // 如果目前的點數剛好等於需要的點數，代表這一下是最後一個點的固定點擊
                     this.drawingEngine.endDrawing();
                     this.interactionEngine.setDrawingMode(null);
                     document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                } else {
+                    // 還沒到最後一個點，繼續加點
+                    this.drawingEngine.addPoint(point);
                 }
             }
         } else if (type === 'move') {

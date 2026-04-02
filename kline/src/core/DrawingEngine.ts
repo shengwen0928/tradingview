@@ -298,36 +298,79 @@ export class DrawingEngine {
     }
 
     private drawParallelChannel(ctx: CanvasRenderingContext2D, draw: DrawingObject, scaleEngine: ScaleEngine, exactStartIndex: number, candleWidth: number, spacing: number, timeToIndex: (time: number) => number, isHovered: boolean) {
-        const pts = draw.points.map(p => ({ x: scaleEngine.indexToX(timeToIndex(p.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2, y: scaleEngine.priceToY(p.price) }));
-        const dx = pts[1].x - pts[0].x, dy = pts[1].y - pts[0].y;
-        ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); ctx.lineTo(pts[1].x, pts[1].y); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(pts[2].x, pts[2].y); ctx.lineTo(pts[2].x + dx, pts[2].y + dy); ctx.stroke();
-        ctx.save(); ctx.setLineDash([5, 5]); ctx.globalAlpha = 0.5; ctx.beginPath(); ctx.moveTo((pts[0].x + pts[2].x) / 2, (pts[0].y + pts[2].y) / 2); ctx.lineTo((pts[0].x + pts[2].x) / 2 + dx, (pts[0].y + pts[2].y) / 2 + dy); ctx.stroke(); ctx.restore();
-        ctx.save(); ctx.globalAlpha = 0.1; ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); ctx.lineTo(pts[1].x, pts[1].y); ctx.lineTo(pts[2].x + dx, pts[2].y + dy); ctx.lineTo(pts[2].x, pts[2].y); ctx.closePath(); ctx.fill(); ctx.restore();
+        const pts = draw.points.map(p => ({ 
+            x: scaleEngine.indexToX(timeToIndex(p.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2, 
+            y: scaleEngine.priceToY(p.price) 
+        }));
+        
+        if (pts.length < 2) return;
+
+        // 第一條線
+        ctx.beginPath(); 
+        ctx.moveTo(pts[0].x, pts[0].y); 
+        ctx.lineTo(pts[1].x, pts[1].y); 
+        ctx.stroke();
+
+        if (pts.length >= 3) {
+            const dx = pts[1].x - pts[0].x, dy = pts[1].y - pts[0].y;
+            // 第二條線
+            ctx.beginPath(); 
+            ctx.moveTo(pts[2].x, pts[2].y); 
+            ctx.lineTo(pts[2].x + dx, pts[2].y + dy); 
+            ctx.stroke();
+            
+            // 中間虛線
+            ctx.save(); 
+            ctx.setLineDash([5, 5]); 
+            ctx.globalAlpha = 0.5; 
+            ctx.beginPath(); 
+            ctx.moveTo((pts[0].x + pts[2].x) / 2, (pts[0].y + pts[2].y) / 2); 
+            ctx.lineTo((pts[0].x + pts[2].x) / 2 + dx, (pts[0].y + pts[2].y) / 2 + dy); 
+            ctx.stroke(); 
+            ctx.restore();
+
+            // 填充區域
+            ctx.save(); 
+            ctx.globalAlpha = 0.1; 
+            ctx.beginPath(); 
+            ctx.moveTo(pts[0].x, pts[0].y); 
+            ctx.lineTo(pts[1].x, pts[1].y); 
+            ctx.lineTo(pts[2].x + dx, pts[2].y + dy); 
+            ctx.lineTo(pts[2].x, pts[2].y); 
+            ctx.closePath(); 
+            ctx.fill(); 
+            ctx.restore();
+        }
+        
         if (isHovered) pts.forEach(p => this.drawPoint(ctx, p.x, p.y));
     }
 
     private drawTriangle(ctx: CanvasRenderingContext2D, draw: DrawingObject, scaleEngine: ScaleEngine, exactStartIndex: number, candleWidth: number, spacing: number, timeToIndex: (time: number) => number, isHovered: boolean) {
-        if (draw.points.length < 3) return;
+        if (draw.points.length < 2) return;
 
-        // 1. 預先計算座標，避免在路徑中執行複雜邏輯
         const pts = draw.points.map(p => ({
             x: scaleEngine.indexToX(timeToIndex(p.time), exactStartIndex, candleWidth, spacing) + candleWidth / 2,
             y: scaleEngine.priceToY(p.price)
         }));
 
-        // 2. 建立連續路徑 (不中斷)
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        ctx.lineTo(pts[1].x, pts[1].y);
-        ctx.lineTo(pts[2].x, pts[2].y);
-        ctx.closePath();
-        
-        // 3. 渲染填充與邊框
-        ctx.save(); ctx.globalAlpha = 0.2; ctx.fill(); ctx.restore();
-        ctx.stroke();
+        if (pts.length === 2) {
+            // 只畫一條線
+            ctx.beginPath();
+            ctx.moveTo(pts[0].x, pts[0].y);
+            ctx.lineTo(pts[1].x, pts[1].y);
+            ctx.stroke();
+        } else {
+            // 畫三角形
+            ctx.beginPath();
+            ctx.moveTo(pts[0].x, pts[0].y);
+            ctx.lineTo(pts[1].x, pts[1].y);
+            ctx.lineTo(pts[2].x, pts[2].y);
+            ctx.closePath();
+            
+            ctx.save(); ctx.globalAlpha = 0.2; ctx.fill(); ctx.restore();
+            ctx.stroke();
+        }
 
-        // 4. 路徑結束後，如果懸停才畫圓圈
         if (isHovered) {
             pts.forEach(p => this.drawPoint(ctx, p.x, p.y));
         }
