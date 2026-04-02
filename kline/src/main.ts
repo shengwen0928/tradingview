@@ -10,6 +10,9 @@ import { SymbolController } from './core/SymbolController';
 import { DrawingController } from './core/DrawingController';
 import { MagnetService } from './core/MagnetService';
 import { CrosshairController } from './core/CrosshairController';
+import { PriceAnimator } from './core/PriceAnimator';
+import { IndicatorController } from './core/IndicatorController';
+import { InteractionCoordinator } from './core/InteractionCoordinator';
 
 // UI Components
 import { SymbolModal } from './ui/SymbolModal';
@@ -35,6 +38,9 @@ class ChartEngine {
   private drawingController!: DrawingController;
   private magnetService!: MagnetService;
   private crosshairController!: CrosshairController;
+  private priceAnimator!: PriceAnimator;
+  private indicatorController!: IndicatorController;
+  private interactionCoordinator!: InteractionCoordinator;
   private editToolbar!: DrawingEditToolbar;
   
   private symbolModal!: SymbolModal;
@@ -44,7 +50,6 @@ class ChartEngine {
   private infoDisplay!: InfoDisplay;
 
   private connectionStatus: string = 'connecting';
-  private visualLastPrice: number | null = null; 
 
   constructor() {
     injectStyles();
@@ -58,6 +63,8 @@ class ChartEngine {
     this.pineEngine = new PineScriptEngine();
     this.drawingEngine = new DrawingEngine();
     this.editToolbar = new DrawingEditToolbar(this.drawingEngine, () => this.requestRedraw());
+    this.priceAnimator = new PriceAnimator();
+    this.indicatorController = new IndicatorController(this.pineEngine);
     
     const onDataUpdate = (candles: any[], isHistory: boolean) => {
         this.viewport.setDataCount(candles.length, isHistory);
@@ -74,17 +81,12 @@ class ChartEngine {
     this.loader = new LoaderController(this.activeManager, this.viewport);
     this.infoDisplay = new InfoDisplay();
 
-    this.initMagnetService();
     this.initControllers();
     this.initInteraction();
     
     window.addEventListener('resize', () => this.handleResize());
     this.handleResize();
     this.init();
-  }
-
-  private initMagnetService() {
-    this.magnetService = new MagnetService(this.viewport, this.scaleEngine);
   }
 
   private initControllers() {
@@ -95,24 +97,14 @@ class ChartEngine {
     );
 
     this.symbolModal = new SymbolModal((s, c) => this.symbolController.loadSymbol(s, c, this.tfController, this.connectionStatus));
-    
-    this.tfController = new TimeframeController(
-      (tf) => { this.activeManager.setTimeframe(tf); this.scaleEngine.resetAutoScale(); },
-      () => this.requestRedraw()
-    );
-
+    this.tfController = new TimeframeController((tf) => { this.activeManager.setTimeframe(tf); this.scaleEngine.resetAutoScale(); }, () => this.requestRedraw());
     this.drawingController = new DrawingController(this.interactionEngine, this.drawingEngine, this.viewport, this.scaleEngine, () => this.requestRedraw());
-
-    this.drawingToolbar = new DrawingToolbar(
-      this.interactionEngine, this.drawingEngine, () => this.requestRedraw(),
-      (tool) => this.drawingController.startDrawing(tool, this.activeManager)
-    );
-
+    this.drawingToolbar = new DrawingToolbar(this.interactionEngine, this.drawingEngine, () => this.requestRedraw(), (tool) => this.drawingController.startDrawing(tool, this.activeManager));
     this.scriptEditor = new ScriptEditor(this.pineEngine, () => this.activeManager, () => this.requestRedraw());
     
-    this.crosshairController = new CrosshairController(
-        this.viewport, this.scaleEngine, this.renderEngine, this.infoDisplay, this.drawingEngine, this.interactionEngine
-    );
+    this.crosshairController = new CrosshairController(this.viewport, this.scaleEngine, this.renderEngine, this.infoDisplay, this.drawingEngine, this.interactionEngine);
+    this.magnetService = new MagnetService(this.viewport, this.scaleEngine);
+    this.interactionCoordinator = new InteractionCoordinator(this.renderEngine.getOverlayCanvas(), this.interactionEngine, this.drawingEngine, this.editToolbar, this.viewport, this.scaleEngine);
   }
 
   private initInteraction() {
@@ -133,16 +125,7 @@ class ChartEngine {
     );
 
     this.interactionEngine.setSnapProvider(this.magnetService.getSnapProvider(this.activeManager));
-
-    this.renderEngine.getOverlayCanvas().addEventListener('click', (e: MouseEvent) => {
-      if (this.interactionEngine.getDrawingMode()) return;
-      const rect = this.renderEngine.getOverlayCanvas().getBoundingClientRect();
-      const hit = this.drawingEngine.hitTest(
-        e.clientX - rect.left, e.clientY - rect.top, this.scaleEngine, 
-        this.viewport.getRawRange().startIndex, this.viewport.getCandleWidth(), 2, (t) => this.activeManager.getIndexAtTime(t)
-      );
-      if (hit) this.editToolbar.show(e.clientX, e.clientY, hit); else this.editToolbar.hide();
-    });
+    this.interactionCoordinator.init(() => this.activeManager);
   }
 
   private requestRedraw() { requestAnimationFrame(() => this.draw()); }
@@ -155,29 +138,26 @@ class ChartEngine {
     const { startIndex } = this.viewport.getRawRange();
     const visible = candles.slice(start, end);
     const cw = this.viewport.getCandleWidth();
-    const lastPrice = candles[candles.length - 1].close;
+    const lastCandle = candles[candles.length - 1];
 
-    // 平滑視覺價格
-    if (this.visualLastPrice === null) this.visualLastPrice = lastPrice;
-    else {
-        const diff = lastPrice - this.visualLastPrice;
-        if (Math.abs(diff) > 0.0001) { this.visualLastPrice += diff * 0.2; this.requestRedraw(); }
-        else this.visualLastPrice = lastPrice;
-    }
+    // 1. 動態更新價格平滑
+    const visualPrice = this.priceAnimator.update(lastCandle.close, () => this.requestRedraw());
     
+    // 2. 更新與渲染背景層 (Grid, Axes)
     this.scaleEngine.updateScale(visible);
     this.renderEngine.drawGrid(this.scaleEngine);
     this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx) => this.activeManager.getTimeAtIndex(idx), this.scaleEngine);
-    this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, this.visualLastPrice);
-
-    this.renderEngine.drawIndicators(this.pineEngine.run(candles, this.pineEngine.compile(localStorage.getItem('pine-script-default') || 'plot(close, "Close", "#2962ff")')), start, end, startIndex, cw, 2, this.scaleEngine);
     
+    // 3. 渲染數據層 (Candles, Indicators)
+    this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
+    this.renderEngine.drawIndicators(this.indicatorController.run(candles), start, end, startIndex, cw, 2, this.scaleEngine);
+    
+    // 4. 渲染互動層 (Drawings, Crosshair)
     this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t) => this.activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
-    
     this.crosshairController.draw(this.activeManager);
 
-    const last = candles[candles.length - 1];
-    this.renderEngine.drawLastPriceLine(this.visualLastPrice, this.visualLastPrice >= last.open ? '#26a69a' : '#ef5350', this.scaleEngine);
+    // 5. 渲染價格線
+    this.renderEngine.drawLastPriceLine(visualPrice, visualPrice >= lastCandle.open ? '#26a69a' : '#ef5350', this.scaleEngine);
   }
 
   private handleResize() { 
