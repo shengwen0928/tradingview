@@ -265,11 +265,12 @@ export class PineScriptEngine {
                 const parts = trimmed.split('=>');
                 let head = parts[0].trim();
                 const body = parts[1].trim();
-                // 正確的箭頭函式賦值格式
+                // 🚀 修正：正確的 JS 箭頭函式格式
                 if (!head.includes('(')) head = `const ${head} = ()`;
                 else head = `const ${head.replace('(', ' = (')}`;
                 jsLines.push(`${head} => { return ${body || 'null'} };`);
                 return;
+            }
             }
 
             // 2. 徹底攔截 input 系統 (強效清理)
