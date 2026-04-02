@@ -33,11 +33,12 @@ export const injectStyles = () => {
         
         /* 🚀 全自定義色盤 CSS 修復 */
         .custom-picker-container { position: relative; width: 120px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-        #sv-canvas { width: 120px; height: 80px; background: #000; border-radius: 4px; cursor: crosshair; }
-        #hue-canvas { width: 120px; height: 12px; border-radius: 2px; cursor: ew-resize; }
+        .picker-area { position: relative; width: 100%; }
+        #sv-canvas { width: 120px; height: 80px; background: #000; border-radius: 4px; cursor: crosshair; display: block; }
+        #hue-canvas { width: 120px; height: 12px; border-radius: 2px; cursor: ew-resize; display: block; }
         
-        .sv-cursor { position: absolute; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; pointer-events: none; margin-left: -5px; margin-top: -5px; box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
-        .hue-cursor { position: absolute; width: 6px; height: 16px; border: 2px solid #fff; border-radius: 2px; pointer-events: none; margin-left: -3px; top: 90px; box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
+        .sv-cursor { position: absolute; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; }
+        .hue-cursor { position: absolute; width: 4px; height: 16px; border: 2px solid #fff; border-radius: 2px; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(0,0,0,0.5); z-index: 10; top: 50%; }
         
         .width-btn.active { background: #2962ff !important; color: #fff !important; }
     `;

@@ -19,10 +19,14 @@ export class ColorPicker {
     private render() {
         this.container.innerHTML = `
             <div class="custom-picker-container">
-                <canvas id="sv-canvas" width="120" height="80"></canvas>
-                <div class="sv-cursor" id="sv-cursor"></div>
-                <canvas id="hue-canvas" width="120" height="12"></canvas>
-                <div class="hue-cursor" id="hue-cursor"></div>
+                <div class="picker-area" style="height: 80px;">
+                    <canvas id="sv-canvas" width="120" height="80"></canvas>
+                    <div class="sv-cursor" id="sv-cursor"></div>
+                </div>
+                <div class="picker-area" style="height: 12px;">
+                    <canvas id="hue-canvas" width="120" height="12"></canvas>
+                    <div class="hue-cursor" id="hue-cursor"></div>
+                </div>
             </div>
         `;
         // 🚀 延遲一幀執行，確保 DOM 已掛載
