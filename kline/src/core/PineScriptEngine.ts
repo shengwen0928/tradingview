@@ -244,6 +244,15 @@ export class PineScriptEngine {
     /**
      * 編譯 Pine Script 為高效 JavaScript 執行序列
      */
+    public compile(code: string): string {
+        let lines = code.split('\n');
+        let jsLines: string[] = [];
+        let idCounter = 0;
+
+        lines.forEach(line => {
+            let trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('//')) return;
+
             // 1. 處理 input 與 math/color
             trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe)\(([^,]+)[^)]*\)/g, '$1');
             trimmed = trimmed.replace(/math\.max/g, 'Math.max');
