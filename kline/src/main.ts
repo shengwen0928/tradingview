@@ -6,7 +6,7 @@ import { InteractionEngine } from './core/InteractionEngine';
 import { LoaderController } from './core/LoaderController';
 import { PineScriptEngine } from './core/PineScriptEngine';
 import { DrawingEngine } from './core/DrawingEngine';
-import { formatPrice, formatFullTime } from './utils/math';
+import { formatPrice, formatFullTime, hsvToHex, hexToHsv, clamp } from './utils/math';
 
 // UI Components
 import { SymbolModal } from './ui/SymbolModal';
@@ -352,9 +352,12 @@ class ChartEngine {
                         ${colors.map(c => `<div class="color-dot" style="background:${c}" data-color="${c}"></div>`).join('')}
                     </div>
                     <div class="color-popover-divider"></div>
-                    <div class="popover-custom-picker">
-                        <input type="color" id="custom-color-input" value="${hit.color}">
-                        <div class="custom-color-label">自定義顏色 🎨</div>
+                    <!-- 🚀 全自定義專業色盤 -->
+                    <div class="custom-picker-container">
+                        <canvas id="sv-canvas" width="120" height="80"></canvas>
+                        <div class="sv-cursor" id="sv-cursor"></div>
+                        <canvas id="hue-canvas" width="120" height="12"></canvas>
+                        <div class="hue-cursor" id="hue-cursor"></div>
                     </div>
                 </div>
             </div>
@@ -426,6 +429,73 @@ class ChartEngine {
         this.hideEditToolbar();
         this.requestRedraw();
     };
+
+    // 🚀 全自定義色盤邏輯
+    const svCanvas = toolbar.querySelector('#sv-canvas') as HTMLCanvasElement;
+    const hueCanvas = toolbar.querySelector('#hue-canvas') as HTMLCanvasElement;
+    const svCursor = toolbar.querySelector('#sv-cursor') as HTMLElement;
+    const hueCursor = toolbar.querySelector('#hue-cursor') as HTMLElement;
+
+    let { h, s, v } = hexToHsv(hit.color);
+
+    const updateUI = () => {
+        // 1. 繪製 SV 區域
+        const svCtx = svCanvas.getContext('2d')!;
+        svCtx.fillStyle = hsvToHex(h, 100, 100);
+        svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+        
+        const whiteGrd = svCtx.createLinearGradient(0, 0, svCanvas.width, 0);
+        whiteGrd.addColorStop(0, '#fff'); whiteGrd.addColorStop(1, 'transparent');
+        svCtx.fillStyle = whiteGrd; svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+
+        const blackGrd = svCtx.createLinearGradient(0, 0, 0, svCanvas.height);
+        blackGrd.addColorStop(0, 'transparent'); blackGrd.addColorStop(1, '#000');
+        svCtx.fillStyle = blackGrd; svCtx.fillRect(0, 0, svCanvas.width, svCanvas.height);
+
+        // 2. 繪製 Hue 區域
+        const hueCtx = hueCanvas.getContext('2d')!;
+        const hueGrd = hueCtx.createLinearGradient(0, 0, hueCanvas.width, 0);
+        for(let i=0; i<=360; i+=30) hueGrd.addColorStop(i/360, hsvToHex(i, 100, 100));
+        hueCtx.fillStyle = hueGrd; hueCtx.fillRect(0, 0, hueCanvas.width, hueCanvas.height);
+
+        // 3. 更新游標位置
+        svCursor.style.left = `${(s/100) * svCanvas.width}px`;
+        svCursor.style.top = `${(1 - v/100) * svCanvas.height}px`;
+        hueCursor.style.left = `${(h/360) * hueCanvas.width}px`;
+
+        // 4. 更新結果
+        const finalColor = hsvToHex(h, s, v);
+        this.drawingEngine.updateDrawingColor(hit.id, finalColor);
+        trigger.style.background = finalColor;
+        this.requestRedraw();
+    };
+
+    const handleSV = (e: PointerEvent) => {
+        const rect = svCanvas.getBoundingClientRect();
+        s = clamp(((e.clientX - rect.left) / rect.width) * 100, 0, 100);
+        v = clamp((1 - (e.clientY - rect.top) / rect.height) * 100, 0, 100);
+        updateUI();
+    };
+
+    const handleHue = (e: PointerEvent) => {
+        const rect = hueCanvas.getBoundingClientRect();
+        h = clamp(((e.clientX - rect.left) / rect.width) * 360, 0, 360);
+        updateUI();
+    };
+
+    // 綁定事件
+    const setupDrag = (el: HTMLElement, fn: (e: PointerEvent) => void) => {
+        el.onpointerdown = (e) => {
+            el.setPointerCapture(e.pointerId);
+            fn(e);
+            el.onpointermove = fn;
+            el.onpointerup = () => { el.onpointermove = null; el.onpointerup = null; };
+        };
+    };
+
+    setupDrag(svCanvas, handleSV);
+    setupDrag(hueCanvas, handleHue);
+    updateUI();
 
     // 防止工具列內點擊冒泡
     toolbar.onclick = (e) => e.stopPropagation();
@@ -504,6 +574,13 @@ class ChartEngine {
         
         .custom-color-label { font-size: 11px; color: #d1d4dc; white-space: nowrap; pointer-events: none; width: 100%; text-align: center; }
         .width-btn.active { background: #2962ff !important; color: #fff !important; }
+
+        /* 🚀 全自定義色盤 CSS */
+        .custom-picker-container { position: relative; display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+        #sv-canvas { border-radius: 4px; cursor: crosshair; background: #000; }
+        #hue-canvas { border-radius: 2px; cursor: ew-resize; }
+        .sv-cursor { position: absolute; width: 8px; height: 8px; border: 2px solid #fff; border-radius: 50%; pointer-events: none; transform: translate(-5px, -5px); box-shadow: 0 0 4px rgba(0,0,0,0.5); }
+        .hue-cursor { position: absolute; width: 4px; height: 14px; border: 2px solid #fff; border-radius: 2px; pointer-events: none; transform: translate(-3px, 84px); box-shadow: 0 0 4px rgba(0,0,0,0.5); }
     `;
     document.head.appendChild(style);
   }
