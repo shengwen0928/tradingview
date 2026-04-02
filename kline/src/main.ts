@@ -348,6 +348,10 @@ class ChartEngine {
         .unit-btn { background: #1e222d; border: 1px solid #363c4e; color: #d1d4dc; padding: 6px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
         .unit-btn:hover { background: #2a2e39; color: #fff; }
         .unit-btn.active { background: #2962ff; color: #fff; border-color: #2962ff; }
+        
+        /* 🚀 提升全域清晰度 */
+        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+        canvas { image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
     `;
     document.head.appendChild(style);
   }

@@ -33,14 +33,16 @@ export class RenderEngine {
     const contexts = [this.gridCtx, this.candleCtx, this.overlayCtx];
 
     canvases.forEach((canvas, i) => {
-      canvas.width = width * this.dpr;
-      canvas.height = height * this.dpr;
+      canvas.width = Math.round(width * this.dpr);
+      canvas.height = Math.round(height * this.dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
       const ctx = contexts[i];
       ctx.scale(this.dpr, this.dpr);
-      ctx.imageSmoothingEnabled = false;
+      // 🚀 開啟抗鋸齒，讓曲線和文字更清晰絲滑
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
     });
   }
 
