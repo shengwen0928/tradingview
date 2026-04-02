@@ -8,6 +8,8 @@ export class InteractionEngine {
   private velocityY: number = 0;
   private animationId: number | null = null;
   private lastMoveTime: number = 0;
+  private lastDragX: number = 0; // 🚀 新增：精確追蹤拖曳 X 座標
+  private lastDragY: number = 0; // 🚀 新增：精確追蹤拖曳 Y 座標
 
   // 🚨 新增：繪圖相關狀態
   private drawingMode: string | null = null;
@@ -116,8 +118,13 @@ export class InteractionEngine {
       }
 
       if (this.isDragging && !this.drawingMode) {
-        const deltaX = -e.movementX;
-        const deltaY = e.movementY;
+        // 🚀 修正：改用精確的滑鼠座標差，取代不可靠的 e.movementX
+        const deltaX = this.lastDragX - mouseX;
+        const deltaY = mouseY - this.lastDragY;
+        
+        this.lastDragX = mouseX;
+        this.lastDragY = mouseY;
+
         this.onScroll(deltaX, deltaY, this.dragZone);
 
         const now = performance.now();
