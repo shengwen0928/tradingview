@@ -49,6 +49,10 @@ export class RenderEngine {
   public getLogicalWidth(): number { return this.width; }
   public getLogicalHeight(): number { return this.height; }
 
+  // 🚀 補上重構所需的 Getter
+  public getOverlayCanvas(): HTMLCanvasElement { return this.overlayCanvas; }
+  public getOverlayContext(): CanvasRenderingContext2D { return this.overlayCtx; }
+
   /**
    * 繪製背景網格
    */

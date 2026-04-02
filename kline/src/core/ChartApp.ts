@@ -41,9 +41,9 @@ export class ChartApp {
     const scaleEngine = new ScaleEngine();
     const drawingEngine = new DrawingEngine();
     const infoDisplay = new InfoDisplay();
+    
+    // 預先建立數據服務，用於循環依賴
     const viewport = new ViewportEngine(() => renderLoop.requestRedraw());
-
-    // 2. 核心服務
     const dataService = new DataManagerService(viewport, infoDisplay, () => renderLoop.requestRedraw());
     const magnetService = new MagnetService(viewport, scaleEngine);
     const layoutController = new LayoutController(renderEngine, scaleEngine, () => renderLoop.requestRedraw());
@@ -57,11 +57,19 @@ export class ChartApp {
 
     // 4. 互動橋接與事件
     const vpController = new ViewportController(viewport, scaleEngine, () => dataService.getLoader(), renderLoop.requestRedraw);
-    const bridge = new InteractionBridge(vpController, crosshairController, dataService, renderLoop.requestRedraw);
-    const handlers = bridge.getHandlers();
+    
+    // 修改橋接邏輯以傳遞正確的 width
+    const onZoomHandler = (mX: number, mY: number, s: number, z: string) => 
+        vpController.handleZoom(mX, s, z, renderEngine.getLogicalWidth());
 
-    const interactionEngine = new InteractionEngine(renderEngine.getOverlayCanvas(), handlers.onScroll, handlers.onZoom, handlers.onMouseMove);
-    (crosshairController as any).interactionEngine = interactionEngine; // 解決循環依賴
+    const interactionEngine = new InteractionEngine(
+        renderEngine.getOverlayCanvas(), 
+        (dX, dY, z) => vpController.handleScroll(dX, dY, z),
+        onZoomHandler,
+        (mX, mY) => crosshairController.update(mX, mY, dataService.getActiveManager(), renderLoop.requestRedraw)
+    );
+
+    (crosshairController as any).interactionEngine = interactionEngine; 
 
     const symbolController = new SymbolController(dataService.getCryptoManager(), dataService.getStockManager(), viewport, scaleEngine, infoDisplay, (m) => dataService.setActiveManager(m), renderLoop.requestRedraw);
     const drawingController = new DrawingController(interactionEngine, drawingEngine, viewport, scaleEngine, renderLoop.requestRedraw);
