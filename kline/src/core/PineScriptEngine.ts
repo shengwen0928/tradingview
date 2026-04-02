@@ -244,21 +244,14 @@ export class PineScriptEngine {
     /**
      * 編譯 Pine Script 為高效 JavaScript 執行序列
      */
-    public compile(code: string): string {
-        let lines = code.split('\n');
-        let jsLines: string[] = [];
-        let idCounter = 0;
-
-        lines.forEach(line => {
-            let trimmed = line.trim();
-            if (!trimmed || trimmed.startsWith('//')) return;
-
-            // 1. 處理 input 系統 (Mock 預設值)
-            trimmed = trimmed.replace(/input\.bool\(([^,]+)[^)]*\)/g, '$1');
-            trimmed = trimmed.replace(/input\.int\(([^,]+)[^)]*\)/g, '$1');
-            trimmed = trimmed.replace(/input\.float\(([^,]+)[^)]*\)/g, '$1');
-            trimmed = trimmed.replace(/input\.string\(([^,]+)[^)]*\)/g, '$1');
-            trimmed = trimmed.replace(/input\(([^,]+)[^)]*\)/g, '$1');
+            // 1. 處理 input 與 math/color
+            trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe)\(([^,]+)[^)]*\)/g, '$1');
+            trimmed = trimmed.replace(/math\.max/g, 'Math.max');
+            trimmed = trimmed.replace(/math\.min/g, 'Math.min');
+            trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
+            trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
+            trimmed = trimmed.replace(/color\.new/g, 'Lib.color_new');
+            trimmed = trimmed.replace(/color\.rgb/g, 'Lib.color_rgb');
 
             // 2. 處理 ta.* 指標轉譯
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, 'Lib.sma($1, $2)');
@@ -281,7 +274,7 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `Lib.barssince($1, ctx, 'bs_${idCounter++}')`);
 
             // 🚀 繪圖物件轉譯 (label / box)
-            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*text=([^,]+)[^)]*\)/g, 'Lib.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
+            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, 'Lib.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
             trimmed = trimmed.replace(/label\.delete\(([^)]+)\)/g, 'Lib.label_delete($1, ctx)');
             trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, 'Lib.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
             trimmed = trimmed.replace(/box\.set_right\(([^,]+),\s*([^)]+)\)/g, 'Lib.box_set_right($1, $2)');
@@ -293,18 +286,28 @@ export class PineScriptEngine {
             }
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
 
-            // 4. 基礎轉換
+            // 4. 基礎轉換 [] -> .get()
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
 
-            if (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('ctx.') && !trimmed.startsWith('plot')) {
+            // 5. 🚀 處理 if 語法 (簡單封裝)
+            if (trimmed.startsWith('if ') && !trimmed.includes('(')) {
+                trimmed = trimmed.replace(/^if\s+(.*)/, 'if ($1) {');
+                jsLines.push(trimmed);
+                return;
+            }
+
+            // 6. 基礎賦值轉譯 (自動補 let)
+            if (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>=') && !trimmed.includes('<=') && !trimmed.startsWith('if') && !trimmed.startsWith('let') && !trimmed.startsWith('ctx.') && !trimmed.startsWith('plot')) {
                 trimmed = 'let ' + trimmed;
             }
 
-            jsLines.push(trimmed + ';');
+            jsLines.push(trimmed + (trimmed.endsWith('{') ? '' : ';'));
         });
 
-        return jsLines.join('\n');
+        // 🚀 補償缺失的大括號
+        const finalJS = jsLines.join('\n') + '\n'.repeat(5) + '}'.repeat((jsLines.join('').match(/{/g) || []).length);
+        return finalJS;
     }
 
     /**
@@ -351,11 +354,13 @@ export class PineScriptEngine {
             }
         };
 
-        const executeBar = new Function('ctx', 'Lib', compiledJs);
+        // 🚀 執行沙盒：將常用變數直接注入執行範圍
+        const executeBar = new Function('ctx', 'Lib', 'Math', 'close', 'open', 'high', 'low', 'volume', 'bar_index', compiledJs);
 
         // 🚀 核心：Bar-by-Bar Loop (逐根掃描)
         for (let i = 0; i < size; i++) {
             ctx.bar_index = i;
+            // 更新 Series 當前指針
             ctx.open.setCurrentIndex(i);
             ctx.high.setCurrentIndex(i);
             ctx.low.setCurrentIndex(i);
@@ -363,12 +368,11 @@ export class PineScriptEngine {
             ctx.volume.setCurrentIndex(i);
 
             try {
-                executeBar(ctx, PineLibrary);
+                executeBar(ctx, PineLibrary, Math, ctx.close, ctx.open, ctx.high, ctx.low, ctx.volume, ctx.bar_index);
             } catch (e) {
-                // 忽略 Bar 級別錯誤
+                // 忽略執行期錯誤
             }
         }
-
         // 整理結果 (包含線條與繪圖物件)
         const finalPlots: any[] = [];
         plotBuffers.forEach((info, title) => {

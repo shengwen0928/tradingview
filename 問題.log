@@ -1,5 +1,23 @@
-Uncaught TypeError: Cannot set properties of null (setting 'onclick')
+index-f9f34a8e.js:38 Uncaught TypeError: Cannot set properties of null (setting 'onclick')
     at mt.init (index-f9f34a8e.js:38:5522)
     at new mt (index-f9f34a8e.js:38:5329)
     at new Tt (index-f9f34a8e.js:136:1164)
     at window.onload (index-f9f34a8e.js:136:1464)
+init @ index-f9f34a8e.js:38
+mt @ index-f9f34a8e.js:38
+Tt @ index-f9f34a8e.js:136
+window.onload @ index-f9f34a8e.js:136
+index-f9f34a8e.js:38 [IndicatorModal] Error applying script: SyntaxError: Unexpected identifier 'long_signal'
+    at new Function (<anonymous>)
+    at B.run (index-f9f34a8e.js:3:552)
+    at pt.applyIndicator (index-f9f34a8e.js:38:410)
+    at e.onclick (index-f9f34a8e.js:38:166)
+applyIndicator @ index-f9f34a8e.js:38
+e.onclick @ index-f9f34a8e.js:38
+index-f9f34a8e.js:38 [IndicatorModal] Error applying script: SyntaxError: Unexpected identifier 'Lib'
+    at new Function (<anonymous>)
+    at B.run (index-f9f34a8e.js:3:552)
+    at pt.applyIndicator (index-f9f34a8e.js:38:410)
+    at e.onclick (index-f9f34a8e.js:38:166)
+applyIndicator @ index-f9f34a8e.js:38
+e.onclick @ index-f9f34a8e.js:38
