@@ -347,6 +347,16 @@ export class RenderEngine {
     this.drawLabel(ctx, time, mouseX, this.height - 10, '#363c4e');
   }
 
+  public drawPreviewPoint(x: number, y: number): void {
+    const ctx = this.overlayCtx;
+    ctx.fillStyle = '#2962ff';
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1.0;
+  }
+
   public drawLastPriceLine(price: number, color: string, scaleEngine: ScaleEngine): void {
     const ctx = this.candleCtx;
     const y = scaleEngine.priceToY(price);

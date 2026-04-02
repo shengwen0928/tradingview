@@ -51,6 +51,17 @@ export class InteractionEngine {
     return this.magnetMode;
   }
 
+  /**
+   * 🚀 新增：計算當前吸附後的座標 (用於預覽點)
+   */
+  public getSnappedPos(mouseX: number, mouseY: number): { x: number, y: number } {
+    if (this.magnetMode !== 'off' && this.snapProvider) {
+      const snapped = this.snapProvider(mouseX, mouseY, this.magnetMode);
+      if (snapped) return snapped;
+    }
+    return { x: mouseX, y: mouseY };
+  }
+
   private initEvents(): void {
     const getZone = (x: number, y: number): 'chart' | 'price' | 'time' => {
       const drawWidth = this.canvas.clientWidth - 60;

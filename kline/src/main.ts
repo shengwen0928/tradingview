@@ -305,6 +305,13 @@ class ChartEngine {
         const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
         const time = this.activeManager.getTimeAtIndex(this.lastMousePos.x / (this.viewport.getCandleWidth() + 2) + startIndex);
         this.renderEngine.drawCrosshair(this.lastMousePos.x, this.lastMousePos.y, formatPrice(price), formatFullTime(time));
+        
+        // 🚀 繪圖預覽點：如果選中了工具但尚未點擊第一下
+        const mode = this.interactionEngine.getDrawingMode();
+        if (mode && mode !== 'cursor' && mode !== 'move' && !this.drawingEngine.isPlacing()) {
+            const snapped = this.interactionEngine.getSnappedPos(this.lastMousePos.x, this.lastMousePos.y);
+            this.renderEngine.drawPreviewPoint(snapped.x, snapped.y);
+        }
     }
 
     // 🚀 最新價格線也使用視覺價格
