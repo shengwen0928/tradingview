@@ -47,6 +47,12 @@ export class DrawingEditToolbar {
         document.body.appendChild(toolbar);
         this.toolbar = toolbar;
 
+        // 統一更新輔助函式
+        const update = (props: any) => {
+            this.drawingEngine.updateDrawingProperties(hit.id, props);
+            this.requestRedraw();
+        };
+
         // 1. 初始化顏色彈出選單
         const trigger = toolbar.querySelector('#color-trigger') as HTMLElement;
         const popover = toolbar.querySelector('#color-popover') as HTMLElement;
@@ -55,43 +61,39 @@ export class DrawingEditToolbar {
             popover.style.display = popover.style.display === 'none' ? 'block' : 'none';
         };
 
-        // 2. 初始化自定義色盤 (在 appendChild 之後)
+        // 2. 初始化自定義色盤
         const pickerRoot = toolbar.querySelector('#custom-picker-root') as HTMLElement;
         new ColorPicker(pickerRoot, hit.color, (newColor) => {
-            this.drawingEngine.updateDrawingColor(hit.id, newColor);
+            update({ color: newColor });
             trigger.style.background = newColor;
-            this.requestRedraw();
         });
 
         // 3. 預設顏色點點擊
         toolbar.querySelectorAll('.color-dot').forEach(dot => {
             (dot as HTMLElement).onclick = () => {
                 const newColor = (dot as HTMLElement).dataset.color!;
-                this.drawingEngine.updateDrawingColor(hit.id, newColor);
+                update({ color: newColor });
                 trigger.style.background = newColor;
-                this.requestRedraw();
                 popover.style.display = 'none';
             };
         });
 
-        // 4. 寬度調整
+        // 4. 寬度調整 (歸類處理)
         toolbar.querySelectorAll('.width-btn').forEach(btn => {
             (btn as HTMLElement).onclick = () => {
-                this.drawingEngine.updateDrawingWidth(hit.id, parseInt((btn as HTMLElement).dataset.width!));
+                const lineWidth = parseInt((btn as HTMLElement).dataset.width!);
+                update({ lineWidth });
                 toolbar.querySelectorAll('.width-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                this.requestRedraw();
             };
         });
 
         // 5. 虛線切換
         const dashBtn = toolbar.querySelector('#toggle-dash') as HTMLElement;
         dashBtn.onclick = () => {
-            const isDash = !hit.isDash;
-            hit.isDash = isDash; // 同步更新本地狀態以便顯示
-            this.drawingEngine.updateDrawingDash(hit.id, isDash);
-            dashBtn.innerText = isDash ? '實線' : '虛線';
-            this.requestRedraw();
+            hit.isDash = !hit.isDash;
+            update({ isDash: hit.isDash });
+            dashBtn.innerText = hit.isDash ? '實線' : '虛線';
         };
 
         // 6. 刪除

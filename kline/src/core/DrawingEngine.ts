@@ -111,24 +111,17 @@ export class DrawingEngine {
         }
     }
 
-    public updateDrawingColor(id: string, color: string) {
+    /**
+     * 🚀 統一更新繪圖物件屬性 (歸類管理)
+     */
+    public updateDrawingProperties(id: string, props: { color?: string, lineWidth?: number, isDash?: boolean, text?: string }) {
         const draw = this.drawings.find(d => d.id === id);
-        if (draw) draw.color = color;
-    }
-
-    public updateDrawingWidth(id: string, width: number) {
-        const draw = this.drawings.find(d => d.id === id);
-        if (draw) draw.lineWidth = width;
-    }
-
-    public updateDrawingDash(id: string, isDash: boolean) {
-        const draw = this.drawings.find(d => d.id === id);
-        if (draw) draw.isDash = isDash;
-    }
-
-    public updateDrawingText(id: string, text: string) {
-        const draw = this.drawings.find(d => d.id === id);
-        if (draw) draw.text = text;
+        if (!draw) return;
+        
+        if (props.color !== undefined) draw.color = props.color;
+        if (props.lineWidth !== undefined) draw.lineWidth = props.lineWidth;
+        if (props.isDash !== undefined) draw.isDash = props.isDash;
+        if (props.text !== undefined) draw.text = props.text;
     }
 
     /**
