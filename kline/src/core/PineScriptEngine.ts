@@ -248,59 +248,54 @@ export class PineScriptEngine {
         let lines = code.split('\n');
         let jsLines: string[] = [];
         let idCounter = 0;
+        let indentLevel = 0;
 
         lines.forEach(line => {
             let trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//')) return;
 
-            // 1. 處理 input
-            trimmed = trimmed.replace(/input\.(?:bool|int|float|string|source|timeframe)\(([^,]+)[^)]*\)/g, '$1');
-
-            // 2. 處理 ta.* 與 math.* / color.* (統一映射到 Lib 或 原生)
+            // 1. 基礎映射
             trimmed = trimmed.replace(/math\.max/g, 'Math.max');
             trimmed = trimmed.replace(/math\.min/g, 'Math.min');
             trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
             trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
-            trimmed = trimmed.replace(/color\.new/g, 'Lib.color_new');
-            trimmed = trimmed.replace(/color\.rgb/g, 'Lib.color_rgb');
+            trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
+            trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
 
-            trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, 'Lib.sma($1, $2)');
-            trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `Lib.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
-            trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `Lib.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
-            trimmed = trimmed.replace(/ta\.wma\(([^,]+),\s*([^)]+)\)/g, 'Lib.wma($1, $2)');
-            trimmed = trimmed.replace(/ta\.vwma\(([^,]+),\s*([^)]+)\)/g, 'Lib.vwma($1, volume, $2)');
-            trimmed = trimmed.replace(/ta\.rsi\(([^,]+),\s*([^)]+)\)/g, `Lib.rsi($1, $2, ctx, 'rsi_${idCounter++}')`);
-            trimmed = trimmed.replace(/ta\.crossover\(([^,]+),\s*([^)]+)\)/g, 'Lib.crossover($1, $2)');
-            trimmed = trimmed.replace(/ta\.crossunder\(([^,]+),\s*([^)]+)\)/g, 'Lib.crossunder($1, $2)');
-            trimmed = trimmed.replace(/ta\.atr\(([^)]+)\)/g, `Lib.atr(high, low, close, $1, ctx, 'atr_${idCounter++}')`);
-            trimmed = trimmed.replace(/ta\.stdev\(([^,]+),\s*([^)]+)\)/g, 'Lib.stdev($1, $2)');
-            trimmed = trimmed.replace(/ta\.pivothigh\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, 'Lib.pivothigh($1, $2, $3)');
-            trimmed = trimmed.replace(/ta\.pivotlow\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, 'Lib.pivotlow($1, $2, $3)');
-            trimmed = trimmed.replace(/ta\.valuewhen\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, `Lib.valuewhen($1, $2, $3, ctx, 'vw_${idCounter++}')`);
-            trimmed = trimmed.replace(/ta\.highest\(([^,]+),\s*([^)]+)\)/g, 'Lib.highest($1, $2)');
-            trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, 'Lib.lowest($1, $2)');
-            trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `Lib.barssince($1, ctx, 'bs_${idCounter++}')`);
+            // 2. 指標映射 (使用 _PINE_LIB_)
+            trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
+            trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
+            trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
+            trimmed = trimmed.replace(/ta\.wma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.wma($1, $2)');
+            trimmed = trimmed.replace(/ta\.vwma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.vwma($1, volume, $2)');
+            trimmed = trimmed.replace(/ta\.rsi\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rsi($1, $2, ctx, 'rsi_${idCounter++}')`);
+            trimmed = trimmed.replace(/ta\.crossover\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossover($1, $2)');
+            trimmed = trimmed.replace(/ta\.crossunder\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossunder($1, $2)');
+            trimmed = trimmed.replace(/ta\.atr\(([^)]+)\)/g, `_PINE_LIB_.atr(high, low, close, $1, ctx, 'atr_${idCounter++}')`);
+            trimmed = trimmed.replace(/ta\.stdev\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.stdev($1, $2)');
+            trimmed = trimmed.replace(/ta\.pivothigh\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivothigh($1, $2, $3)');
+            trimmed = trimmed.replace(/ta\.pivotlow\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivotlow($1, $2, $3)');
+            trimmed = trimmed.replace(/ta\.valuewhen\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.valuewhen($1, $2, $3, ctx, 'vw_${idCounter++}')`);
+            trimmed = trimmed.replace(/ta\.highest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.highest($1, $2)');
+            trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.lowest($1, $2)');
+            trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
 
-            // 3. 繪圖物件
-            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, 'Lib.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
-            trimmed = trimmed.replace(/label\.delete\(([^)]+)\)/g, 'Lib.label_delete($1, ctx)');
-            trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, 'Lib.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
-            trimmed = trimmed.replace(/box\.set_right\(([^,]+),\s*([^)]+)\)/g, 'Lib.box_set_right($1, $2)');
-            trimmed = trimmed.replace(/box\.delete\(([^)]+)\)/g, 'Lib.box_delete($1, ctx)');
+            // 3. 繪圖映射
+            trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, '_PINE_LIB_.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
+            trimmed = trimmed.replace(/label\.delete\(([^)]+)\)/g, '_PINE_LIB_.label_delete($1, ctx)');
+            trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, '_PINE_LIB_.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
+            trimmed = trimmed.replace(/box\.set_right\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.box_set_right($1, $2)');
+            trimmed = trimmed.replace(/box\.delete\(([^)]+)\)/g, '_PINE_LIB_.box_delete($1, ctx)');
 
-            // 4. 狀態管理 (var 與 :=)
-            if (trimmed.match(/^var\s+([a-zA-Z_]\w*)\s*=\s*(.*)/)) {
-                trimmed = trimmed.replace(/^var\s+([a-zA-Z_]\w*)\s*=\s*(.*)/, `if (ctx.vars['$1'] === undefined) ctx.vars['$1'] = $2; let $1 = ctx.vars['$1'];`);
-            }
-            trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
-
-            // 5. 語法轉換
+            // 4. 基礎轉譯
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
+            trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
 
-            if (trimmed.startsWith('if ') && !trimmed.includes('(')) {
-                trimmed = trimmed.replace(/^if\s+(.*)/, 'if ($1) {');
-                jsLines.push(trimmed);
+            if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
+                const cond = trimmed.replace(/^if\s+/, '').trim();
+                jsLines.push(`if (${cond}) {`);
+                indentLevel++;
                 return;
             }
 
@@ -308,13 +303,15 @@ export class PineScriptEngine {
                 trimmed = 'let ' + trimmed;
             }
 
-            jsLines.push(trimmed + (trimmed.endsWith('{') ? '' : ';'));
+            jsLines.push(trimmed + ';');
         });
 
-        const jsCode = jsLines.join('\n');
-        const openBraces = (jsCode.match(/{/g) || []).length;
-        const closeBraces = (jsCode.match(/}/g) || []).length;
-        return jsCode + '\n' + '}'.repeat(Math.max(0, openBraces - closeBraces));
+        while (indentLevel > 0) {
+            jsLines.push('}');
+            indentLevel--;
+        }
+
+        return jsLines.join('\n');
     }
 
     /**
