@@ -1,6 +1,6 @@
 index-0351f6d5.js:3 [DataManager] Fetching from Crypto API: https://tradingviewer-gtr2.onrender.com/crypto/klines?id=BTC%2FUSDT&interval=1m
 index-0351f6d5.js:3 [DataManager] Received 500 initial candles
-index-0351f6d5.js:3 [DataManager] Latest Candle: 2026/4/3 下午3:08:00
+index-0351f6d5.js:3 [DataManager] Latest Candle: 2026/4/3 下午3:14:00
 index-0351f6d5.js:3 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
 index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
     at new Function (<anonymous>)
@@ -22,6 +22,104 @@ Tt @ index-0351f6d5.js:113
 window.onload @ index-0351f6d5.js:113
 index-0351f6d5.js:3 [DataManager] Backend WebSocket Connected ✅
 index-0351f6d5.js:3 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
+index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+    at new Function (<anonymous>)
+    at _.run (index-0351f6d5.js:3:1278)
+    at st.run (index-0351f6d5.js:3:17642)
+    at at.execute (index-0351f6d5.js:3:30162)
+    at index-0351f6d5.js:3:31601
+run @ index-0351f6d5.js:3
+execute @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:3
+requestAnimationFrame
+(匿名) @ index-0351f6d5.js:3
+update @ index-0351f6d5.js:3
+onMouseMove @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:1
+index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+    at new Function (<anonymous>)
+    at _.run (index-0351f6d5.js:3:1278)
+    at st.run (index-0351f6d5.js:3:17642)
+    at at.execute (index-0351f6d5.js:3:30162)
+    at index-0351f6d5.js:3:31601
+run @ index-0351f6d5.js:3
+execute @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:3
+requestAnimationFrame
+(匿名) @ index-0351f6d5.js:3
+update @ index-0351f6d5.js:3
+onMouseMove @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:1
+index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+    at new Function (<anonymous>)
+    at _.run (index-0351f6d5.js:3:1278)
+    at st.run (index-0351f6d5.js:3:17642)
+    at at.execute (index-0351f6d5.js:3:30162)
+    at index-0351f6d5.js:3:31601
+run @ index-0351f6d5.js:3
+execute @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:3
+requestAnimationFrame
+(匿名) @ index-0351f6d5.js:3
+update @ index-0351f6d5.js:3
+onMouseMove @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:1
+index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+    at new Function (<anonymous>)
+    at _.run (index-0351f6d5.js:3:1278)
+    at st.run (index-0351f6d5.js:3:17642)
+    at at.execute (index-0351f6d5.js:3:30162)
+    at index-0351f6d5.js:3:31601
+run @ index-0351f6d5.js:3
+execute @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:3
+requestAnimationFrame
+(匿名) @ index-0351f6d5.js:3
+update @ index-0351f6d5.js:3
+onMouseMove @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:1
+index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+    at new Function (<anonymous>)
+    at _.run (index-0351f6d5.js:3:1278)
+    at st.run (index-0351f6d5.js:3:17642)
+    at at.execute (index-0351f6d5.js:3:30162)
+    at index-0351f6d5.js:3:31601
+run @ index-0351f6d5.js:3
+execute @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:3
+requestAnimationFrame
+(匿名) @ index-0351f6d5.js:3
+update @ index-0351f6d5.js:3
+onMouseMove @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:1
+index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+    at new Function (<anonymous>)
+    at _.run (index-0351f6d5.js:3:1278)
+    at st.run (index-0351f6d5.js:3:17642)
+    at at.execute (index-0351f6d5.js:3:30162)
+    at index-0351f6d5.js:3:31601
+run @ index-0351f6d5.js:3
+execute @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:3
+requestAnimationFrame
+(匿名) @ index-0351f6d5.js:3
+update @ index-0351f6d5.js:3
+onMouseMove @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:1
+index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+    at new Function (<anonymous>)
+    at _.run (index-0351f6d5.js:3:1278)
+    at st.run (index-0351f6d5.js:3:17642)
+    at at.execute (index-0351f6d5.js:3:30162)
+    at index-0351f6d5.js:3:31601
+run @ index-0351f6d5.js:3
+execute @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:3
+requestAnimationFrame
+(匿名) @ index-0351f6d5.js:3
+update @ index-0351f6d5.js:3
+onMouseMove @ index-0351f6d5.js:3
+(匿名) @ index-0351f6d5.js:1
 index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
     at new Function (<anonymous>)
     at _.run (index-0351f6d5.js:3:1278)
