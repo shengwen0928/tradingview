@@ -250,8 +250,8 @@ export class PineScriptEngine {
         let idCounter = 0;
         let indentLevel = 0;
 
-        // 🚀 輔助函式：提取的第一個參數 (保留字串引號，處理嵌套)
-        const getFirstArgRaw = (inner: string) => {
+        // 🚀 輔助函式：提取第一個參數並徹底清理
+        const getFirstArgClean = (inner: string) => {
             let depth = 0, quote = null, result = '';
             for (let i = 0; i < inner.length; i++) {
                 const c = inner[i];
@@ -262,7 +262,7 @@ export class PineScriptEngine {
                 else if (c === ',' && depth === 0) break;
                 else result += c;
             }
-            return result.trim();
+            return result.trim().replace(/['"]/g, '');
         };
 
         lines.forEach(line => {
