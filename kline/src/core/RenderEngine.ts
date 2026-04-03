@@ -350,7 +350,7 @@ export class RenderEngine {
     isArea: boolean
   ): void {
     const ctx = this.candleCtx;
-    const drawWidth = scaleEngine.getDrawWidth();
+    const _drawWidth = scaleEngine.getDrawWidth();
     const drawHeight = scaleEngine.getDrawHeight();
 
     ctx.beginPath();
