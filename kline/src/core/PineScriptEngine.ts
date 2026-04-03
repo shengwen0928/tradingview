@@ -245,27 +245,11 @@ export class PineScriptEngine {
      * 編譯 Pine Script 為高效 JavaScript 執行序列
      */
     public compile(code: string): string {
-        let rawLines = code.split('\n');
+        const rawLines = code.split('\n');
         let jsLines: string[] = [];
         let idCounter = 0;
-        let indentLevel = 0;
+        const indentStack: number[] = [0];
 
-        // 🚀 預處理：合併多行語句 (支援更多邊界情況)
-        let mergedLines: string[] = [];
-        let buffer = '';
-        rawLines.forEach(line => {
-            let l = line.trim();
-            if (!l || l.startsWith('//')) return;
-            buffer += (buffer ? ' ' : '') + l;
-            // 如果行尾是這些符號，或者下一行是以 [ 或 ( 開頭，則繼續合併
-            if (!l.endsWith(',') && !l.endsWith('(') && !l.endsWith('[') && !l.endsWith('=>')) {
-                mergedLines.push(buffer);
-                buffer = '';
-            }
-        });
-        if (buffer) mergedLines.push(buffer);
-
-        // 🚀 輔助函式：提取第一個參數
         const getFirstArgClean = (inner: string) => {
             const defvalMatch = inner.match(/defval\s*=\s*([^,)]+)/);
             if (defvalMatch) return defvalMatch[1].trim();
@@ -287,12 +271,25 @@ export class PineScriptEngine {
             return final;
         };
 
-        mergedLines.forEach(line => {
-            let trimmed = line;
+        rawLines.forEach(line => {
+            const currentIndent = line.match(/^\s*/)?.[0].length || 0;
+            let trimmed = line.trim();
 
-            // 0. 移除指標與 JavaScript 無法執行的 V6 語法
-            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('switch') || trimmed.startsWith('export ')) {
+            while (currentIndent < indentStack[indentStack.length - 1]) {
+                jsLines.push('}'.padStart(indentStack.length - 1 + 1, ' '));
+                indentStack.pop();
+            }
+
+            if (!trimmed || trimmed.startsWith('//')) return;
+
+            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('export ')) {
                 jsLines.push('// ' + trimmed);
+                return;
+            }
+
+            if (trimmed.startsWith('switch')) {
+                jsLines.push('// [SWITCH_SKIPPED] ' + trimmed);
+                jsLines.push('let _sw_tmp = NaN;'); 
                 return;
             }
 
@@ -451,18 +448,33 @@ export class PineScriptEngine {
         };
 
         // 🚀 終極沙盒物件注入 (Mock 進階 Pine 命名空間)
-        const request = {
-            security: (_s: string, _tf: string, src: any) => src
-        };
-        const table = {
-            new: () => ({}),
-            cell: () => {}
+        const request = { security: (_s: string, _tf: string, src: any) => src };
+        const table = { 
+            new: () => ({}), cell: () => {}, set_border_width: () => {}, set_frame_width: () => {}, 
+            set_border_color: () => {}, set_frame_color: () => {}, merge_cells: () => {}, set_position: () => {} 
         };
         const syminfo = { tickerid: 'CURRENT' };
         const timeframe = { period: '60', is_intraday: true };
         const barstate = { islast: true, isconfirmed: true };
+        const position = { 
+            top_right: 'tr', bottom_right: 'br', top_left: 'tl', bottom_left: 'bl', 
+            top_center: 'tc', bottom_center: 'bc', middle_right: 'mr', middle_left: 'ml', middle_center: 'mc' 
+        };
+        const size = { tiny: 'tiny', small: 'small', normal: 'normal', large: 'large', huge: 'huge' };
+        const str = { tostring: (v: any) => String(v) };
+        const color = { 
+            new: (c: any, _a: any) => c, rgb: (r: any, g: any, b: any, _a: any) => `rgb(${r},${g},${b})`,
+            white: '#fff', black: '#000', red: '#f00', green: '#0f0', gray: '#888', orange: '#ffa', purple: '#f0f', yellow: '#ff0', blue: '#00f'
+        };
+        const barmerge = { gaps_off: 0, gaps_on: 1 };
+        const display = { all: 1, none: 0 };
+        const shape = { labelup: 'up', labeldown: 'down', square: 'sq', xcross: 'x' };
+        const location = { belowbar: 'below', abovebar: 'above', bottom: 'bottom', top: 'top' };
+        const yloc = { belowbar: 'below', abovebar: 'above', price: 'price' };
 
-        const executeBar = new Function('ctx', '_PINE_LIB_', 'Math', 'close', 'open', 'high', 'low', 'volume', 'bar_index', 'request', 'table', 'syminfo', 'timeframe', 'barstate', compiledJs);
+        const executeBar = new Function('ctx', '_PINE_LIB_', 'Math', 'close', 'open', 'high', 'low', 'volume', 'bar_index', 
+            'request', 'table', 'syminfo', 'timeframe', 'barstate', 'position', 'size', 'str', 'color', 'barmerge', 'display', 'shape', 'location', 'yloc', 
+            compiledJs);
 
         for (let i = 0; i < size; i++) {
             ctx.bar_index = i;
@@ -473,7 +485,8 @@ export class PineScriptEngine {
             ctx.volume.setCurrentIndex(i);
 
             try {
-                executeBar(ctx, PineLibrary, Math, ctx.close, ctx.open, ctx.high, ctx.low, ctx.volume, ctx.bar_index, request, table, syminfo, timeframe, barstate);
+                executeBar(ctx, PineLibrary, Math, ctx.close, ctx.open, ctx.high, ctx.low, ctx.volume, ctx.bar_index, 
+                    request, table, syminfo, timeframe, barstate, position, size, str, color, barmerge, display, shape, location, yloc);
             } catch (e) {
                 // 忽略 Bar 級別錯誤
             }
