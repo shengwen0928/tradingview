@@ -338,10 +338,12 @@ export class PineScriptEngine {
             }
 
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
-            trimmed = trimmed.replace(/:=/g, '=');
+            trimmed = trimmed.replace(/:=/g, '='); 
 
             const isKnownDeclare = trimmed.startsWith('let ') || trimmed.startsWith('const ') || trimmed.startsWith('var ') || trimmed.startsWith('if ') || trimmed.startsWith('//');
+            // 強化偵測：支援 entry 等特定關鍵字作為變數名
             const isAssignment = (/^[a-zA-Z_]\w*\s*=/.test(trimmed) || /^\[.*\]\s*=/.test(trimmed)) && !isKnownDeclare;
+
             if (isAssignment) {
                 trimmed = 'let ' + trimmed;
             }
