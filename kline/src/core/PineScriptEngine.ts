@@ -252,6 +252,10 @@ export class PineScriptEngine {
 
         // 🚀 輔助函式：提取第一個參數並徹底清理 (極強效版)
         const getFirstArgClean = (inner: string) => {
+            // 優先尋找 defval=...
+            const defvalMatch = inner.match(/defval\s*=\s*([^,)]+)/);
+            if (defvalMatch) return defvalMatch[1].trim();
+
             let depth = 0, quote = null, result = '';
             for (let i = 0; i < inner.length; i++) {
                 const c = inner[i];
@@ -275,8 +279,8 @@ export class PineScriptEngine {
             let trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//')) return;
 
-            // 0. 移除指標與 JavaScript 無法執行的 V6 語法
-            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('switch')) {
+            // 0. 移除指標與 JavaScript 無法執行的 V6 語法，以及破碎的行
+            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('switch') || trimmed.endsWith(',') || trimmed.endsWith('(')) {
                 jsLines.push('// ' + trimmed);
                 return;
             }
@@ -300,8 +304,8 @@ export class PineScriptEngine {
                 return getFirstArgClean(rest);
             });
 
-            // 3. 處理核心關鍵字
-            trimmed = trimmed.replace(/\bna\(([^)]+)\)/g, 'isNaN($1)'); 
+            // 3. 處理核心關鍵字 (支援帶空格的 na呼叫)
+            trimmed = trimmed.replace(/\bna\s*\(([^)]+)\)/g, 'isNaN($1)'); 
             trimmed = trimmed.replace(/\bna\b/g, 'NaN');
             trimmed = trimmed.replace(/\bnot\b/g, '!');
             trimmed = trimmed.replace(/\band\b/g, '&&');
@@ -365,9 +369,12 @@ export class PineScriptEngine {
                 return;
             }
 
+            // 修正 := 為 = 並保留單變數狀態
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
+            trimmed = trimmed.replace(/:=/g, '='); 
 
-            const isAssignment = (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>') && !trimmed.includes('<') && !trimmed.includes('(')) || trimmed.startsWith('[');
+            // 🚀 偵測賦值並自動補 let (支援解構與複雜字串)
+            const isAssignment = /^[a-zA-Z_]\w*\s*=/.test(trimmed) || (trimmed.startsWith('[') && trimmed.includes('='));
             const isKnownDeclare = trimmed.startsWith('let') || trimmed.startsWith('const') || trimmed.startsWith('var');
             
             if (isAssignment && !isKnownDeclare && !trimmed.startsWith('if')) {
