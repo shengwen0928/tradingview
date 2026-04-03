@@ -391,7 +391,7 @@ export class PineScriptEngine {
         const position = { top_right: 'tr', bottom_right: 'br', top_left: 'tl', bottom_left: 'bl', middle_center: 'mc' };
         const pSize = { tiny: 'tiny', small: 'small', normal: 'normal', large: 'large', huge: 'huge' };
         const str = { tostring: (v: any) => String(v) };
-        const color = { new: (c: any, a: any) => c, white: '#fff', black: '#000', red: '#f00', green: '#0f0', gray: '#888' };
+        const color = { new: (c: any, _a: any) => c, white: '#fff', black: '#000', red: '#f00', green: '#0f0', gray: '#888' };
         const barmerge = { gaps_off: 0, gaps_on: 1 };
         const display = { all: 1, none: 0 };
         const shape = { labelup: 'up', labeldown: 'down', square: 'sq', xcross: 'x' };
