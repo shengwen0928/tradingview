@@ -263,7 +263,7 @@ export class PineScriptEngine {
             const currentIndent = line.match(/^\s*/)?.[0].length || 0;
             let trimmed = line.trim();
 
-            // 🚀 關鍵修正：精確的大括號管理
+            // 🚀 關鍵修正 1：移除 else 與 else if 邏輯中重複的大括號
             while (currentIndent < indentStack[indentStack.length - 1]) {
                 const wasCommented = commentStack.pop();
                 if (!wasCommented) jsLines.push('}');
@@ -278,7 +278,6 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 處理指標與類型定義 (一律註解並標記其縮排下的子行為註解)
             if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('export ') || trimmed.startsWith('switch')) {
                 jsLines.push('// ' + trimmed);
                 indentStack.push(currentIndent + 1);
@@ -286,7 +285,6 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 處理函數定義
             if (trimmed.includes('=>')) {
                 const parts = trimmed.split('=>');
                 let head = parts[0].trim();
@@ -306,7 +304,6 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 取代邏輯
             trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (_m, rest) => getFirstArgClean(rest));
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
             trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
@@ -330,13 +327,17 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
             trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
 
-            // 結構化語句 (改進 else if 與 else 的閉合邏輯)
+            // 🚀 關鍵修正 2：else 與 else if 不再手動添加 }，由 while 循環自動完成
             if (trimmed.startsWith('else if ')) {
                 const cond = trimmed.replace(/^else if\s+/, '').trim();
-                jsLines.push(`} else if (${cond}) {`);
+                jsLines.push(`else if (${cond}) {`);
+                indentStack.push(currentIndent + 1);
+                commentStack.push(false);
                 return;
             } else if (trimmed.startsWith('else')) {
-                jsLines.push('} else {');
+                jsLines.push('else {');
+                indentStack.push(currentIndent + 1);
+                commentStack.push(false);
                 return;
             } else if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
                 const cond = trimmed.replace(/^if\s+/, '').trim();
@@ -346,7 +347,6 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 繪圖與變數
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
             if (trimmed.match(/^var\s+/)) {
                 trimmed = trimmed.replace(/^var\s+(?:bool|int|float|string|color)?\s*([a-zA-Z_]\w*)\s*=\s*(.*)/, `if (ctx.vars['$1'] === undefined) ctx.vars['$1'] = $2; let $1 = ctx.vars['$1']`);
@@ -363,15 +363,8 @@ export class PineScriptEngine {
                 trimmed = 'let ' + trimmed;
             }
 
-            // 防止非法單標識符行
-            if (/^[a-zA-Z_]\w*$/.test(trimmed) && !['return', 'break', 'continue'].includes(trimmed)) {
-                jsLines.push('// ' + trimmed);
-                return;
-            }
-
-            // 處理結尾為逗號或括號的破碎行 (合併到下一行是理想的，但為了穩定我們先註解)
             if (trimmed.endsWith(',') || trimmed.endsWith('(')) {
-                jsLines.push('// [BROKEN_LINE] ' + trimmed);
+                jsLines.push('// [BROKEN] ' + trimmed);
                 return;
             }
 
