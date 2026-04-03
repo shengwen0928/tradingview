@@ -23,6 +23,7 @@ import { APP_CONFIG } from '../constants/AppConfig';
 import { SymbolModal } from '../ui/SymbolModal';
 import { IndicatorModal } from '../ui/IndicatorModal';
 import { TimeframeController } from '../ui/TimeframeController';
+import { ChartTypeController } from '../ui/ChartTypeController';
 import { DrawingToolbar } from '../ui/DrawingToolbar';
 import { ScriptEditor } from '../ui/ScriptEditor';
 import { InfoDisplay } from '../ui/InfoDisplay';
@@ -78,6 +79,7 @@ export class ChartApp {
     
     // 5. UI 組件
     const tfController = new TimeframeController((tf) => { dataService.getActiveManager().setTimeframe(tf); scaleEngine.resetAutoScale(); }, renderLoop.requestRedraw);
+    new ChartTypeController((type) => renderPipeline.setChartType(type), renderLoop.requestRedraw);
     new SymbolModal((s, c) => symbolController.loadSymbol(s, c, tfController, dataService.getConnectionStatus()));
     new IndicatorModal(new PineScriptEngine(), () => dataService.getActiveManager(), renderLoop.requestRedraw);
     new DrawingToolbar(interactionEngine, drawingEngine, renderLoop.requestRedraw, (t) => drawingController.startDrawing(t, dataService.getActiveManager()));

@@ -6,8 +6,11 @@ import { PriceAnimator } from './PriceAnimator';
 import { IndicatorController } from './IndicatorController';
 import { DrawingEngine } from './DrawingEngine';
 import { CrosshairController } from './CrosshairController';
+import { ChartType } from '../types/Candle';
 
 export class RenderPipeline {
+    private chartType: ChartType = 'candles';
+
     constructor(
         private viewport: ViewportEngine,
         private scaleEngine: ScaleEngine,
@@ -17,6 +20,10 @@ export class RenderPipeline {
         private drawingEngine: DrawingEngine,
         private crosshairController: CrosshairController
     ) {}
+
+    public setChartType(type: ChartType) {
+        this.chartType = type;
+    }
 
     public execute(activeManager: DataManager, requestRedraw: () => void) {
         const candles = activeManager.getCandles();
@@ -36,8 +43,8 @@ export class RenderPipeline {
         this.renderEngine.drawGrid(this.scaleEngine);
         this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx: number) => activeManager.getTimeAtIndex(idx), this.scaleEngine);
         
-        // 3. 渲染數據層 (Candles, Indicators)
-        this.renderEngine.drawCandles(visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
+        // 3. 渲染數據層 (Main Chart, Indicators)
+        this.renderEngine.drawMainChart(this.chartType, visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
         
         const indicatorResult = this.indicatorController.run(candles);
         this.renderEngine.drawIndicators(indicatorResult.plots, start, end, startIndex, cw, 2, this.scaleEngine);

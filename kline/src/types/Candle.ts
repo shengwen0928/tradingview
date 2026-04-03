@@ -6,3 +6,5 @@ export type Candle = {
   close: number;
   volume: number;
 };
+
+export type ChartType = 'candles' | 'hollow' | 'line' | 'area' | 'heikin_ashi';
