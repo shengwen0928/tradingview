@@ -360,26 +360,31 @@ export class DataManager {
         if (candleToPush) {
             this.caches.set(cacheKey, currentCache);
             const subs = this.subscribers.get(cacheKey);
-            if (subs) subs.forEach(cb => cb(candleToPush!));
+            if (subs) {
+                // 🚀 強制複製物件，防止引用污染導致訂閱者拿到的數據已被修改
+                const cloned = { ...candleToPush };
+                subs.forEach(cb => cb(cloned));
+            }
 
+            // 處理合成週期更新 (2m, 3h 等)
             if (tag === '1d' || tag === '1m') {
                 this.subscribers.forEach((syntheticSubs, sKey) => {
-                    if (sKey.startsWith(`${id}_`) && sKey !== cacheKey) {
-                        const sTag = sKey.replace(`${id}_`, '');
-                        if (!this.nativeIntervals.includes(sTag)) {
-                            const sMs = this.parseIntervalToMs(sTag);
-                            let sCache = this.caches.get(sKey) || [];
-                            const lastS = sCache.length > 0 ? sCache[sCache.length - 1] : null;
-                            const updated = AggregationUtils.updateAggregated(lastS, candleToPush!, sMs);
-                            
-                            if (!lastS || lastS.timestamp !== updated.timestamp) {
-                                sCache.push(updated);
-                                this.caches.set(sKey, sCache);
-                            } else {
-                                sCache[sCache.length - 1] = updated;
-                            }
-                            syntheticSubs.forEach(cb => cb(updated));
+                    const sTag = sKey.replace(`${id}_`, '');
+                    // 只有當訂閱的週期不是當前收到更新的週期，且不是原生週期時，才進行合成
+                    if (sKey !== cacheKey && !this.nativeIntervals.includes(sTag)) {
+                        const sMs = this.parseIntervalToMs(sTag);
+                        let sCache = this.caches.get(sKey) || [];
+                        const lastS = sCache.length > 0 ? sCache[sCache.length - 1] : null;
+                        const updated = AggregationUtils.updateAggregated(lastS, candleToPush!, sMs);
+                        
+                        if (!lastS || lastS.timestamp !== updated.timestamp) {
+                            sCache.push(updated);
+                            this.caches.set(sKey, sCache);
+                        } else {
+                            sCache[sCache.length - 1] = updated;
                         }
+                        const clonedSynthetic = { ...updated };
+                        syntheticSubs.forEach(cb => cb(clonedSynthetic));
                     }
                 });
             }
