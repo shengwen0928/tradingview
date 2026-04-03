@@ -445,10 +445,15 @@ export class DataManager {
   private readonly THROTTLE_MS = 50; // 🚀 設定節流閥為 50ms (每秒最多更新 20 次)
 
   public appendRealtimeData(candle: Candle, candleInterval: string): void {
-    // 🚨 最終防護：放寬週期檢查 (不區分大小寫)
+    // 🚨 最終防護：放寬週期檢查
     if (!candleInterval || candleInterval.toLowerCase() !== this.bar.toLowerCase()) {
       return;
     }
+
+    // 🚀 關鍵修復：強制將實時數據時間戳對齊到當前週期的整點
+    // 這能解決後端傳回毫秒級或非整分時間戳導致 1 分鐘線不跳動的問題
+    const alignedTime = Math.floor(candle.time / this.intervalMs) * this.intervalMs;
+    candle.time = alignedTime;
 
     // 🚨 修正：處理初始資料還沒載入完的情況
     if (this.candles.length === 0) {
@@ -462,7 +467,15 @@ export class DataManager {
 
     if (last.time === candle.time) {
       // 更新最後一根
-      this.candles[this.candles.length - 1] = { ...last, ...candle };
+      // 確保最高/最低價在實時跳動中能正確更新
+      const updatedCandle = {
+        ...last,
+        close: candle.close,
+        high: Math.max(last.high, candle.close, candle.high || 0),
+        low: Math.min(last.low, candle.close, candle.low || Infinity),
+        volume: candle.volume !== undefined ? candle.volume : last.volume
+      };
+      this.candles[this.candles.length - 1] = updatedCandle;
       isChanged = true;
     } 
     else if (candle.time > last.time) {
@@ -474,7 +487,7 @@ export class DataManager {
     }
     
     if (isChanged) {
-      // 🚀 執行節流優化：如果距離上次更新不到 50ms，則延遲更新，避免瘋狂重繪導致卡頓
+      // 🚀 執行節流優化
       const now = performance.now();
       if (now - this.lastNotifyTime > this.THROTTLE_MS) {
         this.onDataUpdated(this.candles, false);
