@@ -250,7 +250,7 @@ export class PineScriptEngine {
         let idCounter = 0;
         let indentLevel = 0;
 
-        // 🚀 輔助函式：提取第一個參數並徹底清理
+        // 🚀 輔助函式：提取第一個參數並徹底清理 (極強效版)
         const getFirstArgClean = (inner: string) => {
             let depth = 0, quote = null, result = '';
             for (let i = 0; i < inner.length; i++) {
@@ -262,38 +262,45 @@ export class PineScriptEngine {
                 else if (c === ',' && depth === 0) break;
                 else result += c;
             }
-            return result.trim();
+            // 徹底移除 title=, group= 等干擾
+            let final = result.trim();
+            if (final.includes('=')) {
+                const parts = final.split('=');
+                final = parts[parts.length - 1].trim();
+            }
+            return final;
         };
 
         lines.forEach(line => {
             let trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//')) return;
 
-            // 🚀 0. 移除指標與類型宣告
-            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ')) {
+            // 0. 移除指標與 JavaScript 無法執行的 V6 語法
+            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('switch')) {
                 jsLines.push('// ' + trimmed);
                 return;
             }
 
-            // 1. 處理函數定義 (f_name() => body)
-            if (trimmed.includes('=>') && !trimmed.startsWith('"') && !trimmed.startsWith("'")) {
-                const parts = trimmed.split('=>');
-                let head = parts[0].trim();
-                const body = parts[1].trim();
-                if (!head.includes('(')) head = `const ${head} = ()`;
-                else head = `const ${head.replace('(', ' = (')}`;
-                jsLines.push(`${head} => { return ${body || 'null'} };`);
+            // 1. 處理函數定義 (f_name(args) => body) 或標籤
+            if (trimmed.includes('=>')) {
+                if (trimmed.includes('(')) {
+                    const parts = trimmed.split('=>');
+                    let head = parts[0].trim();
+                    const body = parts[1].trim();
+                    head = `const ${head.replace('(', ' = (')}`;
+                    jsLines.push(`${head} => { return ${body || 'null'} };`);
+                } else {
+                    jsLines.push('// ' + trimmed);
+                }
                 return;
             }
 
-            // 2. 徹底攔截 input 系統 (支援複雜字串與嵌套)
+            // 2. 徹底攔截 input 系統 (強效清理)
             trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (_match, rest) => {
-                const arg = getFirstArgClean(rest);
-                return arg;
+                return getFirstArgClean(rest);
             });
 
-            // 3. 處理數學、顏色與關鍵字
-            trimmed = trimmed.replace(/\bna\(([^)]+)\)/g, 'isNaN($1)'); 
+            // 3. 處理核心關鍵字
             trimmed = trimmed.replace(/\bna\b/g, 'NaN');
             trimmed = trimmed.replace(/\bnot\b/g, '!');
             trimmed = trimmed.replace(/\band\b/g, '&&');
@@ -351,7 +358,6 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
 
-            // 處理 var 初始化
             if (trimmed.match(/^var\s+/)) {
                 trimmed = trimmed.replace(/^var\s+(?:bool|int|float|string|color|line|label|box|table)?\s*([a-zA-Z_]\w*)\s*=\s*(.*)/, `if (ctx.vars['$1'] === undefined) ctx.vars['$1'] = $2; let $1 = ctx.vars['$1']`);
                 jsLines.push(trimmed + ';');
@@ -360,15 +366,13 @@ export class PineScriptEngine {
 
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
 
-            // 🚀 偵測賦值並自動補 let
             const isAssignment = (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>') && !trimmed.includes('<') && !trimmed.includes('(')) || trimmed.startsWith('[');
             const isKnownDeclare = trimmed.startsWith('let') || trimmed.startsWith('const') || trimmed.startsWith('var');
-
+            
             if (isAssignment && !isKnownDeclare && !trimmed.startsWith('if')) {
                 trimmed = 'let ' + trimmed;
             }
 
-            // 對於單獨的單字，將其註解
             if (/^\w+;?$/.test(trimmed) && !['return', 'break', 'continue'].includes(trimmed)) {
                 jsLines.push('// ' + trimmed);
                 return;
