@@ -298,7 +298,7 @@ export class RenderEngine {
   ): void {
     const ctx = this.candleCtx;
     const drawWidth = scaleEngine.getDrawWidth();
-    const bodyWidth = Math.max(0.1, candleWidth);
+    const bodyWidth = Math.max(1, candleWidth);
 
     for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
@@ -313,27 +313,35 @@ export class RenderEngine {
       const yHigh = scaleEngine.priceToY(candle.high);
       const yLow = scaleEngine.priceToY(candle.low);
 
-      const isUp = displayClose >= candle.open;
-      const prevClose = i > 0 ? candles[i-1].close : candle.open;
-      const isHigherThanPrev = displayClose >= prevClose;
+      const isUpBar = displayClose > candle.open;
+      const prevClose = i > 0 ? candles[i - 1].close : candle.open;
+      const isPriceUp = displayClose > prevClose;
 
-      const color = isHigherThanPrev ? '#26a69a' : '#ef5350';
+      // 🚀 顏色由「與前一根收盤價的關係」決定
+      const color = isPriceUp ? '#26a69a' : '#ef5350';
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
+      ctx.lineWidth = 1.5; // 稍微加粗邊框，讓空心更清晰
 
-      const rectW = Math.max(1, Math.floor(bodyWidth));
-      const rectX = Math.floor(centerX - rectW / 2);
       const rectY = Math.floor(Math.min(yOpen, yClose));
       const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
+      const rectW = Math.max(1, Math.floor(bodyWidth));
+      const rectX = Math.floor(centerX - rectW / 2);
 
+      // 1. 畫影線 (影線一律與邊框同色)
       ctx.beginPath();
       ctx.moveTo(centerX, yHigh);
+      ctx.lineTo(centerX, rectY);
+      ctx.moveTo(centerX, rectY + rectH);
       ctx.lineTo(centerX, yLow);
       ctx.stroke();
 
-      if (isUp) {
-        ctx.strokeRect(rectX + 0.5, rectY + 0.5, rectW - 1, rectH - 1);
+      // 2. 畫實體
+      if (isUpBar) {
+        // 🚀 空心：僅畫邊框
+        ctx.strokeRect(rectX + 0.75, rectY + 0.75, rectW - 1.5, rectH - 1.5);
       } else {
+        // 🚀 實心：填充顏色
         ctx.fillRect(rectX, rectY, rectW, rectH);
       }
     }
