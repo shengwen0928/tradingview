@@ -245,17 +245,30 @@ export class PineScriptEngine {
      * 編譯 Pine Script 為高效 JavaScript 執行序列
      */
     public compile(code: string): string {
-        let lines = code.split('\n');
+        let rawLines = code.split('\n');
         let jsLines: string[] = [];
         let idCounter = 0;
         let indentLevel = 0;
 
-        // 🚀 輔助函式：提取第一個參數並徹底清理 (極強效版)
+        // 🚀 預處理：合併多行語句 (支援更多邊界情況)
+        let mergedLines: string[] = [];
+        let buffer = '';
+        rawLines.forEach(line => {
+            let l = line.trim();
+            if (!l || l.startsWith('//')) return;
+            buffer += (buffer ? ' ' : '') + l;
+            // 如果行尾是這些符號，或者下一行是以 [ 或 ( 開頭，則繼續合併
+            if (!l.endsWith(',') && !l.endsWith('(') && !l.endsWith('[') && !l.endsWith('=>')) {
+                mergedLines.push(buffer);
+                buffer = '';
+            }
+        });
+        if (buffer) mergedLines.push(buffer);
+
+        // 🚀 輔助函式：提取第一個參數
         const getFirstArgClean = (inner: string) => {
-            // 優先尋找 defval=...
             const defvalMatch = inner.match(/defval\s*=\s*([^,)]+)/);
             if (defvalMatch) return defvalMatch[1].trim();
-
             let depth = 0, quote = null, result = '';
             for (let i = 0; i < inner.length; i++) {
                 const c = inner[i];
@@ -266,31 +279,29 @@ export class PineScriptEngine {
                 else if (c === ',' && depth === 0) break;
                 else result += c;
             }
-            // 徹底移除 title=, group= 等干擾
             let final = result.trim();
-            if (final.includes('=')) {
+            if (final.includes('=') && !final.startsWith('"') && !final.startsWith("'")) {
                 const parts = final.split('=');
                 final = parts[parts.length - 1].trim();
             }
             return final;
         };
 
-        lines.forEach(line => {
-            let trimmed = line.trim();
-            if (!trimmed || trimmed.startsWith('//')) return;
+        mergedLines.forEach(line => {
+            let trimmed = line;
 
-            // 0. 移除指標與 JavaScript 無法執行的 V6 語法，以及破碎的行
-            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('switch') || trimmed.endsWith(',') || trimmed.endsWith('(')) {
+            // 0. 移除指標與 JavaScript 無法執行的 V6 語法
+            if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('switch') || trimmed.startsWith('export ')) {
                 jsLines.push('// ' + trimmed);
                 return;
             }
 
-            // 1. 處理函數定義 (f_name(args) => body) 或標籤
+            // 1. 處理函數定義 (f_name(args) => body)
             if (trimmed.includes('=>')) {
-                if (trimmed.includes('(')) {
-                    const parts = trimmed.split('=>');
-                    let head = parts[0].trim();
-                    const body = parts[1].trim();
+                const parts = trimmed.split('=>');
+                let head = parts[0].trim();
+                const body = parts[1].trim();
+                if (head.includes('(')) {
                     head = `const ${head.replace('(', ' = (')}`;
                     jsLines.push(`${head} => { return ${body || 'null'} };`);
                 } else {
@@ -299,27 +310,12 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 2. 徹底攔截 input 系統 (強效清理)
+            // 2. 徹底攔截 input 系統
             trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (_match, rest) => {
                 return getFirstArgClean(rest);
             });
 
-            // 3. 處理核心關鍵字 (支援帶空格的 na呼叫)
-            trimmed = trimmed.replace(/\bna\s*\(([^)]+)\)/g, 'isNaN($1)'); 
-            trimmed = trimmed.replace(/\bna\b/g, 'NaN');
-            trimmed = trimmed.replace(/\bnot\b/g, '!');
-            trimmed = trimmed.replace(/\band\b/g, '&&');
-            trimmed = trimmed.replace(/\bor\b/g, '||');
-            
-            trimmed = trimmed.replace(/math\.max/g, 'Math.max');
-            trimmed = trimmed.replace(/math\.min/g, 'Math.min');
-            trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
-            trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
-            trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
-            trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
-            trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
-
-            // 4. 指標映射
+            // 3. 處理指標映射 (必須在 na 取代之前，防止參數被破壞)
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
             trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
             trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
@@ -337,6 +333,21 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/ta\.lowest\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.lowest($1, $2)');
             trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
 
+            // 4. 處理核心關鍵字 (精確匹配)
+            trimmed = trimmed.replace(/\bna\s*\(([^)]+)\)/g, 'isNaN($1)'); 
+            trimmed = trimmed.replace(/\bna\b/g, 'NaN');
+            trimmed = trimmed.replace(/\bnot\b/g, '!');
+            trimmed = trimmed.replace(/\band\b/g, '&&');
+            trimmed = trimmed.replace(/\bor\b/g, '||');
+            
+            trimmed = trimmed.replace(/math\.max/g, 'Math.max');
+            trimmed = trimmed.replace(/math\.min/g, 'Math.min');
+            trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
+            trimmed = trimmed.replace(/math\.sign/g, 'Math.sign');
+            trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
+            trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
+            trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
+
             // 5. 繪圖映射
             trimmed = trimmed.replace(/label\.new\(([^,]+),\s*([^,]+),\s*(?:text=)?([^,]+)[^)]*\)/g, '_PINE_LIB_.label_new($1, $2, $3, "#fff", "#fff", "down", ctx)');
             trimmed = trimmed.replace(/box\.new\(([^,]+),\s*([^,]+),\s*([^,]+),\s*([^,]+)[^)]*\)/g, '_PINE_LIB_.box_new($1, $2, $3, $4, "#fff", "rgba(255,255,255,0.1)", ctx)');
@@ -344,7 +355,7 @@ export class PineScriptEngine {
             // 6. 移除類型前綴
             trimmed = trimmed.replace(/^(?:float|int|bool|string|color|line|label|box|table)\s+/g, '');
 
-            // 7. 🚀 結構化語句處理 (if / else if / else)
+            // 7. 🚀 結構化語句處理
             if (trimmed.startsWith('else if ')) {
                 const cond = trimmed.replace(/^else if\s+/, '').trim();
                 jsLines.push(`} else if (${cond}) {`);
@@ -369,15 +380,14 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 修正 := 為 = 並保留單變數狀態
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
             trimmed = trimmed.replace(/:=/g, '='); 
 
-            // 🚀 偵測賦值並自動補 let (支援解構與複雜字串)
-            const isAssignment = /^[a-zA-Z_]\w*\s*=/.test(trimmed) || (trimmed.startsWith('[') && trimmed.includes('='));
-            const isKnownDeclare = trimmed.startsWith('let') || trimmed.startsWith('const') || trimmed.startsWith('var');
+            // 🚀 偵測賦值並自動補 let
+            const isKnownDeclare = trimmed.startsWith('let ') || trimmed.startsWith('const ') || trimmed.startsWith('var ') || trimmed.startsWith('if ') || trimmed.startsWith('//');
+            const isAssignment = (/^[a-zA-Z_]\w*\s*=/.test(trimmed) || /^\[.*\]\s*=/.test(trimmed)) && !isKnownDeclare;
             
-            if (isAssignment && !isKnownDeclare && !trimmed.startsWith('if')) {
+            if (isAssignment) {
                 trimmed = 'let ' + trimmed;
             }
 

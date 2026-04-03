@@ -1,18 +1,14 @@
-index-196fd8e0.js:4 [IndicatorController] Compilation error: SyntaxError: Invalid destructuring assignment target
+index-ec73fbe2.js:4 [IndicatorController] Compilation error: SyntaxError: Identifier 'longBand' has already been declared
     at new Function (<anonymous>)
-    at _.run (index-196fd8e0.js:4:692)
-    at st.run (index-196fd8e0.js:4:16959)
-    at at.execute (index-196fd8e0.js:4:29479)
-    at index-196fd8e0.js:4:30918
-run	@	index-196fd8e0.js:4
-execute	@	index-196fd8e0.js:4
-(匿名)	@	index-196fd8e0.js:4
+    at _.run (index-ec73fbe2.js:4:692)
+    at st.run (index-ec73fbe2.js:4:16959)
+    at at.execute (index-ec73fbe2.js:4:29479)
+    at index-ec73fbe2.js:4:30918
+run	@	index-ec73fbe2.js:4
+execute	@	index-ec73fbe2.js:4
+(匿名)	@	index-ec73fbe2.js:4
 requestAnimationFrame		
-(匿名)	@	index-196fd8e0.js:4
-(匿名)	@	index-196fd8e0.js:114
-setDataCount	@	index-196fd8e0.js:1
-n	@	index-196fd8e0.js:4
-loadInitialData	@	index-196fd8e0.js:4
-await in loadInitialData		
-Tt	@	index-196fd8e0.js:114
-window.onload	@	index-196fd8e0.js:114
+(匿名)	@	index-ec73fbe2.js:4
+update	@	index-ec73fbe2.js:4
+onMouseMove	@	index-ec73fbe2.js:4
+(匿名)	@	index-ec73fbe2.js:1
