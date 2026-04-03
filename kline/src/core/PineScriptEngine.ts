@@ -262,7 +262,7 @@ export class PineScriptEngine {
                 else if (c === ',' && depth === 0) break;
                 else result += c;
             }
-            return result.trim().replace(/['"]/g, '');
+            return result.trim();
         };
 
         lines.forEach(line => {
@@ -275,27 +275,21 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 1. 處理函數定義 (f_name() => ...)
-            if (trimmed.includes('=>')) {
+            // 1. 處理函數定義 (f_name() => body)
+            if (trimmed.includes('=>') && !trimmed.startsWith('"') && !trimmed.startsWith("'")) {
                 const parts = trimmed.split('=>');
                 let head = parts[0].trim();
                 const body = parts[1].trim();
                 if (!head.includes('(')) head = `const ${head} = ()`;
                 else head = `const ${head.replace('(', ' = (')}`;
-
-                if (body) {
-                    jsLines.push(`${head} => { return ${body} };`);
-                } else {
-                    jsLines.push(`${head} => {`);
-                    indentLevel++;
-                }
+                jsLines.push(`${head} => { return ${body || 'null'} };`);
                 return;
             }
 
             // 2. 徹底攔截 input 系統 (支援複雜字串與嵌套)
             trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (_match, rest) => {
-                const arg = getFirstArgRaw(rest);
-                return arg.split(',')[0].replace(/['"]/g, '').trim();
+                const arg = getFirstArgClean(rest);
+                return arg;
             });
 
             // 3. 處理數學、顏色與關鍵字
