@@ -231,11 +231,11 @@ export class PineScriptEngine {
     constructor() {}
 
     public compile(code: string): string {
-        const rawLines = code.split('\n');
+        const lines = code.split('\n');
         let jsLines: string[] = [];
         let idCounter = 0;
         const indentStack: number[] = [0];
-        const commentStack: boolean[] = [false]; // 🚀 新增：追蹤目前層級是否被註解
+        const commentStack: boolean[] = [false];
 
         const getFirstArgClean = (inner: string) => {
             const defvalMatch = inner.match(/defval\s*=\s*([^,)]+)/);
@@ -258,38 +258,35 @@ export class PineScriptEngine {
             return final;
         };
 
-        rawLines.forEach(line => {
+        lines.forEach(line => {
+            if (!line.trim() && !line.startsWith(' ')) return;
             const currentIndent = line.match(/^\s*/)?.[0].length || 0;
             let trimmed = line.trim();
 
+            // 🚀 關鍵修正：精確的大括號管理
             while (currentIndent < indentStack[indentStack.length - 1]) {
-                if (!commentStack[commentStack.length - 1]) {
-                    jsLines.push('}');
-                }
+                const wasCommented = commentStack.pop();
+                if (!wasCommented) jsLines.push('}');
                 indentStack.pop();
-                commentStack.pop();
             }
 
             if (!trimmed || trimmed.startsWith('//')) return;
 
-            // 0. 檢測是否處於被註解的父級塊中
-            const isInsideCommentedBlock = commentStack[commentStack.length - 1];
+            const isCommentedParent = commentStack[commentStack.length - 1];
+            if (isCommentedParent) {
+                jsLines.push('// ' + trimmed);
+                return;
+            }
 
-            // 1. 識別不相容的塊開始 (type, method, indicator 等)
+            // 處理指標與類型定義 (一律註解並標記其縮排下的子行為註解)
             if (trimmed.startsWith('indicator(') || trimmed.startsWith('strategy(') || trimmed.startsWith('type ') || trimmed.startsWith('method ') || trimmed.startsWith('export ') || trimmed.startsWith('switch')) {
                 jsLines.push('// ' + trimmed);
-                indentStack.push(currentIndent + 1); // 假設子行縮排更多
+                indentStack.push(currentIndent + 1);
                 commentStack.push(true);
                 return;
             }
 
-            // 如果父級被註解，子級一律註解
-            if (isInsideCommentedBlock) {
-                jsLines.push('// ' + trimmed);
-                return;
-            }
-
-            // 2. 處理函數定義 (f_name(args) =>)
+            // 處理函數定義
             if (trimmed.includes('=>')) {
                 const parts = trimmed.split('=>');
                 let head = parts[0].trim();
@@ -309,7 +306,7 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 3. 取代關鍵字
+            // 取代邏輯
             trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (_m, rest) => getFirstArgClean(rest));
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
             trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
@@ -318,6 +315,10 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/ta\.atr\(([^)]+)\)/g, `_PINE_LIB_.atr(high, low, close, $1, ctx, 'atr_${idCounter++}')`);
             trimmed = trimmed.replace(/ta\.barssince\(([^)]+)\)/g, `_PINE_LIB_.barssince($1, ctx, 'bs_${idCounter++}')`);
             trimmed = trimmed.replace(/ta\.valuewhen\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.valuewhen($1, $2, $3, ctx, 'vw_${idCounter++}')`);
+            trimmed = trimmed.replace(/ta\.crossover\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossover($1, $2)');
+            trimmed = trimmed.replace(/ta\.crossunder\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.crossunder($1, $2)');
+            trimmed = trimmed.replace(/ta\.pivothigh\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivothigh($1, $2, $3)');
+            trimmed = trimmed.replace(/ta\.pivotlow\(([^,]+),\s*([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.pivotlow($1, $2, $3)');
             
             trimmed = trimmed.replace(/\bna\s*\(([^)]+)\)/g, 'isNaN($1)'); 
             trimmed = trimmed.replace(/\bna\b/g, 'NaN');
@@ -326,9 +327,10 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/\bor\b/g, '||');
             trimmed = trimmed.replace(/math\./g, 'Math.');
             trimmed = trimmed.replace(/color\.new/g, '_PINE_LIB_.color_new');
+            trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
             trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
 
-            // 4. 結構化語句
+            // 結構化語句 (改進 else if 與 else 的閉合邏輯)
             if (trimmed.startsWith('else if ')) {
                 const cond = trimmed.replace(/^else if\s+/, '').trim();
                 jsLines.push(`} else if (${cond}) {`);
@@ -344,7 +346,7 @@ export class PineScriptEngine {
                 return;
             }
 
-            // 5. 賦值處理
+            // 繪圖與變數
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
             if (trimmed.match(/^var\s+/)) {
                 trimmed = trimmed.replace(/^var\s+(?:bool|int|float|string|color)?\s*([a-zA-Z_]\w*)\s*=\s*(.*)/, `if (ctx.vars['$1'] === undefined) ctx.vars['$1'] = $2; let $1 = ctx.vars['$1']`);
@@ -361,9 +363,15 @@ export class PineScriptEngine {
                 trimmed = 'let ' + trimmed;
             }
 
-            // 🚀 防禦性過濾：如果只有一個標識符 (如 entry)，註解掉
+            // 防止非法單標識符行
             if (/^[a-zA-Z_]\w*$/.test(trimmed) && !['return', 'break', 'continue'].includes(trimmed)) {
                 jsLines.push('// ' + trimmed);
+                return;
+            }
+
+            // 處理結尾為逗號或括號的破碎行 (合併到下一行是理想的，但為了穩定我們先註解)
+            if (trimmed.endsWith(',') || trimmed.endsWith('(')) {
+                jsLines.push('// [BROKEN_LINE] ' + trimmed);
                 return;
             }
 
@@ -371,9 +379,8 @@ export class PineScriptEngine {
         });
 
         while (indentStack.length > 1) { 
-            if (!commentStack[commentStack.length - 1]) jsLines.push('}'); 
+            if (!commentStack.pop()) jsLines.push('}'); 
             indentStack.pop();
-            commentStack.pop();
         }
 
         const finalJS = jsLines.join('\n');
@@ -418,7 +425,7 @@ export class PineScriptEngine {
         const position = { top_right: 'tr', bottom_right: 'br', top_left: 'tl', bottom_left: 'bl', middle_center: 'mc' };
         const pSize = { tiny: 'tiny', small: 'small', normal: 'normal', large: 'large', huge: 'huge' };
         const str = { tostring: (v: any) => String(v) };
-        const color = { new: (c: any, _a: any) => c, white: '#fff', black: '#000', red: '#f00', green: '#0f0', gray: '#888' };
+        const color = { new: (c: any, a: any) => c, white: '#fff', black: '#000', red: '#f00', green: '#0f0', gray: '#888' };
         const barmerge = { gaps_off: 0, gaps_on: 1 };
         const display = { all: 1, none: 0 };
         const shape = { labelup: 'up', labeldown: 'down', square: 'sq', xcross: 'x' };

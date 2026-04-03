@@ -1,276 +1,3734 @@
-index-0351f6d5.js:3 [DataManager] Fetching from Crypto API: https://tradingviewer-gtr2.onrender.com/crypto/klines?id=BTC%2FUSDT&interval=1m
-index-0351f6d5.js:3 [DataManager] Received 500 initial candles
-index-0351f6d5.js:3 [DataManager] Latest Candle: 2026/4/3 下午3:14:00
-index-0351f6d5.js:3 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+index-b10c0efc.js:4 [DataManager] Fetching from Crypto API: https://tradingviewer-gtr2.onrender.com/crypto/klines?id=BTC%2FUSDT&interval=1m
+index-b10c0efc.js:4 [DataManager] Received 500 initial candles
+index-b10c0efc.js:4 [DataManager] Latest Candle: 2026/4/3 下午3:22:00
+index-b10c0efc.js:4 [DataManager] Connecting to Backend WebSocket: wss://tradingviewer-gtr2.onrender.com
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:113
-setDataCount @ index-0351f6d5.js:1
-s @ index-0351f6d5.js:3
-loadInitialData @ index-0351f6d5.js:3
+(匿名) @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:114
+setDataCount @ index-b10c0efc.js:1
+s @ index-b10c0efc.js:4
+loadInitialData @ index-b10c0efc.js:4
 await in loadInitialData
-Tt @ index-0351f6d5.js:113
-window.onload @ index-0351f6d5.js:113
-index-0351f6d5.js:3 [DataManager] Backend WebSocket Connected ✅
-index-0351f6d5.js:3 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+Tt @ index-b10c0efc.js:114
+window.onload @ index-b10c0efc.js:114
+index-b10c0efc.js:4 [DataManager] Backend WebSocket Connected ✅
+index-b10c0efc.js:4 [DataManager] Subscribing via Backend: {"type":"subscribe","id":"BTC/USDT","interval":"1m"}
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
-index-0351f6d5.js:3 [IndicatorController] Compilation error: SyntaxError: Unexpected identifier 'entry'
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
+index-b10c0efc.js:3 [PineScriptEngine] Final Transpiled JS:
+ // indicator("賽克斯X獵影", overlay=false, max_labels_count=500, max_lines_count=500, max_boxes_count=500)
+let enable_sykes = true;
+let enable_leain = true;
+let group_struct = "市場結構設定";
+let lb_len = 5;
+let rb_len = 5;
+let trend_mode = "Vegas 通道";
+let show_labels = false;
+let group_panel = "面板顯示設定";
+let show_panel = true;
+let panel_pos  = "Bottom Right";
+let group_extra = "自訂時區監控 (手動勾選)";
+let ex1_en = true;
+let ex1_tf = "60";
+let ex2_en = true;
+let ex2_tf = "240";
+let ex3_en = true;
+let ex3_tf = "D";
+let ex4_en = true;
+let ex4_tf = "W";
+let group_mtf = "智慧對標開關 (當前對標 HTF)";
+let en_smart = true;
+let filter_mtf = false;
+let filter_same_bar = true;
+let group_vegas = "EMA/MA (Vegas Tunnels)";
+let ema_len1 = 144;
+let ema_len2 = 169;
+let ema_len3 = 576;
+let ema_len4 = 676;
+let ema_len5 = 12;
+let ema_fast_len = 7;
+let ignore_bars_after_ema_exit = 0;
+let ignore_bars_after_breakout = 0;
+let ema12_buffer_mult = 0.0;
+let group_qqe = "QQE MOD Settings";
+let rsiLengthPrimary = 6;
+let rsiSmoothingPrimary = 5;
+let qqeFactorPrimary = 3.0;
+let thresholdPrimary = 3.0;
+let sourcePrimary = close;
+let rsiLengthSecondary = 6;
+let rsiSmoothingSecondary = 5;
+let qqeFactorSecondary = 1.61;
+let thresholdSecondary = 3.0;
+let sourceSecondary = close;
+let bollingerLength = 50;
+let bollingerMultiplier = 0.35;
+let group_tp_sl_sykes = "賽克斯止盈止損設定";
+let show_tp_sl_sykes = true;
+let reward_risk_ratio_sykes = 1.0;
+let group_atr_std = "ATR 通道標準設定";
+let atrPeriod = 3;
+let atrMultiplier = 2.5;
+let atrSourceRef = "close";
+let group_trade_set = "交易策略設定";
+let rewardRiskRatio = 1.0;
+let allowMultipleTrades = true;
+let slPaddingMult = 0.0;
+let allowNoPatternEntry = false;
+let showPnLLabels = true;
+let group_tbl_set = "表格設定";
+let showTable = false;
+let allowTableRepainting = false;
+let alignTableVertically = true;
+let tablePosition = "右下";
+let group_stats_set = "統計設定";
+let showStats = true;
+let statsPosition = "右上";
+let statsTextSize = "small";
+let GRP_OBV_MA = "OBV 平滑處理";
+let maTypeInput = "SMA + Bollinger Bands";
+let maLengthInput = 14;
+let bbMultInput = 2.0;
+let GRP_ATR_FILTER = "🥇 ATR 波動收斂過濾";
+let useAtrFilter = false;
+let atrFilterLen = 14;
+let shortAtrLen = 3;
+let longAtrLen = 21;
+let GRP_VOL_EXP = "🥈 布林帶急遽擴張偵測 (Volatility Expansion)";
+let useVolExpMethod1 = false;
+let useVolExpMethod2 = false;
+let useVolExpMethod3 = false;
+let method2Lookback = 50;
+let sqzMult = 1.2;
+let expMult = 1.1;
+let zScoreThreshold = 2.0;
+let useIgnoreFirst = false;
+let GRP_SQZ = "🥉 價格與成交量壓縮過濾 (Squeeze Filters)";
+let usePrc = false;
+let prcLen = 20;
+let prcThresh = 0.7;
+let useKc = false;
+let kcLen = 20;
+let kcMult = 1.5;
+let useVolSqz = false;
+let volSqzLen = 20;
+let volSqzThresh = 0.7;
+let useDc = false;
+let dcLen = 20;
+let dcSmaLen = 50;
+let useAdxSqz = false;
+let adxSqzLen = 14;
+let adxSqzThresh = 20;
+let useRsiSqz = false;
+let rsiSqzLen = 14;
+let rsiLower = 40;
+let rsiUpper = 60;
+let useStochSqz = false;
+let stochSqzLen = 14;
+let stochSqzLower = 20;
+let stochSqzUpper = 80;
+let GRP_EMA_MA = "7EMA_5MA 設定";
+let showEmaMa = false;
+let len1  = 144;
+let len2  = 169;
+let len3  = 576;
+let len4  = 676;
+let len5  = 12;
+let len6  = 400;
+let len7  = 11;
+let len8  = 23;
+let len9  = 25;
+let len10 = 39;
+let len11 = 200;
+let src1  = close;
+let src2  = close;
+let src3  = close;
+let src4  = close;
+let src5  = close;
+let src6  = close;
+let src7  = close;
+let src8  = close;
+let src9  = close;
+let src10 = close;
+let src11 = close;
+// type SykesTrade
+// float entry
+// float sl
+// float tp
+// bool isLong
+// box tpBox
+// box slBox
+// label entryLabel
+// label slLabel
+// label tpLabel
+const f_get_trend = () => {
+let _ph_val = ta.pivothigh(high, 5, 5);
+let _pl_val = ta.pivotlow(low, 5, 5);
+let _last_ph = _PINE_LIB_.valuewhen(! isNaN(_ph_val), _ph_val, 0, ctx, 'vw_821');
+let _last_pl = _PINE_LIB_.valuewhen(! isNaN(_pl_val), _pl_val, 0, ctx, 'vw_827');
+let _co = ta.crossover(close, _last_ph);
+let _cu = ta.crossunder(close, _last_pl);
+let _e144_tmp = _PINE_LIB_.ema(close, 144, ctx.getVar('ema_840'));
+let _e169_tmp = _PINE_LIB_.ema(close, 169, ctx.getVar('ema_846'));
+let _e576_tmp = _PINE_LIB_.ema(close, 576, ctx.getVar('ema_852'));
+let _e676_tmp = _PINE_LIB_.ema(close, 676, ctx.getVar('ema_858'));
+if (ctx.vars['_t'] === undefined) ctx.vars['_t'] = 0; let _t = ctx.vars['_t'];
+if (trend_mode == "市場結構 (HH/LL)") {
+if (_co) {
+let _t = 1; ctx.vars["_t"] = _t;;
+}
+} else if (_cu) {
+let _t = -1; ctx.vars["_t"] = _t;;
+}
+} else {
+let _bull = Math.min(_e144_tmp, _e169_tmp) > Math.max(_e576_tmp, _e676_tmp);
+let _bear = Math.max(_e144_tmp, _e169_tmp) < Math.min(_e576_tmp, _e676_tmp);
+let _t = _bull ? 1 : _bear ? -1 : 0; ctx.vars["_t"] = _t;;
+// _t
+}
+const get_pos_sykes = (_pos) => {
+// switch _pos
+// "Top Right"      => position.top_right
+// "Bottom Right"   => position.bottom_right
+// "Top Left"       => position.top_left
+// "Bottom Left"    => position.bottom_left
+// "Top Center"     => position.top_center
+// "Bottom Center"  => position.bottom_center
+// => position.top_right
+}
+const f_add_row_sykes = (_table,
+index-b10c0efc.js:4 [IndicatorController] Compilation error: SyntaxError: Unexpected token 'else'
     at new Function (<anonymous>)
-    at _.run (index-0351f6d5.js:3:1278)
-    at st.run (index-0351f6d5.js:3:17642)
-    at at.execute (index-0351f6d5.js:3:30162)
-    at index-0351f6d5.js:3:31601
-run @ index-0351f6d5.js:3
-execute @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:3
+    at B.run (index-b10c0efc.js:4:1282)
+    at st.run (index-b10c0efc.js:4:17646)
+    at at.execute (index-b10c0efc.js:4:30166)
+    at index-b10c0efc.js:4:31605
+run @ index-b10c0efc.js:4
+execute @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:4
 requestAnimationFrame
-(匿名) @ index-0351f6d5.js:3
-update @ index-0351f6d5.js:3
-onMouseMove @ index-0351f6d5.js:3
-(匿名) @ index-0351f6d5.js:1
+(匿名) @ index-b10c0efc.js:4
+update @ index-b10c0efc.js:4
+onMouseMove @ index-b10c0efc.js:4
+(匿名) @ index-b10c0efc.js:1
