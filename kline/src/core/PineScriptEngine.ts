@@ -294,15 +294,17 @@ export class PineScriptEngine {
 
             // 2. 徹底攔截 input 系統 (支援複雜字串與嵌套)
             trimmed = trimmed.replace(/input(?:\.\w+)?\s*\((.*)/g, (_match, rest) => {
-                return getFirstArgRaw(rest);
+                const arg = getFirstArgRaw(rest);
+                return arg.split(',')[0].replace(/['"]/g, '').trim();
             });
 
             // 3. 處理數學、顏色與關鍵字
+            trimmed = trimmed.replace(/\bna\(([^)]+)\)/g, 'isNaN($1)'); 
             trimmed = trimmed.replace(/\bna\b/g, 'NaN');
             trimmed = trimmed.replace(/\bnot\b/g, '!');
             trimmed = trimmed.replace(/\band\b/g, '&&');
             trimmed = trimmed.replace(/\bor\b/g, '||');
-
+            
             trimmed = trimmed.replace(/math\.max/g, 'Math.max');
             trimmed = trimmed.replace(/math\.min/g, 'Math.min');
             trimmed = trimmed.replace(/math\.abs/g, 'Math.abs');
@@ -311,7 +313,7 @@ export class PineScriptEngine {
             trimmed = trimmed.replace(/color\.rgb/g, '_PINE_LIB_.color_rgb');
             trimmed = trimmed.replace(/(#[0-9a-fA-F]{6,8})/g, '"$1"');
 
-            // 4. 指標映射 (使用 _PINE_LIB_)
+            // 4. 指標映射
             trimmed = trimmed.replace(/ta\.sma\(([^,]+),\s*([^)]+)\)/g, '_PINE_LIB_.sma($1, $2)');
             trimmed = trimmed.replace(/ta\.ema\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.ema($1, $2, ctx.getVar('ema_${idCounter++}'))`);
             trimmed = trimmed.replace(/ta\.rma\(([^,]+),\s*([^)]+)\)/g, `_PINE_LIB_.rma($1, $2, ctx.getVar('rma_${idCounter++}'))`);
@@ -336,11 +338,26 @@ export class PineScriptEngine {
             // 6. 移除類型前綴
             trimmed = trimmed.replace(/^(?:float|int|bool|string|color|line|label|box|table)\s+/g, '');
 
-            // 7. 語法結構與 := 處理
+            // 7. 🚀 結構化語句處理 (if / else if / else)
+            if (trimmed.startsWith('else if ')) {
+                const cond = trimmed.replace(/^else if\s+/, '').trim();
+                jsLines.push(`} else if (${cond}) {`);
+                return;
+            } else if (trimmed.startsWith('else')) {
+                jsLines.push('} else {');
+                return;
+            } else if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
+                const cond = trimmed.replace(/^if\s+/, '').trim();
+                jsLines.push(`if (${cond}) {`);
+                indentLevel++;
+                return;
+            }
+
+            // 8. 語法結構與 := 處理
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\[(\d+)\]/g, (_match, p1, p2) => `(typeof ${p1} === 'object' && ${p1}.get ? ${p1}.get(${p2}) : NaN)`);
             trimmed = trimmed.replace(/plot\(([^,]+)[^)]*\)/g, 'ctx.plot($1)');
 
-            // 🚀 修正：處理 var 狀態初始化 (必須在補 let 之前)
+            // 處理 var 初始化
             if (trimmed.match(/^var\s+/)) {
                 trimmed = trimmed.replace(/^var\s+(?:bool|int|float|string|color|line|label|box|table)?\s*([a-zA-Z_]\w*)\s*=\s*(.*)/, `if (ctx.vars['$1'] === undefined) ctx.vars['$1'] = $2; let $1 = ctx.vars['$1']`);
                 jsLines.push(trimmed + ';');
@@ -349,19 +366,18 @@ export class PineScriptEngine {
 
             trimmed = trimmed.replace(/([a-zA-Z_]\w*)\s*:=\s*(.*)/g, '$1 = $2; ctx.vars["$1"] = $1;');
 
-            if (trimmed.startsWith('if ') && !trimmed.includes('{')) {
-                const cond = trimmed.replace(/^if\s+/, '').trim();
-                jsLines.push(`if (${cond}) {`);
-                indentLevel++;
-                return;
-            }
-
             // 🚀 偵測賦值並自動補 let
             const isAssignment = (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('>') && !trimmed.includes('<') && !trimmed.includes('(')) || trimmed.startsWith('[');
             const isKnownDeclare = trimmed.startsWith('let') || trimmed.startsWith('const') || trimmed.startsWith('var');
 
             if (isAssignment && !isKnownDeclare && !trimmed.startsWith('if')) {
                 trimmed = 'let ' + trimmed;
+            }
+
+            // 對於單獨的單字，將其註解
+            if (/^\w+;?$/.test(trimmed) && !['return', 'break', 'continue'].includes(trimmed)) {
+                jsLines.push('// ' + trimmed);
+                return;
             }
 
             jsLines.push(trimmed + (trimmed.endsWith('{') ? '' : ';'));
