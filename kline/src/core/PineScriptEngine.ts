@@ -301,6 +301,7 @@ export class PineScriptEngine {
             });
 
             // 3. 處理核心關鍵字
+            trimmed = trimmed.replace(/\bna\(([^)]+)\)/g, 'isNaN($1)'); 
             trimmed = trimmed.replace(/\bna\b/g, 'NaN');
             trimmed = trimmed.replace(/\bnot\b/g, '!');
             trimmed = trimmed.replace(/\band\b/g, '&&');
