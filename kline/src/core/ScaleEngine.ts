@@ -76,6 +76,29 @@ export class ScaleEngine {
   }
 
   /**
+   * 🚀 新增：處理座標軸拖動縮放
+   * @param delta 拖動像素位移
+   * @param zone 'price' 或 'time'
+   */
+  public handleAxisDrag(delta: number, zone: 'price' | 'time'): void {
+    if (zone === 'price') {
+      this.isAutoScale = false;
+      const range = this.maxPrice - this.minPrice;
+      // 根據拖動位移比例縮放區間 (向上拖動為負，代表擴張；向下拖動為正，代表壓縮)
+      const factor = 1 + delta / 200; 
+      const center = (this.maxPrice + this.minPrice) / 2;
+      const newRange = range * factor;
+      
+      this.minPrice = center - newRange / 2;
+      this.maxPrice = center + newRange / 2;
+    }
+  }
+
+  public getIsAutoScale(): boolean {
+    return this.isAutoScale;
+  }
+
+  /**
    * 恢復自動縮放 (例如雙擊價格軸時呼叫)
    */
   public resetAutoScale(): void {
