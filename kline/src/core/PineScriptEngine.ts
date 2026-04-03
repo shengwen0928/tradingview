@@ -208,8 +208,8 @@ class PineLibrary {
         return context.vars[id].sum;
     }
 
-    public static color_new(c: string, a: number): string { return c; }
-    public static color_rgb(r: number, g: number, b: number, a?: number): string { return `rgb(${r},${g},${b})`; }
+    public static color_new(c: string, _a: number): string { return c; }
+    public static color_rgb(r: number, g: number, b: number, _a?: number): string { return `rgb(${r},${g},${b})`; }
 
     public static label_new(x: number, y: number, text: string, color: string, textcolor: string, style: string, ctx: any): any {
         const label = { type: 'label', x, y, text, color, textcolor, style, bar_index: ctx.bar_index };
