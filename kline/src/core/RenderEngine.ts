@@ -235,7 +235,7 @@ export class RenderEngine {
         this.renderLineChart(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice, 'area');
         break;
       case 'hlc_area':
-        this.renderHLCArea(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine);
+        this.renderHLCArea(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
         break;
       case 'baseline':
         this.renderBaseline(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
@@ -358,12 +358,13 @@ export class RenderEngine {
     exactStartIndex: number,
     candleWidth: number,
     spacing: number,
-    scaleEngine: ScaleEngine
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
   ): void {
     const ctx = this.candleCtx;
     if (candles.length < 2) return;
 
-    // 繪製填充區 (High to Low)
+    // 1. 繪製填充區 (High to Low)
     ctx.beginPath();
     for (let i = 0; i < candles.length; i++) {
       const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
@@ -379,13 +380,15 @@ export class RenderEngine {
     ctx.fillStyle = 'rgba(41, 98, 255, 0.2)';
     ctx.fill();
 
-    // 繪製收盤價折線
+    // 2. 繪製收盤價折線 (支援實時跳動)
     ctx.beginPath();
     ctx.strokeStyle = '#2962ff';
     ctx.lineWidth = 2;
     for (let i = 0; i < candles.length; i++) {
+      const isLast = i === candles.length - 1;
       const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
-      const y = scaleEngine.priceToY(candles[i].close);
+      const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candles[i].close;
+      const y = scaleEngine.priceToY(displayClose);
       if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.stroke();
@@ -500,12 +503,14 @@ export class RenderEngine {
 
     for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
+      const isLast = i === candles.length - 1;
       const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
       const centerX = Math.floor(x + candleWidth / 2) + 0.5;
       const yHigh = scaleEngine.priceToY(candle.high);
       const yLow = scaleEngine.priceToY(candle.low);
 
-      const isUp = candle.close >= candle.open;
+      const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candle.close;
+      const isUp = displayClose >= candle.open;
       const color = isUp ? '#26a69a' : '#ef5350';
       
       ctx.fillStyle = color;
@@ -552,7 +557,6 @@ export class RenderEngine {
       } else {
         if (mode === 'step') {
             // 階梯線：先橫再豎
-            const prevX = scaleEngine.indexToX(sliceStartIndex + i - 1, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
             const prevY = scaleEngine.priceToY(candles[i-1].close);
             ctx.lineTo(centerX, prevY);
             ctx.lineTo(centerX, y);
@@ -789,6 +793,97 @@ export class RenderEngine {
         ctx.strokeRect(x1, Math.min(y1, y2), x2 - x1, Math.abs(y2 - y1));
     });
     ctx.restore();
+  }
+
+  private renderNormalCandles(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const drawWidth = scaleEngine.getDrawWidth();
+
+    for (let i = 0; i < candles.length; i++) {
+      const candle = candles[i];
+      const isLast = i === candles.length - 1;
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+      if (x + candleWidth < 0 || x > drawWidth) continue;
+
+      const centerX = Math.floor(x + candleWidth / 2) + 0.5;
+      const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candle.close;
+      const yOpen = scaleEngine.priceToY(candle.open);
+      const yClose = scaleEngine.priceToY(displayClose);
+      const yHigh = scaleEngine.priceToY(candle.high);
+      const yLow = scaleEngine.priceToY(candle.low);
+
+      const isUp = displayClose >= candle.open;
+      const color = isUp ? '#26a69a' : '#ef5350';
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, yHigh);
+      ctx.lineTo(centerX, yLow);
+      ctx.stroke();
+
+      const rectW = Math.max(1, Math.floor(candleWidth));
+      const rectX = Math.floor(centerX - rectW / 2);
+      const rectY = Math.floor(Math.min(yOpen, yClose));
+      const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
+      ctx.fillRect(rectX, rectY, rectW, rectH);
+    }
+  }
+
+  private renderHollowCandles(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const drawWidth = scaleEngine.getDrawWidth();
+
+    for (let i = 0; i < candles.length; i++) {
+      const candle = candles[i];
+      const isLast = i === candles.length - 1;
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+      if (x + candleWidth < 0 || x > drawWidth) continue;
+
+      const centerX = Math.floor(x + candleWidth / 2) + 0.5;
+      const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candle.close;
+      const yOpen = scaleEngine.priceToY(candle.open);
+      const yClose = scaleEngine.priceToY(displayClose);
+      const yHigh = scaleEngine.priceToY(candle.high);
+      const yLow = scaleEngine.priceToY(candle.low);
+
+      const isUp = displayClose >= candle.open;
+      const color = isUp ? '#26a69a' : '#ef5350';
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, yHigh);
+      ctx.lineTo(centerX, yLow);
+      ctx.stroke();
+
+      const rectW = Math.max(1, Math.floor(candleWidth));
+      const rectX = Math.floor(centerX - rectW / 2);
+      const rectY = Math.floor(Math.min(yOpen, yClose));
+      const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
+
+      if (isUp) {
+        ctx.strokeRect(rectX + 0.5, rectY + 0.5, rectW - 1, rectH - 1);
+      } else {
+        ctx.fillRect(rectX, rectY, rectW, rectH);
+      }
+    }
   }
 
   private drawLabel(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, bgColor: string): void {
