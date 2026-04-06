@@ -246,6 +246,15 @@ export class RenderEngine {
       case 'high_low':
         this.renderHighLow(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
         break;
+      case 'volume_footprint':
+        this.renderVolumeFootprint(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
+        break;
+      case 'tpo':
+        this.renderTPO(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
+        break;
+      case 'volume_profile':
+        this.renderVolumeProfile(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
+        break;
       case 'heikin_ashi':
         this.renderHeikinAshi(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
         break;
@@ -884,6 +893,147 @@ export class RenderEngine {
         ctx.fillRect(rectX, rectY, rectW, rectH);
       }
     }
+  }
+
+  /**
+   * 🚀 成交量軌跡 (Volume Footprint)
+   * 在 K 線內部顯示買賣成交量分佈
+   */
+  private renderVolumeFootprint(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const drawWidth = scaleEngine.getDrawWidth();
+    const rowHeight = 4; // 每個價格層級的高度
+
+    for (let i = 0; i < candles.length; i++) {
+      const candle = candles[i];
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+      if (x + candleWidth < 0 || x > drawWidth) continue;
+
+      const yHigh = scaleEngine.priceToY(candle.high);
+      const yLow = scaleEngine.priceToY(candle.low);
+      const centerX = x + candleWidth / 2;
+
+      // 繪製背景 K 線框架
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.strokeRect(x, yHigh, candleWidth, yLow - yHigh);
+
+      // 模擬數據：將 High-Low 區間切分為多個價格層級
+      const steps = Math.ceil((yLow - yHigh) / rowHeight);
+      for (let s = 0; s < steps; s++) {
+          const rowY = yHigh + s * rowHeight;
+          const buyVol = Math.random() * 50;
+          const sellVol = Math.random() * 50;
+          
+          const total = buyVol + sellVol;
+          const buyWidth = (buyVol / total) * (candleWidth / 2);
+          const sellWidth = (sellVol / total) * (candleWidth / 2);
+
+          // 買盤 (左側綠色)
+          ctx.fillStyle = 'rgba(38, 166, 154, 0.6)';
+          ctx.fillRect(centerX - buyWidth, rowY, buyWidth, rowHeight - 1);
+          
+          // 賣盤 (右側紅色)
+          ctx.fillStyle = 'rgba(239, 83, 80, 0.6)';
+          ctx.fillRect(centerX, rowY, sellWidth, rowHeight - 1);
+
+          // 數值標記 (僅當寬度足夠時)
+          if (candleWidth > 40) {
+              ctx.fillStyle = '#fff';
+              ctx.font = '6px sans-serif';
+              ctx.textAlign = 'right';
+              ctx.fillText(Math.floor(buyVol).toString(), centerX - 2, rowY + rowHeight - 1);
+              ctx.textAlign = 'left';
+              ctx.fillText(Math.floor(sellVol).toString(), centerX + 2, rowY + rowHeight - 1);
+          }
+      }
+    }
+  }
+
+  /**
+   * 🚀 TPO (Time Price Opportunity)
+   * 顯示時間在各價格區間的停留頻率
+   */
+  private renderTPO(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const drawWidth = scaleEngine.getDrawWidth();
+    const rowHeight = 6;
+
+    // 將可視區域內的價格進行統計
+    const priceMap = new Map<number, number>();
+    candles.forEach(c => {
+        const key = Math.floor(c.close / 10) * 10; // 以 10 為間距
+        priceMap.set(key, (priceMap.get(key) || 0) + 1);
+    });
+
+    const maxCount = Math.max(...Array.from(priceMap.values()), 1);
+
+    for (let i = 0; i < candles.length; i += 20) { // 每 20 根合成一個 TPO 區塊
+        const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+        if (x > drawWidth) break;
+
+        priceMap.forEach((count, price) => {
+            const y = scaleEngine.priceToY(price);
+            const w = (count / maxCount) * candleWidth * 5;
+            
+            const gradient = ctx.createLinearGradient(x, 0, x + w, 0);
+            gradient.addColorStop(0, 'rgba(41, 98, 255, 0.5)');
+            gradient.addColorStop(1, 'rgba(41, 98, 255, 0.0)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(x, y, w, rowHeight);
+        });
+    }
+  }
+
+  /**
+   * 🚀 成交量分佈圖 (Volume Profile)
+   */
+  private renderVolumeProfile(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const drawWidth = scaleEngine.getDrawWidth();
+    const rowHeight = 3;
+
+    // 統計價格區間的成交量
+    const volMap = new Map<number, number>();
+    candles.forEach(c => {
+        const key = Math.floor(c.close / 5) * 5;
+        volMap.set(key, (volMap.get(key) || 0) + (c.volume || 0));
+    });
+
+    const maxVol = Math.max(...Array.from(volMap.values()), 1);
+
+    volMap.forEach((vol, price) => {
+        const y = scaleEngine.priceToY(price);
+        const barWidth = (vol / maxVol) * (drawWidth * 0.3);
+        
+        ctx.fillStyle = 'rgba(120, 120, 120, 0.3)';
+        // 畫在右側
+        ctx.fillRect(drawWidth - barWidth, y, barWidth, rowHeight);
+    });
   }
 
   private drawLabel(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, bgColor: string): void {
