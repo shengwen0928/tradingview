@@ -1,6 +1,6 @@
-import { DataManager } from './DataManager';
-import { ViewportEngine } from './ViewportEngine';
-import { ScaleEngine } from './ScaleEngine';
+import { DataManager } from '../services/DataManager';
+import { ViewportEngine } from '../services/ViewportEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
 
 export class MagnetService {
     constructor(

@@ -1,34 +1,34 @@
 import { ViewportEngine } from './ViewportEngine';
-import { ScaleEngine } from './ScaleEngine';
-import { RenderEngine } from './RenderEngine';
-import { InteractionEngine } from './InteractionEngine';
-import { PineScriptEngine } from './PineScriptEngine';
-import { DrawingEngine } from './DrawingEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
+import { RenderEngine } from '../rendering/RenderEngine';
+import { InteractionEngine } from '../interaction/InteractionEngine';
+import { PineScriptEngine } from '../engines/PineScriptEngine';
+import { DrawingEngine } from '../interaction/DrawingEngine';
 import { SymbolController } from './SymbolController';
-import { DrawingController } from './DrawingController';
-import { MagnetService } from './MagnetService';
-import { CrosshairController } from './CrosshairController';
-import { PriceAnimator } from './PriceAnimator';
-import { IndicatorController } from './IndicatorController';
-import { InteractionCoordinator } from './InteractionCoordinator';
+import { DrawingController } from '../interaction/DrawingController';
+import { MagnetService } from '../interaction/MagnetService';
+import { CrosshairController } from '../interaction/CrosshairController';
+import { PriceAnimator } from '../rendering/PriceAnimator';
+import { IndicatorController } from '../engines/IndicatorController';
+import { InteractionCoordinator } from '../interaction/InteractionCoordinator';
 import { ViewportController } from './ViewportController';
 import { DataManagerService } from './DataManagerService';
-import { RenderPipeline } from './RenderPipeline';
+import { RenderPipeline } from '../rendering/RenderPipeline';
 import { LayoutController } from './LayoutController';
-import { RenderLoop } from './RenderLoop';
-import { InteractionBridge } from './InteractionBridge';
-import { APP_CONFIG } from '../constants/AppConfig';
+import { RenderLoop } from '../rendering/RenderLoop';
+import { InteractionBridge } from '../interaction/InteractionBridge';
+import { APP_CONFIG } from '../../constants/AppConfig';
 
 // UI Components
-import { SymbolModal } from '../ui/SymbolModal';
-import { IndicatorModal } from '../ui/IndicatorModal';
-import { TimeframeController } from '../ui/TimeframeController';
-import { ChartTypeController } from '../ui/ChartTypeController';
-import { DrawingToolbar } from '../ui/DrawingToolbar';
-import { ScriptEditor } from '../ui/ScriptEditor';
-import { InfoDisplay } from '../ui/InfoDisplay';
-import { DrawingEditToolbar } from '../ui/DrawingEditToolbar';
-import { injectStyles } from '../ui/Styles';
+import { SymbolModal } from '../../ui/SymbolModal';
+import { IndicatorModal } from '../../ui/IndicatorModal';
+import { TimeframeController } from '../../ui/TimeframeController';
+import { ChartTypeController } from '../../ui/ChartTypeController';
+import { DrawingToolbar } from '../../ui/DrawingToolbar';
+import { ScriptEditor } from '../../ui/ScriptEditor';
+import { InfoDisplay } from '../../ui/InfoDisplay';
+import { DrawingEditToolbar } from '../../ui/DrawingEditToolbar';
+import { injectStyles } from '../../ui/Styles';
 
 export class ChartApp {
   constructor() {

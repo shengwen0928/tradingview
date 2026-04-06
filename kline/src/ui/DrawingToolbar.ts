@@ -1,5 +1,5 @@
-import { InteractionEngine } from '../core/InteractionEngine';
-import { DrawingEngine } from '../core/DrawingEngine';
+import { InteractionEngine } from '../core/interaction/InteractionEngine';
+import { DrawingEngine } from '../core/interaction/DrawingEngine';
 
 export class DrawingToolbar {
   constructor(

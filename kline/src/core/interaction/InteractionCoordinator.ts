@@ -1,9 +1,9 @@
 import { InteractionEngine } from './InteractionEngine';
 import { DrawingEngine } from './DrawingEngine';
-import { DrawingEditToolbar } from '../ui/DrawingEditToolbar';
-import { ViewportEngine } from './ViewportEngine';
-import { ScaleEngine } from './ScaleEngine';
-import { DataManager } from './DataManager';
+import { DrawingEditToolbar } from '../../ui/DrawingEditToolbar';
+import { ViewportEngine } from '../services/ViewportEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
+import { DataManager } from '../services/DataManager';
 
 export class InteractionCoordinator {
     constructor(

@@ -1,7 +1,7 @@
 import { DataManager } from './DataManager';
 import { ViewportEngine } from './ViewportEngine';
 import { LoaderController } from './LoaderController';
-import { InfoDisplay } from '../ui/InfoDisplay';
+import { InfoDisplay } from '../../ui/InfoDisplay';
 
 export class DataManagerService {
     private cryptoManager: DataManager;

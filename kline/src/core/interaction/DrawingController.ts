@@ -1,8 +1,8 @@
 import { InteractionEngine } from './InteractionEngine';
 import { DrawingEngine, DrawingObject } from './DrawingEngine';
-import { ViewportEngine } from './ViewportEngine';
-import { ScaleEngine } from './ScaleEngine';
-import { DataManager } from './DataManager';
+import { ViewportEngine } from '../services/ViewportEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
+import { DataManager } from '../services/DataManager';
 
 export class DrawingController {
     private moveTarget: DrawingObject | null = null;

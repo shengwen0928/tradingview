@@ -1,5 +1,5 @@
-import { PineScriptEngine } from '../core/PineScriptEngine';
-import { DataManager } from '../core/DataManager';
+import { PineScriptEngine } from '../core/engines/PineScriptEngine';
+import { DataManager } from '../core/services/DataManager';
 
 export class IndicatorModal {
     private modal: HTMLElement;

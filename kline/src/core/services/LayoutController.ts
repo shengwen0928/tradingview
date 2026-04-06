@@ -1,7 +1,7 @@
-import { RenderEngine } from './RenderEngine';
-import { ScaleEngine } from './ScaleEngine';
+import { RenderEngine } from '../rendering/RenderEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
 import { ViewportEngine } from './ViewportEngine';
-import { InteractionEngine } from './InteractionEngine';
+import { InteractionEngine } from '../interaction/InteractionEngine';
 
 export class LayoutController {
     constructor(

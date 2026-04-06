@@ -1,5 +1,5 @@
 import { ViewportEngine } from './ViewportEngine';
-import { ScaleEngine } from './ScaleEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
 import { LoaderController } from './LoaderController';
 
 export class ViewportController {

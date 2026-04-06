@@ -1,11 +1,11 @@
-import { ScaleEngine } from './ScaleEngine';
-import { ViewportEngine } from './ViewportEngine';
-import { DataManager } from './DataManager';
-import { RenderEngine } from './RenderEngine';
-import { InfoDisplay } from '../ui/InfoDisplay';
+import { ScaleEngine } from '../engines/ScaleEngine';
+import { ViewportEngine } from '../services/ViewportEngine';
+import { DataManager } from '../services/DataManager';
+import { RenderEngine } from '../rendering/RenderEngine';
+import { InfoDisplay } from '../../ui/InfoDisplay';
 import { DrawingEngine } from './DrawingEngine';
 import { InteractionEngine } from './InteractionEngine';
-import { formatPrice, formatFullTime } from '../utils/math';
+import { formatPrice, formatFullTime } from '../../utils/math';
 
 export class CrosshairController {
     private lastMousePos = { x: 0, y: 0 };

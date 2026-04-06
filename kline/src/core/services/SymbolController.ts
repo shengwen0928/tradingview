@@ -1,7 +1,7 @@
 import { DataManager } from './DataManager';
-import { ScaleEngine } from './ScaleEngine';
-import { TimeframeController } from '../ui/TimeframeController';
-import { InfoDisplay } from '../ui/InfoDisplay';
+import { ScaleEngine } from '../engines/ScaleEngine';
+import { TimeframeController } from '../../ui/TimeframeController';
+import { InfoDisplay } from '../../ui/InfoDisplay';
 
 export class SymbolController {
     private currentSymbol: string = 'BTC/USDT';

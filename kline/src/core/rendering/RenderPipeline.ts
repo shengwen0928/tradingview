@@ -1,12 +1,12 @@
-import { ViewportEngine } from './ViewportEngine';
-import { ScaleEngine } from './ScaleEngine';
+import { ViewportEngine } from '../services/ViewportEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
 import { RenderEngine } from './RenderEngine';
-import { DataManager } from './DataManager';
+import { DataManager } from '../services/DataManager';
 import { PriceAnimator } from './PriceAnimator';
-import { IndicatorController } from './IndicatorController';
-import { DrawingEngine } from './DrawingEngine';
-import { CrosshairController } from './CrosshairController';
-import { ChartType } from '../types/Candle';
+import { IndicatorController } from '../engines/IndicatorController';
+import { DrawingEngine } from '../interaction/DrawingEngine';
+import { CrosshairController } from '../interaction/CrosshairController';
+import { ChartType } from '../../types/Candle';
 
 export class RenderPipeline {
     private chartType: ChartType = 'candles';

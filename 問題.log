@@ -1,6 +1,0 @@
-Error: src/core/RenderEngine.ts(220,14): error TS2339: Property 'renderHollowCandles' does not exist on type 'RenderEngine'.
-Error: src/core/RenderEngine.ts(253,14): error TS2339: Property 'renderNormalCandles' does not exist on type 'RenderEngine'.
-Error: src/core/RenderEngine.ts(496,5): error TS6133: 'visualLastPrice' is declared but its value is never read.
-Error: src/core/RenderEngine.ts(555,19): error TS6133: 'prevX' is declared but its value is never read.
-Error: src/core/RenderEngine.ts(615,10): error TS2339: Property 'renderNormalCandles' does not exist on type 'RenderEngine'.
-Error: Process completed with exit code 2‵

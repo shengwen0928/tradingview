@@ -1,6 +1,6 @@
-import { ViewportController } from './ViewportController';
+import { ViewportController } from '../services/ViewportController';
 import { CrosshairController } from './CrosshairController';
-import { DataManagerService } from './DataManagerService';
+import { DataManagerService } from '../services/DataManagerService';
 
 export class InteractionBridge {
     constructor(

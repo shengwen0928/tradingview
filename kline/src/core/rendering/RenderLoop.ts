@@ -1,5 +1,5 @@
 import { RenderPipeline } from './RenderPipeline';
-import { DataManagerService } from './DataManagerService';
+import { DataManagerService } from '../services/DataManagerService';
 
 export class RenderLoop {
     private animationId: number | null = null;

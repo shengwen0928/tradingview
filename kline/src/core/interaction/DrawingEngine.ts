@@ -1,4 +1,4 @@
-import { ScaleEngine } from './ScaleEngine';
+import { ScaleEngine } from '../engines/ScaleEngine';
 
 export interface DrawingPoint {
     time: number;
