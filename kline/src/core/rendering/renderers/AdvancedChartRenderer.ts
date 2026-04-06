@@ -190,7 +190,8 @@ export class AdvancedChartRenderer {
   }
 
   /**
-   * 🚀 磚形圖 (Renko)
+   * 🚀 磚形圖 (Renko) - 精簡版
+   * 現在數據已經由 DataTransformer 預處理為等寬的虛擬 K 線
    */
   public renderRenko(
     ctx: CanvasRenderingContext2D,
@@ -201,36 +202,27 @@ export class AdvancedChartRenderer {
     spacing: number,
     scaleEngine: ScaleEngine
   ): void {
-    if (candles.length === 0) return;
-    const boxSize = 10; // 預設固定 10 點
-    let lastPrice = candles[0].close;
-    let bricks: { top: number, bottom: number, isUp: boolean }[] = [];
+    const drawWidth = scaleEngine.getDrawWidth();
 
-    candles.forEach(c => {
-        let diff = c.close - lastPrice;
-        while (Math.abs(diff) >= boxSize) {
-            const isUp = diff > 0;
-            const top = isUp ? lastPrice + boxSize : lastPrice;
-            const bottom = isUp ? lastPrice : lastPrice - boxSize;
-            bricks.push({ top, bottom, isUp });
-            lastPrice = isUp ? lastPrice + boxSize : lastPrice - boxSize;
-            diff = c.close - lastPrice;
-        }
-    });
-
-    bricks.forEach((brick, i) => {
+    candles.forEach((brick, i) => {
         const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
-        const yTop = scaleEngine.priceToY(brick.top);
-        const yBottom = scaleEngine.priceToY(brick.bottom);
-        ctx.fillStyle = brick.isUp ? '#26a69a' : '#ef5350';
+        if (x + candleWidth < 0 || x > drawWidth) return;
+
+        const yTop = scaleEngine.priceToY(brick.high);
+        const yBottom = scaleEngine.priceToY(brick.low);
+        const isUp = brick.close > brick.open;
+
+        ctx.fillStyle = isUp ? '#26a69a' : '#ef5350';
         ctx.fillRect(x, Math.min(yTop, yBottom), candleWidth, Math.abs(yTop - yBottom));
-        ctx.strokeStyle = '#000';
+        
+        // 繪製磚塊邊框，增加專業感
+        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
         ctx.strokeRect(x, Math.min(yTop, yBottom), candleWidth, Math.abs(yTop - yBottom));
     });
   }
 
   /**
-   * 🚀 新價線 (Line Break)
+   * 🚀 新價線 (Line Break) - 精簡版
    */
   public renderLineBreak(
     ctx: CanvasRenderingContext2D,
@@ -241,46 +233,19 @@ export class AdvancedChartRenderer {
     spacing: number,
     scaleEngine: ScaleEngine
   ): void {
-    if (candles.length === 0) return;
-    const breakCount = 3;
-    let lines: { open: number, close: number }[] = [];
-    
-    candles.forEach(c => {
-        if (lines.length === 0) {
-            lines.push({ open: c.open, close: c.close });
-            return;
-        }
-        const lastLine = lines[lines.length - 1];
-        const isUp = lastLine.close > lastLine.open;
-
-        if (isUp) {
-            if (c.close > lastLine.close) {
-                lines.push({ open: lastLine.close, close: c.close });
-            } else if (lines.length >= breakCount) {
-                const minLow = Math.min(...lines.slice(-breakCount).map(l => Math.min(l.open, l.close)));
-                if (c.close < minLow) lines.push({ open: lastLine.close, close: c.close });
-            }
-        } else {
-            if (c.close < lastLine.close) {
-                lines.push({ open: lastLine.close, close: c.close });
-            } else if (lines.length >= breakCount) {
-                const maxHigh = Math.max(...lines.slice(-breakCount).map(l => Math.max(l.open, l.close)));
-                if (c.close > maxHigh) lines.push({ open: lastLine.close, close: c.close });
-            }
-        }
-    });
-
-    lines.forEach((line, i) => {
+    candles.forEach((line, i) => {
         const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
         const yOpen = scaleEngine.priceToY(line.open);
         const yClose = scaleEngine.priceToY(line.close);
+        
         ctx.fillStyle = line.close > line.open ? '#26a69a' : '#ef5350';
         ctx.fillRect(x, Math.min(yOpen, yClose), candleWidth, Math.abs(yOpen - yClose));
     });
   }
 
   /**
-   * 🚀 卡吉圖 (Kagi)
+   * 🚀 卡吉圖 (Kagi) - 精簡版
+   * 根據預處理的數據繪製粗細變化的垂直與水平線
    */
   public renderKagi(
     ctx: CanvasRenderingContext2D,
@@ -292,49 +257,33 @@ export class AdvancedChartRenderer {
     scaleEngine: ScaleEngine
   ): void {
     if (candles.length === 0) return;
-    const reversal = 15; // 反轉值
-    let points: { y: number, isYang: boolean }[] = [];
-    let lastY = candles[0].close;
-    let direction = 0; // 1: up, -1: down
-    let isYang = true;
 
-    candles.forEach(c => {
-        const diff = c.close - lastY;
-        if (direction === 0) {
-            if (Math.abs(diff) >= reversal) direction = diff > 0 ? 1 : -1;
-        } else if (direction === 1) {
-            if (c.close > lastY) lastY = c.close;
-            else if (diff <= -reversal) {
-                points.push({ y: lastY, isYang });
-                direction = -1; lastY = c.close;
-            }
-        } else {
-            if (c.close < lastY) lastY = c.close;
-            else if (diff >= reversal) {
-                points.push({ y: lastY, isYang });
-                direction = 1; lastY = c.close;
-            }
-        }
-    });
+    let prevX = scaleEngine.indexToX(sliceStartIndex, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
 
-    ctx.lineWidth = 2;
-    let currX = scaleEngine.indexToX(sliceStartIndex, exactStartIndex, candleWidth, spacing);
-    ctx.beginPath();
-    points.forEach((p, i) => {
-        const y = scaleEngine.priceToY(p.y);
-        if (i === 0) ctx.moveTo(currX, y);
-        else {
-            ctx.lineTo(currX, y);
-            currX += candleWidth + spacing;
-            ctx.lineTo(currX, y);
-        }
-        ctx.strokeStyle = p.isYang ? '#26a69a' : '#ef5350';
+    candles.forEach((p, i) => {
+        const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const yOpen = scaleEngine.priceToY(p.open);
+        const yClose = scaleEngine.priceToY(p.close);
+        const isYang = p.volume === 1; // 借用 volume 標記陰陽
+
+        ctx.strokeStyle = isYang ? '#26a69a' : '#ef5350';
+        ctx.lineWidth = isYang ? 3 : 1; // 陽線粗，陰線細
+
+        ctx.beginPath();
+        // 水平連線
+        ctx.moveTo(prevX, yOpen);
+        ctx.lineTo(x, yOpen);
+        // 垂直線
+        ctx.moveTo(x, yOpen);
+        ctx.lineTo(x, yClose);
         ctx.stroke();
+
+        prevX = x;
     });
   }
 
   /**
-   * 🚀 點數圖 (Point & Figure)
+   * 🚀 點數圖 (Point & Figure) - 精簡版
    */
   public renderPointAndFigure(
     ctx: CanvasRenderingContext2D,
@@ -346,17 +295,16 @@ export class AdvancedChartRenderer {
     scaleEngine: ScaleEngine
   ): void {
     const boxSize = 5;
-    ctx.font = `${Math.floor(candleWidth)}px sans-serif`;
+    ctx.font = `bold ${Math.floor(candleWidth)}px sans-serif`;
     ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
     candles.forEach((c, i) => {
         const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
         const isUp = c.close > c.open;
-        const startY = Math.min(c.open, c.close);
-        const endY = Math.max(c.open, c.close);
         
         ctx.fillStyle = isUp ? '#26a69a' : '#ef5350';
-        for (let yPrice = startY; yPrice <= endY; yPrice += boxSize) {
+        for (let yPrice = c.low; yPrice <= c.high; yPrice += boxSize) {
             const y = scaleEngine.priceToY(yPrice);
             ctx.fillText(isUp ? 'X' : 'O', x, y);
         }
