@@ -73,22 +73,22 @@ export class DataTransformer {
       
       if (isUp) {
         if (c.close > lastLine.close) {
-          lines.push({ time: c.time, open: lastLine.close, close: c.close, high: c.close, low: lastLine.close });
+          lines.push({ time: c.time, open: lastLine.close, close: c.close, high: c.close, low: lastLine.close, volume: c.volume });
         } else if (lines.length >= n) {
           const recentLines = lines.slice(-n);
           const minLow = Math.min(...recentLines.map(l => Math.min(l.open, l.close)));
           if (c.close < minLow) {
-            lines.push({ time: c.time, open: lastLine.close, close: c.close, high: lastLine.close, low: c.close });
+            lines.push({ time: c.time, open: lastLine.close, close: c.close, high: lastLine.close, low: c.close, volume: c.volume });
           }
         }
       } else {
         if (c.close < lastLine.close) {
-          lines.push({ time: c.time, open: lastLine.close, close: c.close, high: lastLine.close, low: c.close });
+          lines.push({ time: c.time, open: lastLine.close, close: c.close, high: lastLine.close, low: c.close, volume: c.volume });
         } else if (lines.length >= n) {
           const recentLines = lines.slice(-n);
           const maxHigh = Math.max(...recentLines.map(l => Math.max(l.open, l.close)));
           if (c.close > maxHigh) {
-            lines.push({ time: c.time, open: lastLine.close, close: c.close, high: c.close, low: lastLine.close });
+            lines.push({ time: c.time, open: lastLine.close, close: c.close, high: c.close, low: lastLine.close, volume: c.volume });
           }
         }
       }
@@ -125,7 +125,7 @@ export class DataTransformer {
              if (c.close > prevMax) isYang = true;
           }
         } else if (diff <= -reversal) {
-          kagiLines.push({ time: c.time, open: kagiLines.length > 0 ? kagiLines[kagiLines.length-1].close : lastY, close: lastY, high: 0, low: 0, volume: isYang ? 1 : 0 }); // 借用 volume 存陰陽
+          kagiLines.push({ time: c.time, open: kagiLines.length > 0 ? kagiLines[kagiLines.length-1].close : lastY, close: lastY, high: Math.max(lastY, c.close), low: Math.min(lastY, c.close), volume: isYang ? 1 : 0 }); // 借用 volume 存陰陽
           direction = -1;
           lastY = c.close;
         }
@@ -138,7 +138,7 @@ export class DataTransformer {
              if (c.close < prevMin) isYang = false;
           }
         } else if (diff >= reversal) {
-          kagiLines.push({ time: c.time, open: kagiLines.length > 0 ? kagiLines[kagiLines.length-1].close : lastY, close: lastY, high: 0, low: 0, volume: isYang ? 1 : 0 });
+          kagiLines.push({ time: c.time, open: kagiLines.length > 0 ? kagiLines[kagiLines.length-1].close : lastY, close: lastY, high: Math.max(lastY, c.close), low: Math.min(lastY, c.close), volume: isYang ? 1 : 0 });
           direction = 1;
           lastY = c.close;
         }
@@ -153,7 +153,6 @@ export class DataTransformer {
    */
   private static toPointAndFigure(candles: Candle[]): Candle[] {
     const boxSize = 5;
-    const result: Candle[] = [];
     // 簡化實作：將每一根 K 線轉換為一個 X 或 O 的垂直序列數據
     // 在專業模式下，它通常也是一列一列排列的
     return candles.map(c => ({
