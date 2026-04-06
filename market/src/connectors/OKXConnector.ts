@@ -13,9 +13,13 @@ export class OKXConnector implements IConnector {
     private readonly baseUrl = 'https://www.okx.com/api/v5';
     private readonly wsUrl = 'wss://ws.okx.com:8443/ws/v5/public';
     private ws: WebSocket | null = null;
+    private subscribers: Map<string, { symbol: string, interval: string, onUpdate: (candle: Candle) => void }> = new Map();
+    private isConnecting = false;
+    private reconnectTimeout: NodeJS.Timeout | null = null;
+    private pingInterval: NodeJS.Timeout | null = null;
 
     /**
-     * 將週期轉換為 OKX 格式 (硬性映射)
+     * 將週期轉換為 OKX 格式 (保持不變)
      */
     private translateInterval(interval: string): string {
         const okxMap: any = {
@@ -34,7 +38,6 @@ export class OKXConnector implements IConnector {
     public async fetchKlines(symbol: string, interval: string, limit: number = 500, endTime?: number): Promise<Candle[]> {
         try {
             const okxInterval = this.translateInterval(interval);
-            // 注意：OKX 合約與現貨共用此 Endpoint
             const url = `${this.baseUrl}/market/history-candles`;
             const params: any = {
                 instId: symbol.toUpperCase(),
@@ -64,62 +67,126 @@ export class OKXConnector implements IConnector {
     }
 
     /**
-     * 訂閱即時 K 線更新 (WebSocket)
-     * 同時訂閱 candles 與 trades 頻道實現高頻跳動
+     * 訂閱即時 K 線更新
      */
     public subscribeKlines(symbol: string, interval: string, onUpdate: (candle: Candle) => void): void {
-        const okxInterval = this.translateInterval(interval);
+        const subKey = `${symbol}_${interval}`;
+        this.subscribers.set(subKey, { symbol, interval, onUpdate });
         
-        if (this.ws) this.ws.close();
-        
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+            this.connect();
+        } else {
+            this.sendSubscription(symbol, interval);
+        }
+    }
+
+    private connect() {
+        if (this.isConnecting || (this.ws && this.ws.readyState === WebSocket.OPEN)) return;
+        this.isConnecting = true;
+
+        if (this.reconnectTimeout) {
+            clearTimeout(this.reconnectTimeout);
+            this.reconnectTimeout = null;
+        }
+
+        console.log(`[OKXConnector] Connecting to ${this.wsUrl}...`);
         this.ws = new WebSocket(this.wsUrl);
 
         this.ws.on('open', () => {
-            // 注意：OKX 的頻道名如果包含大寫 Mon，必須維持大寫
-            const channel = `candles${okxInterval}`;
-            console.log(`[OKXConnector] Subscribing to ${symbol} (Channel: ${channel} & Trades)`);
-            const subMsg = {
-                op: 'subscribe',
-                args: [
-                    { channel: channel, instId: symbol },
-                    { channel: 'trades', instId: symbol }
-                ]
-            };
-            this.ws?.send(JSON.stringify(subMsg));
+            console.log('[OKXConnector] WebSocket Connected ✅');
+            this.isConnecting = false;
+            
+            // 恢復所有訂閱
+            this.subscribers.forEach(sub => {
+                this.sendSubscription(sub.symbol, sub.interval);
+            });
+
+            // 心跳機制 (OKX 期待收到 "ping" 字符串)
+            if (this.pingInterval) clearInterval(this.pingInterval);
+            this.pingInterval = setInterval(() => {
+                if (this.ws?.readyState === WebSocket.OPEN) {
+                    this.ws.send('ping');
+                }
+            }, 25000);
         });
 
         this.ws.on('message', (data: string) => {
-            const msg = JSON.parse(data);
-            if (!msg.data || !msg.data[0]) return;
+            const dataStr = data.toString();
+            if (dataStr === 'pong') return;
+            
+            try {
+                const msg = JSON.parse(dataStr);
+                if (!msg.data || !msg.data[0]) return;
 
-            if (msg.arg.channel.startsWith('candles')) {
-                const k = msg.data[0];
-                onUpdate({
-                    timestamp: parseInt(k[0]),
-                    open: parseFloat(k[1]),
-                    high: parseFloat(k[2]),
-                    low: parseFloat(k[3]),
-                    close: parseFloat(k[4]),
-                    volume: parseFloat(k[5])
+                const instId = msg.arg.instId;
+                const channel = msg.arg.channel;
+                
+                // 尋找對應的訂閱者
+                this.subscribers.forEach((sub) => {
+                    if (sub.symbol === instId) {
+                        if (channel.startsWith('candles')) {
+                            const k = msg.data[0];
+                            sub.onUpdate({
+                                timestamp: parseInt(k[0]),
+                                open: parseFloat(k[1]),
+                                high: parseFloat(k[2]),
+                                low: parseFloat(k[3]),
+                                close: parseFloat(k[4]),
+                                volume: parseFloat(k[5])
+                            });
+                        } else if (channel === 'trades') {
+                            const t = msg.data[0];
+                            sub.onUpdate({
+                                timestamp: parseInt(t.ts),
+                                close: parseFloat(t.px),
+                                isTrade: true
+                            } as any);
+                        }
+                    }
                 });
-            } else if (msg.arg.channel === 'trades') {
-                const t = msg.data[0];
-                onUpdate({
-                    timestamp: parseInt(t.ts),
-                    close: parseFloat(t.px),
-                    isTrade: true
-                } as any);
+            } catch (e) {
+                // 忽略非 JSON 消息
             }
         });
 
-        this.ws.on('error', (err) => console.error(`[OKXConnector] WS error:`, err));
-        this.ws.on('close', () => console.log(`[OKXConnector] WS closed for ${symbol}`));
+        this.ws.on('error', (err) => {
+            console.error('[OKXConnector] WS Error:', err.message);
+        });
+
+        this.ws.on('close', () => {
+            this.isConnecting = false;
+            console.warn('[OKXConnector] WS Closed. Reconnecting in 5s...');
+            if (this.pingInterval) clearInterval(this.pingInterval);
+            
+            this.reconnectTimeout = setTimeout(() => this.connect(), 5000);
+        });
+    }
+
+    private sendSubscription(symbol: string, interval: string) {
+        if (this.ws?.readyState !== WebSocket.OPEN) return;
+
+        const okxInterval = this.translateInterval(interval);
+        const channel = `candles${okxInterval}`;
+        
+        console.log(`[OKXConnector] Subscribing to ${symbol} (${channel})`);
+        const subMsg = {
+            op: 'subscribe',
+            args: [
+                { channel: channel, instId: symbol },
+                { channel: 'trades', instId: symbol }
+            ]
+        };
+        this.ws.send(JSON.stringify(subMsg));
     }
 
     public close(): void {
+        this.subscribers.clear();
         if (this.ws) {
+            this.ws.removeAllListeners();
             this.ws.close();
             this.ws = null;
         }
+        if (this.pingInterval) clearInterval(this.pingInterval);
+        if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
     }
 }
