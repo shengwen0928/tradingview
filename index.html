@@ -46,7 +46,7 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/tradingview/assets/index-764ec0d8.js"></script>
+  <script type="module" crossorigin src="/tradingview/assets/index-d65e0c5a.js"></script>
 </head>
 <body>
     <div id="chart-container">
@@ -119,28 +119,66 @@
                 <button id="chart-type-btn" class="menu-btn" title="圖表樣式" style="display: flex; align-items: center; justify-content: center; width: 32px;">
                     <svg id="current-chart-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5v14M12 9v14M5 11v14"/></svg>
                 </button>
-                <div id="chart-type-popup" class="menu-popup" style="width: 140px;">
+                <div id="chart-type-popup" class="menu-popup" style="width: 180px; max-height: 400px; overflow-y: auto;">
+                    <div class="menu-item" data-type="bars">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M5 11v14M12 9v14M19 5v14M5 11h-2M12 9h-2M19 5h-2M5 25h2M12 23h2M19 19h2"/></svg>
+                        美國線
+                    </div>
                     <div class="menu-item" data-type="candles">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M19 5v14M12 9v14M5 11v14"/></svg>
-                        K 線圖
+                        K線
                     </div>
                     <div class="menu-item" data-type="hollow">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><rect x="5" y="11" width="2" height="10"/><rect x="11" y="7" width="2" height="14"/><rect x="17" y="3" width="2" height="18"/></svg>
-                        空心 K 線
+                        空心K線
                     </div>
-                    <div class="menu-item" data-type="heikin_ashi">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M5 15l7-7 7 7"/></svg>
-                        平均 K 線
+                    <div class="menu-item" data-type="volume_candles">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><rect x="4" y="10" width="4" height="12" fill="currentColor"/><rect x="11" y="6" width="2" height="16"/><rect x="16" y="2" width="6" height="20" fill="currentColor"/></svg>
+                        成交量K線
                     </div>
-                    <div style="height: 1px; background: #363c4e; margin: 4px 0;"></div>
                     <div class="menu-item" data-type="line">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 17l6-6 4 4 8-8"/></svg>
-                        線圖
+                        線形圖
+                    </div>
+                    <div class="menu-item" data-type="line_with_markers">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 17l6-6 4 4 8-8"/><circle cx="3" cy="17" r="2" fill="currentColor"/><circle cx="9" cy="11" r="2" fill="currentColor"/><circle cx="13" cy="15" r="2" fill="currentColor"/><circle cx="21" cy="7" r="2" fill="currentColor"/></svg>
+                        帶標記線
+                    </div>
+                    <div class="menu-item" data-type="step_line">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 17h6v-6h4v4h8"/></svg>
+                        階梯線
                     </div>
                     <div class="menu-item" data-type="area">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 17l6-6 4 4 8-8v10H3z"/></svg>
                         面積圖
                     </div>
+                    <div class="menu-item" data-type="hlc_area">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 15l6-4 4 4 8-8v6l-8 8-4-4-6 4z" fill="currentColor" fill-opacity="0.2"/></svg>
+                        HLC區
+                    </div>
+                    <div style="height: 1px; background: #363c4e; margin: 4px 0;"></div>
+                    <div class="menu-item" data-type="baseline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 12h18M3 17l6-6 4 4 8-8"/></svg>
+                        基準線
+                    </div>
+                    <div class="menu-item" data-type="columns">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><rect x="4" y="12" width="3" height="10"/><rect x="10" y="8" width="3" height="14"/><rect x="16" y="4" width="3" height="18"/></svg>
+                        列
+                    </div>
+                    <div class="menu-item" data-type="high_low">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M7 5v14M17 9v14M7 5h2M7 19h2M17 9h2M17 23h2"/></svg>
+                        高低圖
+                    </div>
+                    <div class="menu-item" data-type="heikin_ashi">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M5 15l7-7 7 7"/></svg>
+                        平均K線
+                    </div>
+                    <div style="height: 1px; background: #363c4e; margin: 4px 0;"></div>
+                    <div class="menu-item" data-type="renko">磚形圖</div>
+                    <div class="menu-item" data-type="line_break">新價線</div>
+                    <div class="menu-item" data-type="kagi">卡吉圖</div>
+                    <div class="menu-item" data-type="point_and_figure">點數圖</div>
+                    <div class="menu-item" data-type="range">範圍</div>
                 </div>
             </div>
 
