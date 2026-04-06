@@ -21,6 +21,17 @@ export class ViewportEngine {
     this.minStartIndex = min;
   }
 
+  public getLogicalWidth(): number {
+    return this.canvasWidth;
+  }
+
+  public setRange(start: number, end: number): void {
+    this.startIndex = start;
+    this.endIndex = end;
+    this.updateCandleWidth(this.canvasWidth);
+    this.onRangeChanged();
+  }
+
   public setDataCount(count: number, isHistory: boolean = false): void {
     const isFirstLoad = this.totalDataCount === 0;
     const isAtEnd = this.endIndex >= this.totalDataCount - 1;
