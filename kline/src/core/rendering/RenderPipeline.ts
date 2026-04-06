@@ -96,10 +96,15 @@ export class RenderPipeline {
         );
 
         // 5. 渲染互動層 (Drawings, Crosshair)
+        this.renderEngine.clearOverlay(); // 🚀 強制清理 Overlay，防止殘留
+
         if (!isNonLinear) {
             this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t: number) => activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
         }
-        this.crosshairController.draw(activeManager);
+        
+        // 修正：十字線需要根據當前視覺數據獲取時間
+        const getTime = (idx: number) => candles[idx]?.time || NaN;
+        this.crosshairController.draw(getTime);
 
         // 6. 渲染價格線
         this.renderEngine.drawLastPriceLine(visualPrice, visualPrice >= lastCandle.open ? '#26a69a' : '#ef5350', this.scaleEngine);

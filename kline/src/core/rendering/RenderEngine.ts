@@ -61,6 +61,13 @@ export class RenderEngine {
   public getOverlayContext(): CanvasRenderingContext2D { return this.overlayCtx; }
 
   /**
+   * 清理互動層 (十字線、預覽點等)
+   */
+  public clearOverlay(): void {
+    this.overlayCtx.clearRect(0, 0, this.width, this.height);
+  }
+
+  /**
    * 繪製背景網格
    */
   public drawGrid(scaleEngine: ScaleEngine): void {

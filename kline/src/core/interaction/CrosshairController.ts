@@ -42,7 +42,7 @@ export class CrosshairController {
         requestRedraw();
     }
 
-    public draw(activeManager: DataManager) {
+    public draw(getTime: (index: number) => number) {
         if (this.lastMousePos.x <= 0 && this.lastMousePos.y <= 0) return;
 
         const { startIndex } = this.viewport.getRawRange();
@@ -50,7 +50,7 @@ export class CrosshairController {
         const spacing = 2;
 
         const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
-        const time = activeManager.getTimeAtIndex(this.lastMousePos.x / (cw + spacing) + startIndex);
+        const time = getTime(this.lastMousePos.x / (cw + spacing) + startIndex);
 
         // 1. 畫十字線與標籤
         this.renderEngine.drawCrosshair(
