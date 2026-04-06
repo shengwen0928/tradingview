@@ -164,11 +164,21 @@ export class DataTransformer {
 
   private static calculateBoxSize(candles: Candle[]): number {
     if (candles.length < 14) return 10;
-    // 簡易 ATR 估算
+    
+    // 改進：使用真實 ATR 邏輯，不隨意 Math.round，保留精度
     let sum = 0;
     for (let i = 1; i < 14; i++) {
-      sum += Math.abs(candles[i].high - candles[i].low);
+      const tr = Math.max(
+        candles[i].high - candles[i].low,
+        Math.abs(candles[i].high - candles[i-1].close),
+        Math.abs(candles[i].low - candles[i-1].close)
+      );
+      sum += tr;
     }
-    return Math.max(1, Math.round(sum / 14));
+    const atr = sum / 14;
+    
+    // 如果價格很小，則 boxSize 也要很小
+    if (atr === 0) return 1;
+    return atr;
   }
 }

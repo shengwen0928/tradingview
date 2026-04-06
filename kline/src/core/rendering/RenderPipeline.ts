@@ -102,9 +102,9 @@ export class RenderPipeline {
             this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t: number) => activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
         }
         
-        // 修正：十字線需要根據當前視覺數據獲取時間 (確保索引為整數)
+        // 修正：十字線需要根據當前視覺數據獲取時間與 OHLC (確保索引為整數)
         const getTime = (idx: number) => candles[Math.round(idx)]?.time || NaN;
-        this.crosshairController.draw(getTime);
+        this.crosshairController.draw(getTime, candles);
 
         // 6. 渲染價格線
         this.renderEngine.drawLastPriceLine(visualPrice, visualPrice >= lastCandle.open ? '#26a69a' : '#ef5350', this.scaleEngine);

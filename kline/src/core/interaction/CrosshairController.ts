@@ -42,17 +42,25 @@ export class CrosshairController {
         requestRedraw();
     }
 
-    public draw(getTime: (index: number) => number) {
+    public draw(getTime: (index: number) => number, visualCandles?: any[]) {
         if (this.lastMousePos.x <= 0 && this.lastMousePos.y <= 0) return;
 
         const { startIndex } = this.viewport.getRawRange();
         const cw = this.viewport.getCandleWidth();
         const spacing = 2;
 
-        const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
-        const time = getTime(this.lastMousePos.x / (cw + spacing) + startIndex);
+        const rawIndex = this.lastMousePos.x / (cw + spacing) + startIndex;
+        const index = Math.round(rawIndex);
+        
+        // 1. 更新 OHLC 顯示 (確保在非線性模式下使用正確數據源)
+        if (visualCandles && visualCandles[index]) {
+            this.infoDisplay.updateOHLC(visualCandles[index]);
+        }
 
-        // 1. 畫十字線與標籤
+        const price = this.scaleEngine.yToPrice(this.lastMousePos.y);
+        const time = getTime(rawIndex);
+
+        // 2. 畫十字線與標籤
         this.renderEngine.drawCrosshair(
             this.lastMousePos.x, 
             this.lastMousePos.y, 
@@ -60,7 +68,7 @@ export class CrosshairController {
             formatFullTime(time)
         );
 
-        // 2. 畫繪圖預覽點
+        // 3. 畫繪圖預覽點
         const mode = this.interactionEngine?.getDrawingMode();
         if (mode && mode !== 'cursor' && mode !== 'move' && !this.drawingEngine.isPlacing()) {
             const snapped = this.interactionEngine!.getSnappedPos(this.lastMousePos.x, this.lastMousePos.y);
