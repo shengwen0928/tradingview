@@ -192,9 +192,6 @@ export class RenderEngine {
     }
   }
 
-  /**
-   * 🚀 主繪圖入口：根據 ChartType 決定渲染方式
-   */
   public drawMainChart(
     chartType: ChartType,
     candles: Candle[],
@@ -216,14 +213,38 @@ export class RenderEngine {
     ctx.clip();
 
     switch (chartType) {
+      case 'bars':
+        this.renderBars(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
+        break;
       case 'hollow':
         this.renderHollowCandles(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
         break;
+      case 'volume_candles':
+        this.renderVolumeCandles(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
+        break;
       case 'line':
-        this.renderLineChart(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice, false);
+        this.renderLineChart(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice, 'line');
+        break;
+      case 'line_with_markers':
+        this.renderLineChart(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice, 'markers');
+        break;
+      case 'step_line':
+        this.renderLineChart(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice, 'step');
         break;
       case 'area':
-        this.renderLineChart(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice, true);
+        this.renderLineChart(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice, 'area');
+        break;
+      case 'hlc_area':
+        this.renderHLCArea(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine);
+        break;
+      case 'baseline':
+        this.renderBaseline(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
+        break;
+      case 'columns':
+        this.renderColumns(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
+        break;
+      case 'high_low':
+        this.renderHighLow(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
         break;
       case 'heikin_ashi':
         this.renderHeikinAshi(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
@@ -236,7 +257,7 @@ export class RenderEngine {
     ctx.restore();
   }
 
-  private renderNormalCandles(
+  private renderBars(
     candles: Candle[],
     sliceStartIndex: number,
     exactStartIndex: number,
@@ -247,18 +268,69 @@ export class RenderEngine {
   ): void {
     const ctx = this.candleCtx;
     const drawWidth = scaleEngine.getDrawWidth();
-    const bodyWidth = Math.max(0.1, candleWidth);
-    const isVeryThin = bodyWidth < 1.5;
+    const halfWidth = Math.max(1, candleWidth / 2);
 
     for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
       const isLast = i === candles.length - 1;
       const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
-      if (x + bodyWidth < 0 || x > drawWidth) continue;
+      if (x + candleWidth < 0 || x > drawWidth) continue;
 
-      const centerX = Math.floor(x + bodyWidth / 2) + 0.5;
-      const yOpen = scaleEngine.priceToY(candle.open);
+      const centerX = Math.floor(x + candleWidth / 2) + 0.5;
       const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candle.close;
+      const yOpen = scaleEngine.priceToY(candle.open);
+      const yClose = scaleEngine.priceToY(displayClose);
+      const yHigh = scaleEngine.priceToY(candle.high);
+      const yLow = scaleEngine.priceToY(candle.low);
+
+      ctx.strokeStyle = displayClose >= candle.open ? '#26a69a' : '#ef5350';
+      ctx.lineWidth = Math.max(1, Math.floor(candleWidth * 0.2));
+
+      ctx.beginPath();
+      // 主線 (High-Low)
+      ctx.moveTo(centerX, yHigh);
+      ctx.lineTo(centerX, yLow);
+      // Open 橫槓 (左)
+      ctx.moveTo(centerX, yOpen);
+      ctx.lineTo(centerX - halfWidth, yOpen);
+      // Close 橫槓 (右)
+      ctx.moveTo(centerX, yClose);
+      ctx.lineTo(centerX + halfWidth, yClose);
+      ctx.stroke();
+    }
+  }
+
+  private renderVolumeCandles(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const drawWidth = scaleEngine.getDrawWidth();
+    
+    // 計算平均成交量作為基準
+    let totalVol = 0;
+    candles.forEach(c => totalVol += (c.volume || 0));
+    const avgVol = totalVol / (candles.length || 1);
+
+    for (let i = 0; i < candles.length; i++) {
+      const candle = candles[i];
+      const isLast = i === candles.length - 1;
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+      
+      // 根據成交量比例調整寬度 (0.3x ~ 1.5x)
+      const volRatio = avgVol > 0 ? (candle.volume || 0) / avgVol : 1;
+      const dynamicWidth = candleWidth * Math.min(1.5, Math.max(0.3, volRatio));
+      
+      if (x + dynamicWidth < 0 || x > drawWidth) continue;
+
+      const centerX = Math.floor(x + candleWidth / 2) + 0.5;
+      const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candle.close;
+      const yOpen = scaleEngine.priceToY(candle.open);
       const yClose = scaleEngine.priceToY(displayClose);
       const yHigh = scaleEngine.priceToY(candle.high);
       const yLow = scaleEngine.priceToY(candle.low);
@@ -267,27 +339,59 @@ export class RenderEngine {
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
 
-      if (isVeryThin) {
-        ctx.beginPath();
-        ctx.moveTo(centerX, yHigh);
-        ctx.lineTo(centerX, yLow);
-        ctx.stroke();
-      } else {
-        const rectW = Math.max(1, Math.floor(bodyWidth));
-        const rectX = Math.floor(centerX - rectW / 2);
-        const rectY = Math.floor(Math.min(yOpen, yClose));
-        const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
+      const rectW = Math.max(1, Math.floor(dynamicWidth));
+      const rectX = Math.floor(centerX - rectW / 2);
+      const rectY = Math.floor(Math.min(yOpen, yClose));
+      const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
 
-        ctx.beginPath();
-        ctx.moveTo(centerX, yHigh);
-        ctx.lineTo(centerX, yLow);
-        ctx.stroke();
-        ctx.fillRect(rectX, rectY, rectW, rectH);
-      }
+      ctx.beginPath();
+      ctx.moveTo(centerX, yHigh);
+      ctx.lineTo(centerX, yLow);
+      ctx.stroke();
+      ctx.fillRect(rectX, rectY, rectW, rectH);
     }
   }
 
-  private renderHollowCandles(
+  private renderHLCArea(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    const ctx = this.candleCtx;
+    if (candles.length < 2) return;
+
+    // 繪製填充區 (High to Low)
+    ctx.beginPath();
+    for (let i = 0; i < candles.length; i++) {
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+      const y = scaleEngine.priceToY(candles[i].high);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    for (let i = candles.length - 1; i >= 0; i--) {
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+      const y = scaleEngine.priceToY(candles[i].low);
+      ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(41, 98, 255, 0.2)';
+    ctx.fill();
+
+    // 繪製收盤價折線
+    ctx.beginPath();
+    ctx.strokeStyle = '#2962ff';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < candles.length; i++) {
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+      const y = scaleEngine.priceToY(candles[i].close);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  private renderBaseline(
     candles: Candle[],
     sliceStartIndex: number,
     exactStartIndex: number,
@@ -297,53 +401,121 @@ export class RenderEngine {
     visualLastPrice?: number
   ): void {
     const ctx = this.candleCtx;
-    const drawWidth = scaleEngine.getDrawWidth();
-    const bodyWidth = Math.max(1, candleWidth);
+    if (candles.length === 0) return;
+
+    // 使用畫面內第一根的收盤價作為基準線 (或使用全域平均)
+    const baselinePrice = candles[0].close;
+    const baseY = scaleEngine.priceToY(baselinePrice);
+
+    // 繪製基準線
+    ctx.strokeStyle = 'rgba(209, 212, 220, 0.5)';
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(0, baseY);
+    ctx.lineTo(this.width, baseY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 繪製折線與填充
+    const points: {x: number, y: number}[] = [];
+    for (let i = 0; i < candles.length; i++) {
+      const isLast = i === candles.length - 1;
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+      const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candles[i].close;
+      const y = scaleEngine.priceToY(displayClose);
+      points.push({x, y});
+    }
+
+    // 分段繪製填充 (上方綠色，下方紅色)
+    const drawSection = (isUp: boolean) => {
+        ctx.beginPath();
+        ctx.save();
+        // 剪裁區域：上方或下方
+        ctx.rect(0, isUp ? 0 : baseY, this.width, isUp ? baseY : this.height - baseY);
+        ctx.clip();
+
+        ctx.moveTo(points[0].x, points[0].y);
+        for(let i=1; i<points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+        
+        // 封閉到基準線
+        ctx.lineTo(points[points.length-1].x, baseY);
+        ctx.lineTo(points[0].x, baseY);
+        ctx.closePath();
+        
+        ctx.fillStyle = isUp ? 'rgba(38, 166, 154, 0.3)' : 'rgba(239, 83, 80, 0.3)';
+        ctx.fill();
+        ctx.restore();
+    };
+
+    drawSection(true);
+    drawSection(false);
+
+    // 繪製主折線
+    ctx.beginPath();
+    ctx.strokeStyle = '#d1d4dc';
+    ctx.lineWidth = 1.5;
+    ctx.moveTo(points[0].x, points[0].y);
+    for(let i=1; i<points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    ctx.stroke();
+  }
+
+  private renderColumns(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const zeroY = scaleEngine.getDrawHeight(); // 從底部向上長
 
     for (let i = 0; i < candles.length; i++) {
       const candle = candles[i];
       const isLast = i === candles.length - 1;
       const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
-      if (x + bodyWidth < 0 || x > drawWidth) continue;
-
-      const centerX = Math.floor(x + bodyWidth / 2) + 0.5;
       const displayClose = (isLast && visualLastPrice !== undefined) ? visualLastPrice : candle.close;
-      const yOpen = scaleEngine.priceToY(candle.open);
-      const yClose = scaleEngine.priceToY(displayClose);
+      const y = scaleEngine.priceToY(displayClose);
+
+      const rectW = Math.max(1, Math.floor(candleWidth));
+      const rectX = Math.floor(x);
+      
+      ctx.fillStyle = displayClose >= candle.open ? 'rgba(38, 166, 154, 0.7)' : 'rgba(239, 83, 80, 0.7)';
+      ctx.fillRect(rectX, y, rectW, zeroY - y);
+    }
+  }
+
+  private renderHighLow(
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine,
+    visualLastPrice?: number
+  ): void {
+    const ctx = this.candleCtx;
+    const bodyWidth = Math.max(2, candleWidth);
+
+    for (let i = 0; i < candles.length; i++) {
+      const candle = candles[i];
+      const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+      const centerX = Math.floor(x + candleWidth / 2) + 0.5;
       const yHigh = scaleEngine.priceToY(candle.high);
       const yLow = scaleEngine.priceToY(candle.low);
 
-      const isUpBar = displayClose > candle.open;
-      const prevClose = i > 0 ? candles[i - 1].close : candle.open;
-      const isPriceUp = displayClose > prevClose;
-
-      // 🚀 顏色由「與前一根收盤價的關係」決定
-      const color = isPriceUp ? '#26a69a' : '#ef5350';
-      ctx.strokeStyle = color;
+      const isUp = candle.close >= candle.open;
+      const color = isUp ? '#26a69a' : '#ef5350';
+      
       ctx.fillStyle = color;
-      ctx.lineWidth = 1.5; // 稍微加粗邊框，讓空心更清晰
-
-      const rectY = Math.floor(Math.min(yOpen, yClose));
-      const rectH = Math.max(1, Math.floor(Math.abs(yOpen - yClose)));
       const rectW = Math.max(1, Math.floor(bodyWidth));
-      const rectX = Math.floor(centerX - rectW / 2);
-
-      // 1. 畫影線 (影線一律與邊框同色)
-      ctx.beginPath();
-      ctx.moveTo(centerX, yHigh);
-      ctx.lineTo(centerX, rectY);
-      ctx.moveTo(centerX, rectY + rectH);
-      ctx.lineTo(centerX, yLow);
-      ctx.stroke();
-
-      // 2. 畫實體
-      if (isUpBar) {
-        // 🚀 空心：僅畫邊框
-        ctx.strokeRect(rectX + 0.75, rectY + 0.75, rectW - 1.5, rectH - 1.5);
-      } else {
-        // 🚀 實心：填充顏色
-        ctx.fillRect(rectX, rectY, rectW, rectH);
-      }
+      ctx.fillRect(Math.floor(centerX - rectW / 2), yHigh, rectW, Math.max(1, yLow - yHigh));
+      
+      // 繪製標籤 (選用)
+      ctx.font = '8px sans-serif';
+      ctx.fillText(candle.high.toFixed(1), centerX - 10, yHigh - 5);
+      ctx.fillText(candle.low.toFixed(1), centerX - 10, yLow + 10);
     }
   }
 
@@ -355,7 +527,7 @@ export class RenderEngine {
     spacing: number,
     scaleEngine: ScaleEngine,
     visualLastPrice: number | undefined,
-    isArea: boolean
+    mode: 'line' | 'area' | 'markers' | 'step'
   ): void {
     const ctx = this.candleCtx;
     const drawHeight = scaleEngine.getDrawHeight();
@@ -378,13 +550,34 @@ export class RenderEngine {
         ctx.moveTo(centerX, y);
         firstX = centerX;
       } else {
-        ctx.lineTo(centerX, y);
+        if (mode === 'step') {
+            // 階梯線：先橫再豎
+            const prevX = scaleEngine.indexToX(sliceStartIndex + i - 1, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+            const prevY = scaleEngine.priceToY(candles[i-1].close);
+            ctx.lineTo(centerX, prevY);
+            ctx.lineTo(centerX, y);
+        } else {
+            ctx.lineTo(centerX, y);
+        }
       }
       lastX = centerX;
     }
     ctx.stroke();
 
-    if (isArea && candles.length > 0) {
+    // 繪製標記
+    if (mode === 'markers') {
+        ctx.fillStyle = '#2962ff';
+        for (let i = 0; i < candles.length; i++) {
+            const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+            const y = scaleEngine.priceToY(candles[i].close);
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+
+    if (mode === 'area' && candles.length > 0) {
       ctx.lineTo(lastX, drawHeight);
       ctx.lineTo(firstX, drawHeight);
       ctx.closePath();
@@ -395,6 +588,7 @@ export class RenderEngine {
       ctx.fill();
     }
   }
+
 
   private renderHeikinAshi(
     candles: Candle[],
