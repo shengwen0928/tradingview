@@ -1,5 +1,5 @@
-import { Candle } from '../../types/Candle';
-import { ScaleEngine } from '../engines/ScaleEngine';
+import { Candle } from '../../../types/Candle';
+import { ScaleEngine } from '../../engines/ScaleEngine';
 
 /**
  * 負責專業圖表渲染 (Volume Footprint, TPO, Volume Profile, Columns, High Low)
@@ -13,7 +13,7 @@ export class AdvancedChartRenderer {
     candleWidth: number,
     spacing: number,
     scaleEngine: ScaleEngine,
-    visualLastPrice?: number
+    _visualLastPrice?: number
   ): void {
     const drawWidth = scaleEngine.getDrawWidth();
     const rowHeight = 4;
@@ -66,7 +66,7 @@ export class AdvancedChartRenderer {
     candleWidth: number,
     spacing: number,
     scaleEngine: ScaleEngine,
-    visualLastPrice?: number
+    _visualLastPrice?: number
   ): void {
     const drawWidth = scaleEngine.getDrawWidth();
     const rowHeight = 6;
@@ -98,15 +98,16 @@ export class AdvancedChartRenderer {
   }
 
   public renderVolumeProfile(
-    ctx: CanvasRenderingContext2D,
+    _ctx: CanvasRenderingContext2D,
     candles: Candle[],
-    sliceStartIndex: number,
-    exactStartIndex: number,
-    candleWidth: number,
-    spacing: number,
+    _sliceStartIndex: number,
+    _exactStartIndex: number,
+    _candleWidth: number,
+    _spacing: number,
     scaleEngine: ScaleEngine,
-    visualLastPrice?: number
+    _visualLastPrice?: number
   ): void {
+    const ctx = _ctx;
     const drawWidth = scaleEngine.getDrawWidth();
     const rowHeight = 3;
 

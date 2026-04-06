@@ -1,4 +1,4 @@
-import { Candle } from '../types/Candle';
+import { Candle } from '../../types/Candle';
 
 /**
  * 負責座標轉換：price -> y, index -> x

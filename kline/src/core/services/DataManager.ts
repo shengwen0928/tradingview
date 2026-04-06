@@ -1,4 +1,4 @@
-import { Candle } from '../types/Candle';
+import { Candle } from '../../types/Candle';
 
 /**
  * 負責資料載入 (OKX API + WebSocket)、快取及排序

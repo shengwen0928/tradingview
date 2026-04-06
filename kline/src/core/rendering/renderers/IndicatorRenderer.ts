@@ -1,4 +1,4 @@
-import { ScaleEngine } from '../engines/ScaleEngine';
+import { ScaleEngine } from '../../engines/ScaleEngine';
 
 /**
  * 負責指標與輔助渲染 (Indicators, Grid, Axes, Crosshair, Labels)

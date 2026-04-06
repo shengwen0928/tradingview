@@ -1,4 +1,4 @@
-import { Candle } from '../types/Candle';
+import { Candle } from '../../types/Candle';
 import { IndicatorEngine } from './IndicatorEngine';
 
 /**

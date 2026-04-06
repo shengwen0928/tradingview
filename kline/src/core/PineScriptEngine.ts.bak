@@ -1,4 +1,4 @@
-import { Candle } from '../types/Candle';
+import { Candle } from '../../types/Candle';
 
 /**
  * 🌲 Pine Script 專業執行引擎 (獨立版)

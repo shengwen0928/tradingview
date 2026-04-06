@@ -1,5 +1,5 @@
 import { PineScriptEngine } from './PineScriptEngine';
-import { Candle } from '../types/Candle';
+import { Candle } from '../../types/Candle';
 
 export class IndicatorController {
     constructor(private pineEngine: PineScriptEngine) {}

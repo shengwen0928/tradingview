@@ -1,5 +1,5 @@
-import { Candle } from '../../types/Candle';
-import { ScaleEngine } from '../engines/ScaleEngine';
+import { Candle } from '../../../types/Candle';
+import { ScaleEngine } from '../../engines/ScaleEngine';
 
 /**
  * 負責線形圖渲染 (Line, Area, Baseline, HLC Area, Step Line)

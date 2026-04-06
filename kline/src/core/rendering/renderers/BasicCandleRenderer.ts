@@ -1,5 +1,5 @@
-import { Candle } from '../../types/Candle';
-import { ScaleEngine } from '../engines/ScaleEngine';
+import { Candle } from '../../../types/Candle';
+import { ScaleEngine } from '../../engines/ScaleEngine';
 
 /**
  * 負責基礎 K 線渲染 (Bars, Candles, Hollow, Volume Candles)
