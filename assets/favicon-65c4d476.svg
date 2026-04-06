@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 黑色背景 -->
+  <rect width="32" height="32" rx="6" fill="#131722"/>
+  
+  <!-- 白色 TV 文字 -->
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" 
+        fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="14">
+    TV
+  </text>
+  
+  <!-- 底部裝飾線 (增加專業感) -->
+  <rect x="8" y="22" width="16" height="1.5" fill="#2962ff" rx="0.75"/>
+</svg>
