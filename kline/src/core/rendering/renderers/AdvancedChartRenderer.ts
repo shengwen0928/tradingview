@@ -188,4 +188,201 @@ export class AdvancedChartRenderer {
       ctx.fillText(candle.low.toFixed(1), centerX - 10, yLow + 10);
     }
   }
+
+  /**
+   * 🚀 磚形圖 (Renko)
+   */
+  public renderRenko(
+    ctx: CanvasRenderingContext2D,
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    if (candles.length === 0) return;
+    const boxSize = 10; // 預設固定 10 點
+    let lastPrice = candles[0].close;
+    let bricks: { top: number, bottom: number, isUp: boolean }[] = [];
+
+    candles.forEach(c => {
+        let diff = c.close - lastPrice;
+        while (Math.abs(diff) >= boxSize) {
+            const isUp = diff > 0;
+            const top = isUp ? lastPrice + boxSize : lastPrice;
+            const bottom = isUp ? lastPrice : lastPrice - boxSize;
+            bricks.push({ top, bottom, isUp });
+            lastPrice = isUp ? lastPrice + boxSize : lastPrice - boxSize;
+            diff = c.close - lastPrice;
+        }
+    });
+
+    bricks.forEach((brick, i) => {
+        const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+        const yTop = scaleEngine.priceToY(brick.top);
+        const yBottom = scaleEngine.priceToY(brick.bottom);
+        ctx.fillStyle = brick.isUp ? '#26a69a' : '#ef5350';
+        ctx.fillRect(x, Math.min(yTop, yBottom), candleWidth, Math.abs(yTop - yBottom));
+        ctx.strokeStyle = '#000';
+        ctx.strokeRect(x, Math.min(yTop, yBottom), candleWidth, Math.abs(yTop - yBottom));
+    });
+  }
+
+  /**
+   * 🚀 新價線 (Line Break)
+   */
+  public renderLineBreak(
+    ctx: CanvasRenderingContext2D,
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    if (candles.length === 0) return;
+    const breakCount = 3;
+    let lines: { open: number, close: number }[] = [];
+    
+    candles.forEach(c => {
+        if (lines.length === 0) {
+            lines.push({ open: c.open, close: c.close });
+            return;
+        }
+        const lastLine = lines[lines.length - 1];
+        const isUp = lastLine.close > lastLine.open;
+
+        if (isUp) {
+            if (c.close > lastLine.close) {
+                lines.push({ open: lastLine.close, close: c.close });
+            } else if (lines.length >= breakCount) {
+                const minLow = Math.min(...lines.slice(-breakCount).map(l => Math.min(l.open, l.close)));
+                if (c.close < minLow) lines.push({ open: lastLine.close, close: c.close });
+            }
+        } else {
+            if (c.close < lastLine.close) {
+                lines.push({ open: lastLine.close, close: c.close });
+            } else if (lines.length >= breakCount) {
+                const maxHigh = Math.max(...lines.slice(-breakCount).map(l => Math.max(l.open, l.close)));
+                if (c.close > maxHigh) lines.push({ open: lastLine.close, close: c.close });
+            }
+        }
+    });
+
+    lines.forEach((line, i) => {
+        const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+        const yOpen = scaleEngine.priceToY(line.open);
+        const yClose = scaleEngine.priceToY(line.close);
+        ctx.fillStyle = line.close > line.open ? '#26a69a' : '#ef5350';
+        ctx.fillRect(x, Math.min(yOpen, yClose), candleWidth, Math.abs(yOpen - yClose));
+    });
+  }
+
+  /**
+   * 🚀 卡吉圖 (Kagi)
+   */
+  public renderKagi(
+    ctx: CanvasRenderingContext2D,
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    if (candles.length === 0) return;
+    const reversal = 15; // 反轉值
+    let points: { y: number, isYang: boolean }[] = [];
+    let lastY = candles[0].close;
+    let direction = 0; // 1: up, -1: down
+    let isYang = true;
+
+    candles.forEach(c => {
+        const diff = c.close - lastY;
+        if (direction === 0) {
+            if (Math.abs(diff) >= reversal) direction = diff > 0 ? 1 : -1;
+        } else if (direction === 1) {
+            if (c.close > lastY) lastY = c.close;
+            else if (diff <= -reversal) {
+                points.push({ y: lastY, isYang });
+                direction = -1; lastY = c.close;
+            }
+        } else {
+            if (c.close < lastY) lastY = c.close;
+            else if (diff >= reversal) {
+                points.push({ y: lastY, isYang });
+                direction = 1; lastY = c.close;
+            }
+        }
+    });
+
+    ctx.lineWidth = 2;
+    let currX = scaleEngine.indexToX(sliceStartIndex, exactStartIndex, candleWidth, spacing);
+    ctx.beginPath();
+    points.forEach((p, i) => {
+        const y = scaleEngine.priceToY(p.y);
+        if (i === 0) ctx.moveTo(currX, y);
+        else {
+            ctx.lineTo(currX, y);
+            currX += candleWidth + spacing;
+            ctx.lineTo(currX, y);
+        }
+        ctx.strokeStyle = p.isYang ? '#26a69a' : '#ef5350';
+        ctx.stroke();
+    });
+  }
+
+  /**
+   * 🚀 點數圖 (Point & Figure)
+   */
+  public renderPointAndFigure(
+    ctx: CanvasRenderingContext2D,
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    const boxSize = 5;
+    ctx.font = `${Math.floor(candleWidth)}px sans-serif`;
+    ctx.textAlign = 'center';
+
+    candles.forEach((c, i) => {
+        const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing) + candleWidth / 2;
+        const isUp = c.close > c.open;
+        const startY = Math.min(c.open, c.close);
+        const endY = Math.max(c.open, c.close);
+        
+        ctx.fillStyle = isUp ? '#26a69a' : '#ef5350';
+        for (let yPrice = startY; yPrice <= endY; yPrice += boxSize) {
+            const y = scaleEngine.priceToY(yPrice);
+            ctx.fillText(isUp ? 'X' : 'O', x, y);
+        }
+    });
+  }
+
+  /**
+   * 🚀 範圍圖 (Range)
+   */
+  public renderRange(
+    ctx: CanvasRenderingContext2D,
+    candles: Candle[],
+    sliceStartIndex: number,
+    exactStartIndex: number,
+    candleWidth: number,
+    spacing: number,
+    scaleEngine: ScaleEngine
+  ): void {
+    const rangeVal = 20;
+    candles.forEach((c, i) => {
+        if (Math.abs(c.high - c.low) < rangeVal) return;
+        const x = scaleEngine.indexToX(sliceStartIndex + i, exactStartIndex, candleWidth, spacing);
+        const yHigh = scaleEngine.priceToY(c.high);
+        const yLow = scaleEngine.priceToY(c.low);
+        ctx.fillStyle = c.close > c.open ? '#26a69a' : '#ef5350';
+        ctx.fillRect(x, yHigh, candleWidth, yLow - yHigh);
+    });
+  }
 }

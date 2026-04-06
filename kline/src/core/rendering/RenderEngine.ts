@@ -227,6 +227,21 @@ export class RenderEngine {
       case 'volume_profile':
         this.advancedRenderer.renderVolumeProfile(ctx, candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
         break;
+      case 'renko':
+        this.advancedRenderer.renderRenko(ctx, candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine);
+        break;
+      case 'line_break':
+        this.advancedRenderer.renderLineBreak(ctx, candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine);
+        break;
+      case 'kagi':
+        this.advancedRenderer.renderKagi(ctx, candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine);
+        break;
+      case 'point_and_figure':
+        this.advancedRenderer.renderPointAndFigure(ctx, candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine);
+        break;
+      case 'range':
+        this.advancedRenderer.renderRange(ctx, candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine);
+        break;
       case 'heikin_ashi':
         this.renderHeikinAshi(candles, sliceStartIndex, exactStartIndex, candleWidth, spacing, scaleEngine, visualLastPrice);
         break;
