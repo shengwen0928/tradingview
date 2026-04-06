@@ -40,6 +40,13 @@ export class RenderPipeline {
             if (this.lastDataHash !== dataHash) {
                 this.visualCandles = DataTransformer.transform(rawCandles, this.chartType);
                 this.viewport.setDataCount(this.visualCandles.length, true);
+                
+                // 🚨 關鍵修正：如果是切換類型導致的轉換，強制重置視口到末尾
+                if (this.lastDataHash.split('_')[0] !== this.chartType) {
+                    const visibleCount = this.viewport.getLogicalWidth() / (this.viewport.getCandleWidth() + 2);
+                    this.viewport.setRange(Math.max(0, this.visualCandles.length - visibleCount), this.visualCandles.length);
+                }
+                
                 this.lastDataHash = dataHash;
             }
         } else {

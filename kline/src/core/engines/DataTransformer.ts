@@ -57,6 +57,9 @@ export class DataTransformer {
    * 📈 新價線轉換 (Line Break)
    * 邏輯：僅當收盤價突破前 N 根線的最高或最低點時，才畫出新線
    */
+  /**
+   * 📈 新價線轉換 (Line Break)
+   */
   private static toLineBreak(candles: Candle[], n: number = 3): Candle[] {
     if (candles.length === 0) return [];
     
@@ -71,26 +74,37 @@ export class DataTransformer {
       const lastLine = lines[lines.length - 1];
       const isUp = lastLine.close > lastLine.open;
       
+      let triggered = false;
       if (isUp) {
         if (c.close > lastLine.close) {
           lines.push({ time: c.time, open: lastLine.close, close: c.close, high: c.close, low: lastLine.close, volume: c.volume });
+          triggered = true;
         } else if (lines.length >= n) {
           const recentLines = lines.slice(-n);
           const minLow = Math.min(...recentLines.map(l => Math.min(l.open, l.close)));
           if (c.close < minLow) {
             lines.push({ time: c.time, open: lastLine.close, close: c.close, high: lastLine.close, low: c.close, volume: c.volume });
+            triggered = true;
           }
         }
       } else {
         if (c.close < lastLine.close) {
           lines.push({ time: c.time, open: lastLine.close, close: c.close, high: lastLine.close, low: c.close, volume: c.volume });
+          triggered = true;
         } else if (lines.length >= n) {
           const recentLines = lines.slice(-n);
           const maxHigh = Math.max(...recentLines.map(l => Math.max(l.open, l.close)));
           if (c.close > maxHigh) {
             lines.push({ time: c.time, open: lastLine.close, close: c.close, high: c.close, low: lastLine.close, volume: c.volume });
+            triggered = true;
           }
         }
+      }
+
+      // 如果當前 K 棒沒觸發新線，則更新最後一根線的「當前狀態」(類比 TV 的實時變動)
+      if (!triggered && lines.length > 0) {
+          lines[lines.length - 1].close = c.close;
+          lines[lines.length - 1].time = c.time;
       }
     });
     
@@ -99,7 +113,6 @@ export class DataTransformer {
 
   /**
    * 🎋 卡吉圖轉換 (Kagi)
-   * 邏輯：根據反轉比例生成線段，並切換陰陽屬性 (粗細變化)
    */
   private static toKagi(candles: Candle[]): Candle[] {
     if (candles.length === 0) return [];
@@ -108,40 +121,57 @@ export class DataTransformer {
     const kagiLines: Candle[] = [];
     
     let lastY = candles[0].close;
-    let direction = 0; // 1: up, -1: down
-    let isYang = true; // 陽線 (粗), 陰線 (細)
+    let direction = 0; 
+    let isYang = true; 
 
-    candles.forEach(c => {
+    candles.forEach((c, idx) => {
       const diff = c.close - lastY;
+      let pushed = false;
       
       if (direction === 0) {
-        if (Math.abs(diff) >= reversal) direction = diff > 0 ? 1 : -1;
+        if (Math.abs(diff) >= reversal) {
+            direction = diff > 0 ? 1 : -1;
+            kagiLines.push({ time: c.time, open: candles[0].close, close: c.close, high: 0, low: 0, volume: isYang ? 1 : 0 });
+            pushed = true;
+        }
       } else if (direction === 1) {
         if (c.close > lastY) {
           lastY = c.close;
-          // 檢查是否突破前高轉陽
           if (!isYang && kagiLines.length > 0) {
              const prevMax = Math.max(...kagiLines.slice(-2).map(l => Math.max(l.open, l.close)));
              if (c.close > prevMax) isYang = true;
           }
         } else if (diff <= -reversal) {
-          kagiLines.push({ time: c.time, open: kagiLines.length > 0 ? kagiLines[kagiLines.length-1].close : lastY, close: lastY, high: Math.max(lastY, c.close), low: Math.min(lastY, c.close), volume: isYang ? 1 : 0 }); // 借用 volume 存陰陽
+          kagiLines.push({ time: c.time, open: lastY, close: c.close, high: 0, low: 0, volume: isYang ? 1 : 0 });
           direction = -1;
           lastY = c.close;
+          pushed = true;
         }
       } else {
         if (c.close < lastY) {
           lastY = c.close;
-          // 檢查是否跌破前低轉陰
           if (isYang && kagiLines.length > 0) {
              const prevMin = Math.min(...kagiLines.slice(-2).map(l => Math.min(l.open, l.close)));
              if (c.close < prevMin) isYang = false;
           }
         } else if (diff >= reversal) {
-          kagiLines.push({ time: c.time, open: kagiLines.length > 0 ? kagiLines[kagiLines.length-1].close : lastY, close: lastY, high: Math.max(lastY, c.close), low: Math.min(lastY, c.close), volume: isYang ? 1 : 0 });
+          kagiLines.push({ time: c.time, open: lastY, close: c.close, high: 0, low: 0, volume: isYang ? 1 : 0 });
           direction = 1;
           lastY = c.close;
+          pushed = true;
         }
+      }
+
+      // 確保最後一根正在發展的線始終存在
+      if (!pushed && kagiLines.length > 0) {
+          const last = kagiLines[kagiLines.length - 1];
+          last.close = c.close;
+          last.time = c.time;
+          last.volume = isYang ? 1 : 0;
+      }
+      // 處理從未達到反轉值的情況 (初始線)
+      if (kagiLines.length === 0 && idx === candles.length - 1) {
+          kagiLines.push({ time: c.time, open: candles[0].close, close: c.close, high: 0, low: 0, volume: 1 });
       }
     });
     
