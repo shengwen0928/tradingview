@@ -34,25 +34,37 @@ export class RenderPipeline {
 
         // 🚀 核心：數據轉換攔截 (非線性 X 軸處理)
         const isNonLinear = ['renko', 'line_break', 'kagi', 'point_and_figure'].includes(this.chartType);
-        const dataHash = `${this.chartType}_${rawCandles.length}_${rawCandles[rawCandles.length-1]?.time}`;
+        const currentType = this.chartType;
+        const typeChanged = this.lastDataHash.split('_')[0] !== currentType;
+        const dataHash = `${currentType}_${rawCandles.length}_${rawCandles[rawCandles.length-1]?.time}`;
         
         if (isNonLinear) {
-            if (this.lastDataHash !== dataHash) {
-                this.visualCandles = DataTransformer.transform(rawCandles, this.chartType);
-                this.viewport.setDataCount(this.visualCandles.length, true);
+            if (this.lastDataHash !== dataHash || typeChanged) {
+                this.visualCandles = DataTransformer.transform(rawCandles, currentType);
                 
-                // 🚨 關鍵修正：如果是切換類型導致的轉換，強制重置視口到末尾
-                if (this.lastDataHash.split('_')[0] !== this.chartType) {
-                    const visibleCount = this.viewport.getLogicalWidth() / (this.viewport.getCandleWidth() + 2);
-                    this.viewport.setRange(Math.max(0, this.visualCandles.length - visibleCount), this.visualCandles.length);
+                // 🚨 修正：切換類型時「禁止」使用 isHistory=true，避免索引補償錯誤
+                this.viewport.setDataCount(this.visualCandles.length, false);
+                
+                // 🚨 關鍵修正：如果是切換類型，強制將視角拉回最新數據端
+                if (typeChanged) {
+                    const count = this.visualCandles.length;
+                    const defaultVisible = Math.min(count, 100);
+                    this.viewport.setRange(Math.max(0, count - defaultVisible), count);
                 }
                 
                 this.lastDataHash = dataHash;
             }
         } else {
-            this.visualCandles = rawCandles;
-            this.viewport.setDataCount(rawCandles.length, false);
-            this.lastDataHash = dataHash;
+            if (this.lastDataHash !== dataHash || typeChanged) {
+                this.visualCandles = rawCandles;
+                this.viewport.setDataCount(rawCandles.length, false);
+                
+                if (typeChanged) {
+                    const count = rawCandles.length;
+                    this.viewport.setRange(Math.max(0, count - 100), count);
+                }
+                this.lastDataHash = dataHash;
+            }
         }
 
         const candles = this.visualCandles;
