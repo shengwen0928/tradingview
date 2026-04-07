@@ -78,7 +78,7 @@ export class RenderEngine {
    * 繪製價格軸與時間軸刻度
    */
   public drawAxes(
-    candles: Candle[],
+    _candles: Candle[],
     exactStartIndex: number,
     candleWidth: number,
     spacing: number,
@@ -101,71 +101,48 @@ export class RenderEngine {
     }
 
     ctx.textAlign = 'center';
-    if (candles.length === 0) return;
-
-    const t0 = getTimeAtIndex(0);
-    const t1 = getTimeAtIndex(1);
-    const interval = isNaN(t0) || isNaN(t1) ? 60000 : Math.abs(t1 - t0);
-
-    const visibleCount = drawWidth / (candleWidth + spacing);
+    
+    // 🚀 重寫：基於密度的時間軸渲染
     const startIndex = Math.floor(exactStartIndex);
+    const visibleCount = drawWidth / (candleWidth + spacing);
     const endIndex = Math.ceil(exactStartIndex + visibleCount);
     
-    let lastLabelX = -100;
+    let lastLabelX = -200;
+    const minLabelSpacing = 100; // 每個時間標籤最少間隔 100px
 
     for (let idx = startIndex; idx <= endIndex; idx++) {
       if (idx < 0) continue;
       const time = getTimeAtIndex(idx);
       if (isNaN(time)) continue; 
 
-      const date = new Date(time);
-      let shouldShow = false;
-      let label = "";
-      let isBold = false;
-
-      const mins = date.getMinutes();
-      const hours = date.getHours();
-      const day = date.getDate();
-      const month = date.getMonth();
-      const year = date.getFullYear();
-
-      if (interval < 60000) {
-        shouldShow = date.getSeconds() % 15 === 0;
-        label = `${hours}:${mins.toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
-      } else if (interval < 3600000) {
-        shouldShow = mins % 5 === 0;
-        label = `${hours}:${mins.toString().padStart(2, '0')}`;
-      } else if (interval < 86400000) {
-        shouldShow = hours % 4 === 0 && mins === 0;
-        label = `${hours.toString().padStart(2, '0')}:00`;
-      } else {
-        const prevTime = getTimeAtIndex(idx - 1);
-        const prevDate = !isNaN(prevTime) ? new Date(prevTime) : null;
-        if (interval < 604800001) {
-          shouldShow = !prevDate || date.getDate() !== prevDate.getDate();
-          label = `${month + 1}/${day}`;
-        } else {
-          shouldShow = !prevDate || date.getMonth() !== prevDate.getMonth();
-          label = `${month + 1}月`;
-        }
-      }
-
-      if (month === 0 && day === 1 && hours === 0) {
-        shouldShow = true; isBold = true; label = year.toString();
-      } else if (hours === 0 && mins === 0 && interval < 86400000) {
-        shouldShow = true; isBold = true; label = `${month + 1}/${day}`;
-      }
-
       const x = scaleEngine.indexToX(idx, exactStartIndex, candleWidth, spacing);
       const centerX = x + candleWidth / 2;
       if (centerX < 0 || centerX > drawWidth) continue;
 
-      if (shouldShow && (centerX > lastLabelX + 80 || isBold)) {
-        ctx.fillStyle = isBold ? '#fff' : '#929498';
+      // 只有當距離上一個標籤夠遠時才繪製
+      if (centerX > lastLabelX + minLabelSpacing) {
+        const date = new Date(time);
+        const label = this.formatAutoTimeLabel(date);
+        ctx.fillStyle = '#929498';
         ctx.fillText(label, centerX, drawHeight + 15);
         lastLabelX = centerX;
       }
     }
+  }
+
+  /**
+   * 自動格式化時間標籤 (根據日期變化調整)
+   */
+  private formatAutoTimeLabel(date: Date): string {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const mins = date.getMinutes().toString().padStart(2, '0');
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    
+    if (hours === '00' && mins === '00') {
+        return `${month}/${day}`;
+    }
+    return `${hours}:${mins}`;
   }
 
   /**

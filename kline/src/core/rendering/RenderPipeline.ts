@@ -28,67 +28,68 @@ export class RenderPipeline {
         this.chartType = type;
     }
 
+    /**
+     * 🚀 渲染管線執行核心
+     */
     public execute(activeManager: DataManager, requestRedraw: () => void) {
         let rawCandles = activeManager.getCandles();
         if (rawCandles.length === 0) return;
 
-        // 🚀 核心：數據轉換攔截 (非線性 X 軸處理)
-        const isNonLinear = ['renko', 'line_break', 'kagi', 'point_and_figure'].includes(this.chartType);
         const currentType = this.chartType;
-        const typeChanged = this.lastDataHash.split('_')[0] !== currentType;
-        const dataHash = `${currentType}_${rawCandles.length}_${rawCandles[rawCandles.length-1]?.time}`;
+        const isNonLinear = ['renko', 'line_break', 'kagi', 'point_and_figure'].includes(currentType);
         
-        if (isNonLinear) {
-            if (this.lastDataHash !== dataHash || typeChanged) {
+        // 1. 偵測數據或類型變更
+        const dataHash = `${currentType}_${rawCandles.length}_${rawCandles[rawCandles.length-1]?.time}`;
+        const typeChanged = this.lastDataHash.split('_')[0] !== currentType;
+        
+        if (this.lastDataHash !== dataHash || typeChanged) {
+            this.lastDataHash = dataHash;
+            
+            // 執行數據轉換
+            if (isNonLinear) {
                 this.visualCandles = DataTransformer.transform(rawCandles, currentType);
-                
-                // 🚨 修正：切換類型時「禁止」使用 isHistory=true，避免索引補償錯誤
-                this.viewport.setDataCount(this.visualCandles.length, false);
-                
-                // 🚨 關鍵修正：如果是切換類型，強制將視角拉回最新數據端
-                if (typeChanged) {
-                    const count = this.visualCandles.length;
-                    const defaultVisible = Math.min(count, 100);
-                    this.viewport.setRange(Math.max(0, count - defaultVisible), count);
-                }
-                
-                this.lastDataHash = dataHash;
+            } else {
+                this.visualCandles = [...rawCandles];
             }
-        } else {
-            if (this.lastDataHash !== dataHash || typeChanged) {
-                this.visualCandles = rawCandles;
-                this.viewport.setDataCount(rawCandles.length, false);
-                
-                if (typeChanged) {
-                    const count = rawCandles.length;
-                    this.viewport.setRange(Math.max(0, count - 100), count);
-                }
-                this.lastDataHash = dataHash;
+
+            // 同步視口狀態 (禁止 isHistory 補償，避免切換時索引飛走)
+            this.viewport.setDataCount(this.visualCandles.length, false);
+            
+            // 如果是切換圖表，強制把視角拉到最右側數據端
+            if (typeChanged) {
+                const count = this.visualCandles.length;
+                this.viewport.setRange(Math.max(0, count - 100), count);
             }
+            
+            // 🚨 重要：數據變更後立即觸發下一幀重繪並跳出，防止本幀使用舊索引渲染新數據
+            requestRedraw();
+            return;
         }
 
+        // 2. 準備渲染數據
         const candles = this.visualCandles;
+        if (candles.length === 0) return;
+
         const { start, end } = this.viewport.getVisibleRange();
         const { startIndex } = this.viewport.getRawRange();
         const visible = candles.slice(start, end);
         const cw = this.viewport.getCandleWidth();
         const lastCandle = candles[candles.length - 1];
 
-        // 1. 動態更新價格平滑
+        // 3. 動態更新價格平滑
         const visualPrice = this.priceAnimator.update(lastCandle.close, requestRedraw);
         
-        // 2. 更新與渲染背景層 (Grid, Axes)
+        // 4. 背景層渲染 (座標軸標籤現在是基於密度的，不再依賴固定間隔)
         this.scaleEngine.updateScale(visible);
         this.renderEngine.drawGrid(this.scaleEngine);
         this.renderEngine.drawAxes(visible, startIndex, cw, 2, (idx: number) => {
-            // 在非線性模式下，時間標籤應從虛擬數據中獲取
             return candles[idx]?.time || NaN;
         }, this.scaleEngine);
         
-        // 3. 渲染數據層 (Main Chart, Indicators)
-        this.renderEngine.drawMainChart(this.chartType, visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
+        // 5. 主圖層渲染
+        this.renderEngine.drawMainChart(currentType, visible, start, startIndex, cw, 2, this.scaleEngine, visualPrice);
         
-        // 只有在線性模式下才運行指標 (進階圖表通常有自己的指標系統)
+        // 指標僅在線性圖表下顯示 (進階圖表座標系統不同)
         if (!isNonLinear) {
             const indicatorResult = this.indicatorController.run(candles);
             this.renderEngine.drawIndicators(indicatorResult.plots, start, end, startIndex, cw, 2, this.scaleEngine);
@@ -96,36 +97,35 @@ export class RenderPipeline {
             this.renderEngine.drawIndicatorBoxes(indicatorResult.boxes, startIndex, cw, 2, this.scaleEngine);
         }
         
-        // 4. 計算畫面內最高最低點
+        // 6. 計算畫面內最高最低點並標註
         let maxHigh = -Infinity, minLow = Infinity;
         let maxIdx = -1, minIdx = -1;
-        const scanStart = Math.max(0, Math.floor(start));
-        const scanEnd = Math.min(candles.length, Math.ceil(end));
-
-        for (let i = scanStart; i < scanEnd; i++) {
-            const c = candles[i];
-            if (c.high > maxHigh) { maxHigh = c.high; maxIdx = i; }
-            if (c.low < minLow) { minLow = c.low; minIdx = i; }
+        for (let i = 0; i < visible.length; i++) {
+            const c = visible[i];
+            const h = c.high !== 0 ? c.high : Math.max(c.open, c.close);
+            const l = c.low !== 0 ? c.low : Math.min(c.open, c.close);
+            if (h > maxHigh) { maxHigh = h; maxIdx = start + i; }
+            if (l < minLow) { minLow = l; minIdx = start + i; }
         }
 
-        this.renderEngine.drawMinMaxLabels(
-            { price: maxHigh, index: maxIdx }, 
-            { price: minLow, index: minIdx }, 
-            startIndex, cw, 2, this.scaleEngine
-        );
+        if (maxIdx !== -1) {
+            this.renderEngine.drawMinMaxLabels(
+                { price: maxHigh, index: maxIdx }, 
+                { price: minLow, index: minIdx }, 
+                startIndex, cw, 2, this.scaleEngine
+            );
+        }
 
-        // 5. 渲染互動層 (Drawings, Crosshair)
-        this.renderEngine.clearOverlay(); // 🚀 強制清理 Overlay，防止殘留
-
+        // 7. 互動層渲染 (清理十字線殘留)
+        this.renderEngine.clearOverlay();
         if (!isNonLinear) {
             this.drawingEngine.render(this.renderEngine.getOverlayContext(), this.scaleEngine, startIndex, cw, 2, (t: number) => activeManager.getIndexAtTime(t), this.crosshairController.getHoveredDrawingId());
         }
         
-        // 修正：十字線需要根據當前視覺數據獲取時間與 OHLC (確保索引為整數)
         const getTime = (idx: number) => candles[Math.round(idx)]?.time || NaN;
         this.crosshairController.draw(getTime, candles);
 
-        // 6. 渲染價格線
+        // 8. 價格線渲染
         this.renderEngine.drawLastPriceLine(visualPrice, visualPrice >= lastCandle.open ? '#26a69a' : '#ef5350', this.scaleEngine);
     }
 }

@@ -32,15 +32,21 @@ export class ScaleEngine {
   public updateScale(visibleCandles: Candle[]): void {
     if (visibleCandles.length === 0) return;
 
-    // 🚨 如果是自動縮放模式，才根據可見 K 棒計算 min/max
     if (this.isAutoScale) {
-      let min = visibleCandles[0].low;
-      let max = visibleCandles[0].high;
+      let min = Infinity;
+      let max = -Infinity;
 
       for (const candle of visibleCandles) {
-        if (candle.low < min) min = candle.low;
-        if (candle.high > max) max = candle.high;
+        // 🚨 修正：針對非線性圖表，如果 high/low 為 0，則 fallback 到 open/close
+        const cHigh = candle.high !== 0 ? candle.high : Math.max(candle.open, candle.close);
+        const cLow = candle.low !== 0 ? candle.low : Math.min(candle.open, candle.close);
+        
+        if (cLow < min) min = cLow;
+        if (cHigh > max) max = cHigh;
       }
+
+      if (max === -Infinity || min === Infinity) return;
+      if (max === min) { max += 1; min -= 1; }
 
       const diff = max - min;
       const scaledDiff = (diff * this.verticalScale);
@@ -49,8 +55,6 @@ export class ScaleEngine {
       this.minPrice = center - scaledDiff * (0.5 + this.padding);
       this.maxPrice = center + scaledDiff * (0.5 + this.padding);
     } 
-    // 如果是非自動縮放模式 (手動模式)，則不更新 minPrice/maxPrice
-    // 位移會由 handleVerticalPan 直接修改這兩個值
   }
 
   public handleVerticalZoom(scaleFactor: number): void {
